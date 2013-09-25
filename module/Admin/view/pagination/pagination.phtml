@@ -1,0 +1,70 @@
+<?php 
+if ($this->pageCount):
+$action = isset($this->action)?$this->action:'index';
+?>
+<div class="pagination">
+			<ul>
+			<!-- Previous page link -->
+			<li><a href="javascript:void(0);">共 <?php echo $this->totalItemCount;?> 条，<?php echo $this->itemCountPerPage;?> 条/页  ,当前页 <?php echo $this->currentItemCount;?> 条；共<?php echo $this->pageCount;?> 页,当前第 <?php echo $this->current;?> 页</a></li>
+			<?php if (isset($this->previous)): ?>
+            <li><a href="
+            <?php 
+            echo $this->url($this->route, array('action' => $action,'page'=>$this->previous));
+            //关键词搜索
+            echo $this->key?"?key={$this->key}":'';
+            //报名列表参数
+            echo $this->parentid?"?parentid={$this->parentid}":'';
+            //门店管理员
+            echo $this->ac=='m'?"?action={$this->ac}&id={$this->id}":'';
+            //设置商品欢迎推荐
+            echo $this->ac=='c'?"?action={$this->ac}":'';
+            ?>
+            ">前一页</a></li>
+            <?php else: ?>
+            <li><a href="">前一页</a></li>
+            <?php endif; ?>
+            <!-- Numbered page links -->
+            <?php foreach ($this->pagesInRange as $page): ?>
+            <?php if ($page != $this->current): ?>
+            <li><a href="
+            <?php 
+            echo $this->url($this->route, array('action' => $action,'page'=>$page));
+            //关键词搜索
+            echo $this->key?"?key={$this->key}":'';
+            //报名列表参数
+            echo $this->parentid?"?parentid={$this->parentid}":'';
+            //门店管理员
+            echo $this->ac=='m'?"?action={$this->ac}&id={$this->id}":'';
+            //设置商品欢迎推荐
+            echo $this->ac=='c'?"?action={$this->ac}":'';
+            ?>
+            "><?php echo $page; ?></a></li>
+            <?php else: ?>
+            <li><a href="<?php 
+            echo $this->key?"?key={$this->key}":'';
+            ?>"><?php echo $page; ?></a></li>
+            <?php endif; ?>
+            <?php endforeach; ?>
+            <!-- Next page link -->
+            <?php if (isset($this->next)): ?>
+            <li><a href="
+            <?php 
+            echo $this->url($this->route, array('action' => $action,'page'=>$this->next));
+            //关键词搜索
+             echo $this->key?"?key={$this->key}":'';
+            //报名列表参数
+            echo $this->parentid?"?parentid={$this->parentid}":'';
+            //门店管理员
+            echo $this->ac=='m'?"?action={$this->ac}&id={$this->id}":'';
+            //设置商品欢迎推荐
+            echo $this->ac=='c'?"?action={$this->ac}":'';
+            ?>
+            ">下一页</a></li>
+            <?php else: ?>
+             <li><a href="">下一页</a></li>
+             <?php endif; ?>
+			</ul>
+</div>
+<?php 
+endif;
+?>

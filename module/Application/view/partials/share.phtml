@@ -1,0 +1,18 @@
+﻿<div id="mess_report"><a href="#">举报</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#"><img src="/sitetem/default/images/back_top.jpg" /></a>&nbsp;&nbsp;
+</div>
+<div id="mess_share" style="width:95%; margin:0 auto; padding-top:10px;">
+    <div id="share_1"><button class="button2" onclick="_system._guide(true)"><img src="http://login.veigou.com/images/plug/icon_msg.png">&nbsp;发送给朋友</button></div>
+    <div id="share_2"><button class="button2" onclick="_system._guide(true)"><img src="http://login.veigou.com/images/plug/icon_timeline.png">&nbsp;分享到朋友圈</button></div>
+    <div id="mp_button"><button class="button2" style="display:none;" id="btn_follow" onclick="window.location='weixin://addfriend/ylyx888';">关注我们的公众号</button></div>
+    <div class="clear">
+    </div>
+</div>
+<script>
+	function show_follow_button()
+	{
+	 	if(/android/i.test(navigator.userAgent)){
+			document.getElementById('btn_follow').style.display='block';
+		}
+	}
+	show_follow_button();
+</script>

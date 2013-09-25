@@ -1,0 +1,376 @@
+<div class="header">
+    <h1 class="page-title">基本配置</h1>
+</div>
+
+<ul class="breadcrumb">
+    <li><a href="/home" >首页</a> <span class="divider">/</span></li>
+    <li class="active">基本配置</li>
+    <li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div id="helpcontroller" class="collapse"></div>
+        <?php
+        if ($this->success) {
+            echo "<div class=\"alert alert-success\">
+            <a class=\"close\" data-dismiss=\"alert\">×</a>
+            <strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+        }
+        ?>
+        <form id="tab" name="createUser" method="post" action="" onsubmit="return clickForm();">
+            <div class="btn-toolbar">
+                <input type="submit" name="submit" id="submit"
+                       class="btn btn-primary " value="提交" />
+                <div class="btn-group"></div>
+            </div>
+            <div class="well">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#home" data-toggle="tab"><?php if ($this->row['userType'] == 1) { echo "微站";}else{ echo "微商城";}?>配置</a></li>
+                    <li><a href="#erweima" data-toggle="tab"><?php if ($this->row['userType'] == 1) { echo "微站";}else{ echo "微商城";}?>二维码</a></li>
+                    <li><a href="#shop" data-toggle="tab">基本资料</a></li>
+                    <li><a href="#payapi" data-toggle="tab">支付配置</a></li>
+                    <li><a href="#attention" data-toggle="tab">被关注回复</a></li>
+                    <li><a href="#default" data-toggle="tab">缺省消息回复</a></li>
+                    <!-- <li><a href="#stats" data-toggle="tab">统计代码</a></li> -->
+
+                </ul>
+
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane active in" id="home">
+
+                        <!--选择账户类别-->
+                        <?php if ($this->user->roleid == 2 || $this->user->roleid == 4) { ?>
+                            <div class="control-group" id="group-userType">
+                                <label class="control-label" for="userType">平台类别</label>
+                                <div class="controls">
+                                    <select name="userType" id="userType">
+                                        <option value="1" <?php
+                                        if ($this->row['userType'] == 1) {
+                                            echo "selected='selected'";
+                                        }
+                                        ?>>微站平台</option>
+                                        <option value="2" <?php
+                                        if ($this->row['userType'] == 2) {
+                                            echo "selected='selected'";
+                                        }
+                                        ?>>微商城平台</option>
+                                    </select>
+                                    <span class="help-inline" id="help-userType"></span> 
+                                </div>
+                            </div>
+                        <?php } ?>
+                        <div class="control-group" id="group-weixinhao">
+                            <label class="control-label" for="weixinhao">微信公众号<span style="font-size:8px;color:#999">[提示：微信公众平台->设置->微信号]</span></label>
+                            <div class="controls">
+                                <input type="text" value="<?php echo $this->row['weixinhao']; ?>" name="weixinhao" id="weixinhao" class="span3" > 
+                                <span class="help-inline" id="help-weixinhao"></span>
+                            </div>
+                        </div>
+                        <div class="control-group" id="group-sitename">
+                            <label class="control-label" for="sitename"><?php if ($this->row['userType'] == 1) { echo "微站";}else{ echo "微商城";}?>名称<span style="font-size:8px;color:#999">[显示在顶部左边]</span></label>
+                            <div class="controls">
+                                <input type="text" value="<?php echo $this->row['sitename']; ?>" name="sitename" id="sitename" class="span3" > 
+                                <span class="help-inline" id="help-sitename"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group" id="group-intro">
+                            <label class="control-label" for="intro"><?php if ($this->row['userType'] == 1) { echo "微站";}else{ echo "微商城";}?>简介<span style="font-size:8px;color:#999">[显示在首页下面]</span></label>
+                            <div class="controls editor-container-min">
+                                <textarea name="intro" id="intro" rows="6" class="span10"><?php echo $this->row['intro']; ?></textarea>
+                                <span class="help-inline" id="help-intro"></span> </div>
+                        </div>                      
+
+                    </div>
+                    
+                    <div class="tab-pane fade" id="erweima">
+                        
+                        <div class="control-group" id="group-erweima">
+                            <label class="control-label" for="erweima"><?php if ($this->row['userType'] == 1) { echo "微站";}else{ echo "微商城";}?>首页二维码<span style="font-size:8px;color:#999">[可右击鼠标另存为]</span></label>
+                            <div class="controls">
+                                <a href="http://api.kuaipai.cn/qr?chs=400x400&chl=<?php echo BASE_URL;?>" title="微信扫一扫，在微信里预览！" target="_blank"><img src="http://api.kuaipai.cn/qr?chs=400x400&chl=<?php echo BASE_URL;?>" alt="微信扫一扫，在微信里预览！" width="300" height="300" /></a>
+                                </div>
+                        </div>  
+                    </div>
+                    <div class="tab-pane fade" id="shop">
+
+                        <div class="control-group" id="group-realname">
+                            <label class="control-label span2" for="realname">公司名称</label>
+                            <div class="controls">
+                                <input type="text" value="<?php echo $this->row['realname']; ?>" name="realname" id="realname"
+                                       class="span3"> <span class="help-inline" id="help-realname"></span>
+                            </div>
+                        </div>
+
+                        <div class="control-group" id="group-email">
+                            <label class="control-label span2" for="email">邮箱</label>
+                            <div class="controls">
+                                <input type="text" value="<?php echo $this->row['email']; ?>" name="email" id="email"
+                                       class="span3"> <span class="help-inline" id="help-email"></span>
+                            </div>
+                        </div>
+
+                        <div class="control-group" id="group-tel">
+                            <label class="control-label span2" for="tel">电话</label>
+                            <div class="controls">
+                                <input type="text" value="<?php echo $this->row['tel']; ?>" name="tel" id="tel" class="span3"> <span
+                                    class="help-inline" id="help-tel"></span>
+                            </div>
+                        </div>
+
+                        <div class="control-group" id="group-city">
+                            <label class="control-label span2" for="city">省(市)</label>
+                            <div class="controls">
+                                <select name="city" class="span2" id="city" onchange="parent(this.value);">
+                                    <option value="">请选择</option>
+                                    <?php
+                                    if ($this->areas) {
+                                        foreach ($this->areas as $val) {
+                                            echo "<option value=\"{$val['areaid']}\"";
+                                            if ($this->row['city'] == $val['areaid'])
+                                                echo 'selected="selected"';
+                                            echo ">{$val['name']}</option>" . PHP_EOL;
+                                        }
+                                    }
+                                    ?>
+                                </select> <span class="help-inline" id="help-city"></span>
+                            </div>
+                        </div>
+
+                        <div class="control-group" id="group-area">
+                            <label class="control-label span2" for="area">市(区)</label>
+                            <div class="controls">
+                                <select name="area" class="span2" id="area">
+                                    <?php
+                                    if (isset($this->city)) {
+                                        foreach ($this->city as $val) {
+                                            echo "<option value=\"{$val['areaid']}\"";
+                                            if ($this->row['area'] == $val['areaid'])
+                                                echo 'selected="selected"';
+                                            echo ">{$val['name']}</option>" . PHP_EOL;
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                                <span class="help-inline" id="help-area"></span>
+                            </div>
+                        </div>
+
+                        <div class="control-group" id="group-address">
+                            <label class="control-label span2" for="address">地址</label>
+                            <div class="controls">
+                                <input type="text" value="<?php echo $this->row['address']; ?>" name="address" id="address" class="span3"> 
+                                <span class="help-inline" id="help-address"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="payapi">
+
+                        <div class="control-group" id="group-payment">
+                            <label class="control-label span2" for="payment">支付方式</label>
+                            <div class="controls">
+                                <select name="payment">
+                                    <?php
+                                    if ($this->payment) {
+                                        foreach ($this->payment as $key => $val) {
+                                            echo "<option value=\"{$key}\"";
+                                            if ($this->row['payment'] == $key)
+                                                echo 'selected="selected"';
+                                            echo ">{$val}</option>";
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                                <span class="help-inline" id="help-payment"></span>
+                            </div>
+                        </div>
+
+                        <div class="control-group" id="group-apitype">
+                            <label class="control-label span2" for="apitype">选择支付接口类型</label>
+                            <div class="controls">
+                                <select name="apitype" id="apitype" onchange="upperCase();">
+                                    <?php
+                                    if ($this->apiType) {
+                                        if ($this->user->roleid != 4) {
+                                            foreach ($this->apiType as $key => $val) {
+                                                if($this->user->roleid != 2 && $key==4 && $this->row['attestation']!=1) continue;  //暂不对低版本的开放
+                                                echo "<option value=\"{$key}\"";
+                                                if ($this->row['apitype'] == $key)
+                                                    echo 'selected="selected"';
+                                                echo ">{$val}</option>";
+                                            }
+                                        }else {
+                                            echo "<option value=\"3\">使用即时到账交易接口</option>";
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                                <span class="help-inline" id="help-apitype"></span>
+                            </div>
+                        </div>
+
+
+                        <?php if ($this->user->roleid == 4) { ?>
+                            <div class="control-group" id="group-help">
+                                <p style="color: red"><b>您的系统版本是：<?php echo $this->role_name; ?>，您只能使用系统给您提供的收款账号（所有者：亚龙）</b></p>
+                            </div>
+                            <div class="control-group" id="group-PID" <?php echo $this->row['apitype']==4? 'style="display:none;"':'';?>>
+                                <label class="control-label span2" for="PID">支付宝(PID)</label>
+                                <div class="controls">
+                                    <input type="text" value="2088002691290115" name="PID" id="PID" class="span3" readonly="true"> 
+                                    <span class="help-inline" id="help-PID"></span>
+                                </div>
+                            </div>
+                            <div class="control-group" id="group-KEY" <?php echo $this->row['apitype']==4? 'style="display:none;"':'';?>>
+                                <label class="control-label span2" for="KEY">支付宝(KEY)</label>
+                                <div class="controls">
+                                    <input type="text" value="4w3k3a58zw885itiuerm6q0f77mi4xe2" name="KEY" id="KEY" class="span3" readonly="true"> 
+                                    <span class="help-inline" id="help-KEY"></span>
+                                </div>
+                            </div>
+                            <div class="control-group" id="group-alipayEmail">
+                                <label class="control-label span2" for="alipayEmail">支付宝账号</label>
+                                <div class="controls">
+                                    <input type="text" value="ryalong@163.com" name="alipayEmail" id="alipayEmail" class="span3" readonly="true"> 
+                                    <span class="help-inline" id="help-alipayEmail"></span>
+                                </div>
+                                <?php
+                                if ($this->row['alipayEmail']) {
+                                     echo "<a href=\"/users/alipay\" target=\"_blank\">绑定支付宝，测试支付</a>";
+                                } elseif($this->row['alipayEmail'] && $this->user->roleid==2) {
+                                    echo "<a href=\"/users/alipay\" target=\"_blank\">绑定支付宝，测试支付</a>";
+                                } else {
+                                    echo "<a>绑定支付宝之后，刷新本页面，点击这里可进行支付测试</a>";
+                                }
+                                ?>
+                            </div>
+                        <?php } else { ?>
+                            <div class="control-group" id="group-PID" <?php echo $this->row['apitype']==4? 'style="display:none;"':'';?> >
+                                <label class="control-label span2" for="PID">支付宝(PID)</label>
+                                <div class="controls">
+                                    <input type="text" value="<?php echo $this->row['PID']; ?>" name="PID" id="PID" class="span3" > 
+                                    <span class="help-inline" id="help-PID"></span>
+                                </div>
+                            </div>
+                            <div class="control-group" id="group-KEY" <?php echo $this->row['apitype']==4? 'style="display:none;"':'';?>>
+                                <label class="control-label span2" for="KEY">支付宝(KEY)</label>
+                                <div class="controls">
+                                    <input type="text" value="<?php echo $this->row['KEY']; ?>" name="KEY" id="KEY" class="span3" > 
+                                    <span class="help-inline" id="help-KEY"></span>
+                                </div>
+                            </div>
+                            <div class="control-group" id="group-alipayEmail">
+                                <label class="control-label span2" for="alipayEmail">支付宝账号</label>
+                                <div class="controls">
+                                <input type="text" value="<?php echo $this->row['alipayEmail']; ?>" name="alipayEmail" id="alipayEmail" class="span3" > 
+                                <span class="help-inline" id="help-alipayEmail"></span>
+                                </div>
+                                <?php
+                                if ($this->row['alipayEmail']) {
+                                    echo "<a href=\"/users/alipay\" target=\"_blank\">绑定支付宝，测试支付</a>";
+                                } elseif($this->row['alipayEmail'] && $this->user->roleid==2) {
+                                    echo "<a href=\"/users/alipay\" target=\"_blank\">绑定支付宝，测试支付</a>";
+                                } else {
+                                    echo "<a>绑定支付宝之后，刷新本页面，点击这里可进行支付测试</a>";
+                                }
+                                ?>
+                            </div>						
+                        <?php } ?>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="attention">
+                        <div class="control-group" id="group-wc">
+                            <label class="control-label" for="wc">欢迎词方式</label>
+                            <div class="controls" style="font-size: 10px; display:inline;">
+                                文本方式 <input type="radio" value="1" name="wc" id="wc_1" <?php echo $this->row['wc'] == 1 ? 'checked' : ''; ?> />&nbsp;&nbsp;
+                                产品列表 <input type="radio" value="2" name="wc" id="wc_2" <?php echo $this->row['wc'] == 2 ? 'checked' : ''; ?> /> 
+                                <br><span style="font-size: 10px; color:blue;">提示：[<a href="/commodity/welcome/">若选择产品列表方式，请点击这里设置欢迎推荐商品</a>]</span>
+                            </div>
+                        </div>
+
+                        <div class="control-group" id="group-welcome">
+                            <label class="control-label" for="welcome">欢迎词</label>
+                            <div class="controls editor-container-min">
+                                <textarea name="welcome" id="welcome" class="editor-min"><?php echo $this->row['welcome']; ?></textarea>
+                                <span class="help-inline" id="help-welcome"></span> </div>
+                        </div>
+                    </div>					
+
+                    <div class="tab-pane fade" id="default">                        
+                        <div class="control-group" id="group-nodata">
+                            <label class="control-label" for="nodata">搜索缺省提示</label>
+                            <div class="controls editor-container-min">
+                                <textarea name="nodata" id="nodata" class="editor-min"><?php echo $this->row['nodata']; ?></textarea>
+                                <span class="help-inline" id="help-nodata"></span> </div>
+                        </div>
+                    </div>		
+
+                    <!-- <div class="tab-pane fade" id="stats">                        
+                        <div class="control-group" id="group-stats">
+                            <label class="control-label" for="stats">第三方统计代码设置<span style="font-size:8px;color:#999">[提示：第三方统计代码填写此处，如果您不明白这里什么意思，请留空]</span></label>
+                            <div class="controls editor-container-min">
+                            <textarea name="stats" id="stats" rows="6" class="span10"><?php //echo $this->row['stats']; ?></textarea>
+                                <span class="help-inline" id="help-stats"></span> </div>
+                        </div>
+                    </div> -->
+
+                </div>
+
+            </div>
+
+            <?php echo $this->partial('partials/homeFooter.phtml'); ?>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+        function parent(pid)
+        {
+            $.post("/type/areas?pid=" + pid, {}, function(data) {
+                $('#area').html(data);
+            });
+        }
+
+        function upperCase()
+        {
+            var i = parseInt($('#apitype').val());
+            if (i === 4)
+            {
+                $('#group-PID').hide();
+                $('#group-KEY').hide();
+            } else
+            {
+                $('#group-PID').show();
+                $('#group-KEY').show();
+            }
+        }
+
+
+        $(document).ready(function() {
+            if (window.location.hash == '#attention') {
+                $("#tab a[href='#attention']").tab('show');
+            } else if (window.location.hash == '#default') {
+                $("#tab a[href='#default']").tab('show');
+            }
+        });
+
+        $(document).ready(
+                /*wwww初始化编辑器www*/
+                        function() {
+                            editor = new UE.ui.Editor();
+                            editor.setOpt('toolbars', [["link"]]);
+                            editor.render($("textarea[name='welcome']")[0]);
+                        });
+                $(document).ready(
+                        /*wwww初始化编辑器www*/
+                                function() {
+                                    editor2 = new UE.ui.Editor();
+                                    editor2.setOpt('toolbars', [["link"]]);
+                                    editor2.render($("textarea[name='nodata']")[0]);
+                                });
+
+</script> 
+<script src="/ueditor/ueditor.all.js"></script>
+<script src="/ueditor/ueditor.config_ex.js"></script>

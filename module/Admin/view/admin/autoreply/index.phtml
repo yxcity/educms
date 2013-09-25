@@ -1,0 +1,125 @@
+<div class="header">
+	<h1 class="page-title">图文素材</h1>
+</div>
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+        <li><a href="/News">消息</a> <span class="divider">/</span></li>
+        <li class="active">素材列表</li>
+        <li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+<div class="container-fluid">
+	<div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+	<?php 
+      if ($this->success)
+    	{
+    		echo "<div class=\"alert alert-success\">
+    		<a class=\"close\" data-dismiss=\"alert\">×</a>
+    		<strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+    	}
+       if ($this->action=='c'){
+           echo "<form name=\"autoreplyC\" method=\"post\"  >
+        	     <div class=\"btn-toolbar\">
+		         <button class=\"btn\">设为欢迎推荐</button>
+			     <div class=\"btn-group\"></div></div>
+	             ";
+       }else 
+       {
+       	echo "<div class=\"btn-toolbar\">
+		    <div class=\"btn-group\">
+			<a href=\"/autoreply/create\" class=\"btn btn-primary\"><i class=\"icon-plus\"></i> 添加单条目消息</a>
+			<a href=\"/autoreply/create\" class=\"btn btn-primary\"><i class=\"icon-plus\"></i> 添加多条目消息</a></div>
+		</div>";
+       }
+       ?>
+		
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="3%">#</th>
+						<th width="30%">标题</th>
+						<th width="10%">创建时间</th>
+						<th width="10%">上次发送</th>
+                                                <th width="10%">发送次数</th>
+						<th style="width: 50px;">操作</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php 
+				if ($this->rows)
+				{
+					foreach ($this->rows as $val) {
+				?>
+					<tr id="news_<?php echo $val['id'];?>">
+						<td><?php 
+						echo "<input type=\"checkbox\" name=\"id[]\" id=\"id\" value=\"{$val['id']}\"";
+						if ($val['welcome']==1 && $this->action=='c') echo 'checked="checked"';
+						echo " />";?></td>
+						<td><?php
+                                                        $flags=array();
+                                                        if(isset($val['pic_url'])){
+                                                            array_push($flags,"图");
+                                                        }else{
+                                                            array_push($flags,"文");
+                                                        }
+                                                        if($val['type'] == 1){
+                                                            array_push($flags,"多");
+                                                        }else{
+                                                            array_push($flags,"单");
+                                                        }
+                                                        $flags = "[" . implode(",",$flags) . "]";
+                                                        echo $flags . $val['title'];?></td>
+						<td><?php echo $val['create_time'];?></td>
+						<td><?php echo $val['last_send_time'];?></td>
+						<td><?php echo $val['send_count'];?></td>
+						<td>
+						<a href="/autoreply/edit?id=<?php echo $val['id'];?>" title="修改"><i class="icon-pencil"></i></a>&nbsp;
+						<a href="#myModal" role="button" data-toggle="modal" onclick="remove(<?php echo $val['id'];?>);" title="删除"><i class="icon-remove"></i></a>
+						</td>
+					</tr>
+					<?php 
+					}
+					}
+					?>
+				</tbody>
+			</table>
+		</div>
+		<?php 
+		echo $this->action=='c'?'</form>':'';
+		echo $this->paginationcontrol($this->rows,'Sliding','pagination/pagination.phtml',array('action'=>$this->action));
+		?>
+		<script type="text/javascript">
+           function remove(i){
+                 $('#remove').attr('onclick','delCommodity('+ i +')');
+               }
+             function delCommodity(i)
+             {
+                 $.post('/autoreply/delete?id='+i,{'id':i},function(data){
+                     if (data.isok==true)
+                     {
+                    	 $('#autoreply_'+i).hide();
+                     }
+                 },'json');
+             }
+		   </script>
+		<div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除商品</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>确定删除当前选定的商品？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="remove" data-dismiss="modal">确认</button>
+			</div>
+		</div>
+		<?php 
+		echo $this->partial('partials/homeFooter.phtml');
+		?>
+	</div>
+</div>

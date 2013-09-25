@@ -1,0 +1,18 @@
+﻿<?php 
+$ref=isset($_GET['ref'])?$_GET['ref']:'';
+?>
+<div class="dh dhf ">
+ <ul> 
+ <li> <a href="/?ref=footer_index" <?php echo $ref=="footer_index"?'class="con"':'';?>> <span class="shouye"></span> <span>首页</span> </a> </li> 
+ <li> <a href="/type?ref=footer_type" <?php echo $ref=="footer_type"?'class="con"':'';?>> <span class="fenlei"></span> <span>分类</span></a> </li> 
+ <li> <a href="/business?ref=footer_business" <?php echo $ref=="footer_business"?'class="con"':'';?>> <span class="shoucj"></span> <span>分店</span></a> </li> 
+ <li> <a href="/cart/cartlist?ref=footer_carts" <?php echo $ref=="footer_carts"?'class="con"':'';?>> <span class="gouwuc"></span> <span>购物车</span></a> </li> 
+ <li> <a href="/user?ref=footer_member" <?php echo $ref=="footer_member"?'class="con"':'';?>> <span class="myfk"></span> <span>会员中心</span></a> </li> 
+ </ul> 
+</div> 
+  
+<footer>
+	<p>© 2013  唯购微电商  [游太网络]</p>
+	<!-- <p><a href="/">首页</a><a href="/user/about">关于我们</a><a href="/user/contact">联系我们</a></p> -->
+</footer>
+<div class="bottom_margin"></div>

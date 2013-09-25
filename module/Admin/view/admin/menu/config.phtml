@@ -1,0 +1,96 @@
+<div class="header">
+	<h1 class="page-title">微信菜单</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><a href="/menu">菜单列表</a> <span class="divider">/</span></li>
+	<li class="active">菜单配置</li>
+	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+    	<div class="alert alert-error" id="alert-error" style="display: none;">
+          <a class="close" data-dismiss="alert">×</a>
+         <strong>通信失败：</strong>  <br>1.确定你是否已经成功申请微信自定义菜单功能；<br>2.你的微信开发模式下的   AppId 和 AppSecret 是否填写正确。
+        </div>
+        <div class="alert alert-success" id="alert-success" style="display: none;">
+          <a class="close" data-dismiss="alert">×</a>
+         <strong>通信成功：</strong>  <br>1.恭喜！恭喜！你太有才了；<br>2.下一步   <a href="/menu/create">创建菜单</a>
+        </div>
+			<div class="btn-toolbar">
+				<input type="button" name="button" id="submit_button" class="btn btn-primary " value="提交" />
+				<div class="btn-group"></div>
+			</div>
+			<div class="well">
+				<!-- <ul class="nav nav-tabs">
+					<li class="active"><a href="#home" data-toggle="tab">基础配置</a></li>
+				</ul> -->
+				<div id="myTabContent" class="tab-content">
+					<div class="tab-pane active in" id="home">
+						<div class="control-group" id="group-appId">
+							<label class="control-label" for="appId">AppId:</label>
+							<div class="controls">
+								<input type="text" value="<?php echo $this->row['appId'];?>" placeholder="请输入微信开发模式下 AppId" name="appid" id="appid" class="span4"> 
+								<span class="help-inline" id="help-appId"></span>
+							</div>
+						</div>
+
+						<div class="control-group" id="group-appSecret">
+							<label class="control-label" for="appSecret">AppSecret:</label>
+							<div class="controls">
+								<input type="text" value="<?php echo $this->row['appSecret'];?>" placeholder="请输入微信开发模式下 AppSecret" name="appSecret" id="appSecret" class="span4"> 
+								<span class="help-inline" id="help-appSecret"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		<script type="text/javascript">
+       $('#submit_button').click(function(){
+    	   $('#group-appId').removeClass('warning');
+    	   $('#group-appSecret').removeClass('warning');
+    	   $('#group-appId').removeClass('success');
+    	   $('#group-appSecret').removeClass('success');
+    	   $('#alert-success').hide();
+    	   $('#alert-error').hide();
+    	   var appid=$('#appid').val();
+      	   if (appid=='')
+          		{
+          			$('#group-appId').addClass('warning');
+          			$('#help-appId').html('请输入微信开始模式下的AppId');
+          		}else{
+          			$('#group-appId').addClass('success');
+          			$('#help-appId').html('正确');
+          		} 
+           var appSecret=$('#appSecret').val();
+           if (appSecret=='')
+	      		{
+	      			$('#group-appSecret').addClass('warning');
+	      			$('#help-appSecret').html('请输入微信开始模式下的AppSecret');
+	      		}else{
+	      			$('#group-appSecret').addClass('success');
+	      			$('#help-appSecret').html('正确');
+	      		}
+           if (appid!='' && appSecret!='')
+	          {
+	        	  $.post("/menu/config", { "appid": appid,"appSecret":appSecret},
+	              		   function(data){
+	                		   if (data.isok==true)
+	                		   {
+	                    		   $('#alert-success').show(500);
+	                    	   }else
+	                    	   {
+	                      	   $('#alert-error').show(500);
+	                         }
+	              	  }, "json");
+	          }
+           });
+	          
+          
+        </script>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+	</div>
+</div>

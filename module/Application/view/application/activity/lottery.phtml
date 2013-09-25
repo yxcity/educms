@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title><?php echo $this->news_info['title']; ?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="veigou.com-<?php echo $this->news_info['title']; ?>">
+<link href="/css/plug/lottery/wall.css" rel="stylesheet" type="text/css" />
+<link href="/css/plug/lottery/activity-style.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="/sitetem/common/css/commonjia.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/wz/css/font-awesome.css" media="all" />
+  	<script>
+    window.addEventListener("DOMContentLoaded", function(){
+        btn = document.getElementById("plug-btn");
+        btn.onclick = function(){
+            var divs = document.getElementById("plug-phone").querySelectorAll("div");
+            var className = className=this.checked?"on":"";
+            for(i = 0;i<divs.length; i++){
+                divs[i].className = className;
+            }
+            document.getElementById("plug-wrap").style.display = "on" == className? "block":"none";
+        }
+    }, false);
+    </script>
+
+<style type="text/css">
+	.scrollDiv {
+	    height: 25px;
+	    line-height: 25px;
+	    overflow: hidden;
+	}
+	
+	.scrollDiv li {
+		color: #444444;
+	    height: 25px;
+	    padding-left: 10px;
+	    text-align:center;
+	}
+	
+	ul, li {
+	    list-style-type: none;
+	}
+</style>
+</head>
+<body class="activity-lottery-winning" >
+    <div class="scrollDiv boxcontent boxrotate scrollbox" style="display:none" >
+        <ul style="margin-top: -25;">
+            <li>恭喜189****3214获得iPad</li>        
+        </ul>
+    </div>    
+    <div class="dzp_div">
+        <img src="/images/plug/lottery/dzp_zz.png" id="zz" alt=""/>
+        <?php
+            if($this->disk_info){
+                for($i=0;$i<count($this->disk_info);$i++){
+                    echo "<div class='ds ds".($i+1)."'>".$this->disk_info[$i]['name']."</div>\n";
+                }
+            }
+        ?>
+        <img src="/images/plug/lottery/dzp_bt.png" class="dzp_bt" alt="" id="startbtn"/>
+    </div>
+	<div class="content">
+	<div class="boxcontent boxyellow"  id="result"  style="display:none;">
+        <div class="box">
+		<div class="title-orange">
+			<span>恭喜你中奖了</span>
+			<a href="javascript:void(0)" class="close" id="close-result"><img src="/images/plug/lottery/cancel.png"></a>
+		</div>
+		<div class="Detail">
+            <p>你中了：<span class="red" id="prizetype" ></span></p>
+			<p>中奖码：<span class="red" id="sncode" ></span></p>
+			<p class="red" id="red">请仔细填写手机号，提交后无法修改! </p>
+			<p>
+				<input name=""  class="px" id="tel" value="" type="text" placeholder="请输入您的手机号">
+			</p>
+            <input type="hidden"  id="prize_id" />
+            <input type="hidden"  id="activity_id" />
+			<p>
+			<input class="pxbtn" id="save_btn" type="button" value="提交">
+			</p>
+		</div>
+		</div>
+	</div>
+	
+	<div class="boxcontent boxyellow"  id="request-reward" style="display:none;">
+		<div class="box">
+		<div class="title-orange">
+			<span>输入验证码</span>
+			<a href="javascript:void(0)" class="close" id="close-ver"><img src="/images/plug/lottery/cancel.png"></a>
+		</div>		
+		<div class="Detail">
+			<input type="hidden" id='sn' />
+			<p>
+				<input class="px" id="ver-code" value="" type="text" placeholder="请输入验证码">
+			</p>
+		
+			<p>
+				<input class="pxbtn" id="ver-btn" type="button" value="提交">
+			</p>
+		</div>
+		</div>		
+	</div>
+	
+	<div class="boxcontent">
+		<div class="box">
+			<div class="title-green"><span>奖项设置：</span></div>
+                <div class="Detail" id="prize_list">
+                <?php
+                    $prizes = array();
+                    if($this->disk_info){
+                        foreach($this->disk_info as $item){
+                            if($item['type'] > 0){
+                                array_push($prizes,$item);
+                            }
+                        }
+                    }
+                    
+                    function sort_prize($a,$b){
+                        return ($a['type'] <=  $b['type'] ? -1:1);
+                    }
+                    
+                    usort($prizes,'sort_prize');
+                    for($i=0;$i<count($prizes);$i++){
+                        echo "<p>" . $prizes[$i]['name'] . "：" . $prizes[$i]['prize'] . " 奖品数量：" . $prizes[$i]['count'] . "</p>\n";
+                    }
+                ?>
+                </div>
+		</div>
+	</div>
+	
+	<div class="boxcontent">
+		<div class="box">
+			<div class="title-green">活动说明：</div>
+			<div class="Detail">
+				<p> 您还有 <span id="rest_chance" class="red"><?php echo json_encode($this->play_count); ?></span> 次参与机会</p>
+				<p><div id="introduce">
+                <?php
+                    if($this->news_info){
+                        echo $this->news_info['description'];
+                    }
+                ?>
+                </div>
+                </p>
+            </div>
+		</div>
+	</div>
+		<div class="boxcontent">
+		<div class="box">
+			<div class="title-green"><span>我的中奖记录：</span></div>
+			<div class="Detail">
+                <div id="won_prizes">
+                    <?php
+                    
+                    if($this->won_prizes){
+                        for($i=0;$i<count($this->won_prizes);$i++){
+                            echo '<p>奖品：'.$this->won_prizes[$i]['name'].'</p><p style="padding-left:10px;">奖码：<span class="red">'.$this->won_prizes[$i]['sn'].'</span></p><p style="padding-left:10px;">中奖时间：'.$this->won_prizes[$i]['prize_time'].'</p>';
+                        }
+                    }
+                    ?>
+                </div>
+            </div>
+		</div>
+		
+	</div>
+		
+	</div>
+    <div style="clear:both;"></div>
+    
+    <div style=" height:30px; width:100%; background:url(/images/plug/lottery/bg-mokuai.jpg) left top repeat;  bottom:0px; text-align:left; z-index:1002">
+    
+        <div style="float:left;overflow: hidden; margin-top: 5px; width:60%;  color:#FFF; padding-left:0.2em;" class="scrollbox">
+        	<ul style="height: 20px;margin-top:0;">
+                
+        	</ul>
+        </div>
+    	    <div style=" width:35%; float:right;text-align:right; margin-top:0.312em; margin-right:0.5em;"><a style=" text-decoration: none; color: #AAFF00; font-size:12px;font-family: '宋体'; font-weight: lighter;" href="http://www.veigou.com/" target="_blank">游太网络技术支持</a></div>
+    </div>
+
+</div>
+        <?php echo $this->partial('partials/bottomjia.phtml');?>
+</body>
+</html>
+
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/nice_alert.js"></script>
+<script type="text/javascript" src="/js/jquery-rotate-2.3.min.js"></script>
+<!--<script type="text/javascript" src="/js/jquery-easing-1.3.min.js"></script>-->
+<script>
+var ERR_OK=0;
+var ERR_ILLEGAL_ID=1;
+var ERR_MISS_ID=2;
+var ERR_NOT_OPEN=3;
+var ERR_CLOSED=4;
+var ERR_NOT_LOGIN=5;
+var g_err_info = <?php echo json_encode($this->err_info); ?>;
+var g_err_code = <?php echo json_encode($this->err_code); ?>;
+var g_play_count = <?php echo json_encode($this->play_count); ?>;
+var g_prize_json = null
+$(function(){ 
+    $("#startbtn").click(function(){ 
+        if(g_play_count <=0){
+            nice_alert('对不起，您的投奖机会用完了！');
+        }else{
+            lottery(); 
+        }
+    }); 
+    if(g_err_info){
+        if(g_err_code == ERR_NOT_LOGIN){
+            nice_alert(g_err_info,function(){onLogin();});
+        }else{
+            nice_alert(g_err_info,function(){onRedirectHome();});
+        }
+        return;
+    }
+    
+    $("#save_btn").click(function(){
+        var phone_reg = /^1[3|4|5|8][0-9]\d{4,8}$/;
+        if(!phone_reg.test($.trim($('#tel').val()))){
+            nice_alert('请填写正确的手机号!');
+            return;
+        }
+        var submit_url = "/s/activity/savephone?id=" + $.trim($('#activity_id').val());
+        var post_data = {
+            'prize_id' : $.trim($('#prize_id').val()),
+            'phone' : $.trim($('#tel').val())
+        };
+        
+        $.ajax({
+        type: 'POST', 
+        url: submit_url, 
+        dataType: 'json',
+        data:post_data,
+        cache: false, 
+        error: function(){ 
+            nice_alert('出错了！'); 
+            return false; 
+        }, 
+        success:function(json){ 
+            if(json.code !='ok'){
+                nice_alert(json.msg);
+            }else{
+                //nice_alert("已登记手机号码！");
+                $('#result').hide();
+            }
+        } 
+    });  
+    }); 
+}); 
+/*
+AutoScroll = (function(obj){
+	$(obj).find("ul:first").animate({
+		marginTop:"-25px"
+	},500,function(){
+		$(this).css({marginTop:"0px"}).find("li:first").appendTo(this);
+	});
+});
+$(function() {
+	if($('.scrollbox li').length >1){
+	   setInterval('AutoScroll(".scrollbox")',4000);
+	}
+});
+*/
+
+function onLogin(){
+    document.cookie = "_refer=" + window.location.href + ";path=/";
+    window.location.href="/user/login";
+}
+
+function onRedirectHome(){
+    window.location.href="/";
+}
+
+function rotateCallback(){
+    if(!g_prize_json){
+        $("#zz").rotate({ 
+                duration:250, 
+                angle: 0, 
+                animateTo:360,
+                //easing:null,
+                callback:function(){
+                    rotateCallback();
+                },
+                easing:function(x, t, b, c, d) { return b+(t/d)*c ; }
+        });
+        return;
+    }
+    var json = g_prize_json;
+    if(json.code !='ok'){
+        nice_alert(json.msg);
+        return;
+    }
+    $("#zz").rotate({ 
+        duration:725, 
+        angle: 0, 
+        animateTo:json.data.angle+180,
+        //easing: $.easing.easeOutSine, 
+        callback: function(){
+            $('#rest_chance').html(json.data['play_count']);
+            if(json.data['type'] > 0){
+                $('#prizetype').html(json.data.prize);
+                $('#sncode').html(json.data['sn']);
+                $('#prize_id').val(json.data['id']);
+                $('#activity_id').val(json.data['activity_id']);
+                $('#won_prizes').append('<p>奖品：'+json.data['name']+'</p><p style="padding-left:10px;">奖码：<span class="red">'+json.data['sn']+'</span></p><p style="padding-left:10px;">中奖时间：'+json.data['prize_time']+'</p>');
+
+                $('#result').show();
+            }else{
+                $('#result').hide();
+            }
+        } 
+    }); 
+            
+   
+    
+    
+}
+function lottery(){ 
+    var prize_url = window.location.href.replace(/(\/lottery)([^\w])/,'/prize$2')
+    g_prize_json = null;
+    rotateCallback();
+    $.ajax({ 
+        type: 'POST', 
+        url: prize_url, 
+        dataType: 'json', 
+        cache: false, 
+        error: function(){ 
+            g_prize_json = {'code':'fail','msg':'获取数据失败！'};
+            return false; 
+        }, 
+        success:function(json){
+            g_prize_json = json;
+            return;
+        } 
+    }); 
+} 
+</script>
+        <?php echo $this->partial('partials/stats.phtml');?>

@@ -1,0 +1,420 @@
+<div class="header">
+  <h1 class="page-title">添加消息</h1>
+</div>
+<ul class="breadcrumb">
+  <li><a href="/home">首页</a> <span class="divider">/</span></li>
+  <li><a href="/news">消息管理</a> <span class="divider">/</span></li>
+  <li class="active">添加消息</li>
+</ul>
+<div class="container-fluid">
+  <div class="row-fluid">
+      <div class="btn-toolbar">
+        <button type="submit" name="submit" id="submit"  class="btn btn-primary" onclick="on_submit()">提交</button>
+        <div class="btn-group"></div>
+      </div>
+	  <div class="well">
+		<div class="row-fluid">
+			<div class="span5">
+				<div id="add_news_list">
+				</div>
+				<div class="control-group">
+				  <div class="controls">
+					<button class="btn" onclick="on_add_item()"><span class="icon-plus" ></span>增加一条</button>
+				   </div>
+				</div>
+			</div>
+			<div class="span4 pull-right" >
+				<div id="previewer" >
+					<div class="msg-item-wrapper">
+						<div id="msg_item_list" class="msg-item multi-msg">
+						  
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</div>
+
+<script src="/js/jquery.ui.widget.js"></script>
+<script src="/js/jquery.iframe-transport.js"></script>
+<script src="/js/jquery.fileupload.js"></script>
+<script id="templ_add_news" type="text/html"><#TS#/*TEMPLATES*/#TS#>
+<!--使用AJAX POST方式提交插入数据*/-->
+<#TS#
+	for( var i=0;i<news_list.length;i++){
+#TS#>
+<div class="news-item-list" id="news_item_<#TS#=news_list[i].id#TS#>">
+	<div class="control-group" >
+	  <label class="control-label" for="title">标题：</label>
+	  <div class="controls">
+		<input type="text" name="title"  class="span6" value="<#TS#=news_list[i].title#TS#>" />
+	  </div>
+	</div>
+	<div class="control-group" >
+	  <label class="control-label" for="fileField">封面：</label>
+	  <div class="controls">
+		<input type="file" name="fileField" data-url="/news/upload" class="span6"/>
+		<span class="help-inline"></span>
+		<div><img name="thumbnail" width="80" height="80" style="display:none"/></div>
+	   </div>
+	</div>
+	<div class="control-group" >
+	  <label class="control-label" for="description">摘要：</label>
+	  <div class="controls">
+		<textarea type="text" name="description"  rows="4" class="span6"><#TS#=news_list[i].title#TS#></textarea>
+	   </div>
+	</div>
+	<div class="control-group" >
+	  <label class="control-label" for="url">链接到：</label>
+	  <div class="controls">
+		<input type="text" name="url" class="span6" value="<#TS#=news_list[i].title#TS#>" />
+	   </div>
+	</div>
+	<div class="btn-del-item">
+	<button class="btn btn-danger" onclick="on_del_item()" style="display:<#TS#=i<2?'none':'block'#TS#>">删除</button>
+	</div>
+</div>
+<#TS#
+}
+#TS#>
+</script>
+<script id="templ_preview" type="text/html"><#TS#/*TEMPLATES*/#TS#>
+	<#TS#
+		for(var i=0;i<news_list.length;i++){
+		if(i==0){
+			var today = new Date();
+	#TS#>
+			<div class="appmsgItem">
+			<p class="msg-meta"><span class="msg-date"><#TS#=today.getFullYear()+'-' + (today.getMonth()+1) + '-' + today.getDate()#TS#></span></p>
+			<div class="cover">
+			  <p class="default-tip" style="display:<#TS#=news_list[i].pic_url ? 'none' : 'block'#TS#>">封面图片</p>
+			  <h4 class="msg-t">
+				<span class="i-title"><#TS#=news_list[i].title#TS#></span>
+			  </h4>
+			  <img src="<#TS#=news_list[i].pic_url#TS#>" class="i-img" style="<#TS#=news_list[i].pic_url ? 'display:block' : 'display:none'#TS#>">
+			</div>
+		  </div>
+	<#TS#
+		}else{
+	#TS#>
+			<div class="rel sub-msg-item appmsgItem"> 
+					<span class="thumb">
+					  <span class="default-tip" style="display:<#TS#=news_list[i].pic_url ? 'none' : 'block'#TS#>">缩略图</span>
+					  <img src="<#TS#=news_list[i].pic_url #TS#>" class="i-img-sub" style="<#TS#=news_list[i].pic_url ? 'display:block' : 'display:none'#TS#>">
+					</span>
+					<h4 class="msg-t">
+					  <span class="i-title"><#TS#=news_list[i].title#TS#></span>
+					</h4>
+				  </div>
+	<#TS#
+		}
+	}
+	#TS#>
+</script>
+
+<script>
+	var TMPL ={
+	'news_list':[
+		{
+			'id':-1,
+			'title':null,
+			'pic_url':null,
+			'description':null,
+			'url':null,
+			'pic_url':null
+		},
+			{
+			'id':-2,
+			'title':null,
+			'pic_url':null,
+			'description':null,
+			'url':null,
+			'pic_url':null
+		}
+	]
+	};
+	
+	function on_submit()
+	{
+		$.ajax({
+            type: 'POST',
+            url: '/news/create',
+            async: a,
+            data: r,
+            success: function (n) {
+                typeof n == 'string' && (n = t.parseJSON(n));
+                if (n && n.ret == '-20000') {
+                    e.Event.notify('WXM:timeout'), W.err('登录超时，请刷新页面重新登录！');
+                    return
+                }
+                i && i(n, r)
+            },
+            error: function (e) {
+				alert('保存失败！');//lwq:alert不友好，换成统一界面文本提示。
+            },
+        })
+		debugger;
+	}
+	function on_add_item()
+	{
+		var min_id = 0;
+		for(var i=0;i<TMPL.news_list.length;i++){
+			if(TMPL.news_list[i].id < min_id)
+				min_id = TMPL.news_list[i].id;
+		}
+		
+		if(min_id > 0 )
+			min_id = -1;
+		else
+			mid_id=min_id-1;
+		
+		TMPL.news_list.push({
+			'id':mid_id,
+			'title':null,
+			'pic_url':null,
+			'description':null,
+			'url':null
+		});
+		refresh_news_list();
+	}
+	
+	
+	function on_del_item()
+	{
+		var item_id = $(event.srcElement || event.target).parent().parent().attr('id').replace(/[^\d-]+((-|\d)+)$/,'$1');
+		for(var i=0;i<TMPL.news_list.length;i++){
+			if(TMPL.news_list[i].id ==  item_id){
+				TMPL.news_list = TMPL.news_list.slice(0,i).concat(TMPL.news_list.slice(i+1))
+				break;
+			}
+		}
+		refresh_news_list();
+	}
+	function refresh_news_list()
+	{
+		$('#add_news_list').html(tmpl_parser('#templ_add_news',TMPL));
+		$('#add_news_list input').bind('keyup', function() {
+			  var item_id = $(event.srcElement || event.target).parent().parent().parent().attr('id');
+			  var item_num = parseInt(item_id.replace(/[^\d-]+((-|\d)+)$/,'$1'));
+			  for(var i=0;i<TMPL.news_list.length;i++){
+					if(TMPL.news_list[i].id ==  item_num){						
+						TMPL.news_list[i].title = $('#'+item_id+" \[name='title']").val();
+						break;
+					}
+				}
+			$('#msg_item_list').html(tmpl_parser('#templ_preview',TMPL));
+			  
+		});
+		$('#msg_item_list').html(tmpl_parser('#templ_preview',TMPL));
+		
+		$("input[type='file']").fileupload({
+			dataType: 'json',
+			done: function (e, data) {
+				var img_obj = $(e.target).parent().find("img");
+				var tips_obj = $(e.target).parent().find("span");
+				var item_id = $(e.target).parent().parent().parent().attr('id');
+				var item_num = parseInt(item_id.replace(/[^\d-]+((-|\d)+)$/,'$1'));
+				for(var i=0;i<TMPL.news_list.length;i++){
+					if(TMPL.news_list[i].id ==  item_num){						
+						break;
+					}
+				}
+				if(data.result.error){
+					tips_obj.html(data.result.error);
+					tips_obj.css('display',"block");
+					img_obj.css('display',"none");
+					TMPL.news_list[i].pic_url =null;
+				}else{
+					TMPL.news_list[i].pic_url =data.result.url;
+					img_obj.attr('src',data.result.url);
+					tips_obj.css('display',"none");
+					img_obj.css('display',"block");
+				}
+				
+				$('#msg_item_list').html(tmpl_parser('#templ_preview',TMPL));
+			}
+		});
+	}
+	
+	$(document).ready(
+		function(){
+			if(!(TMPL.news_list && typeof TMPL.news_list == 'object'  && TMPL.news_list.length > 0 )){
+				alert("数据加载异常！");
+				return;
+			}
+			refresh_news_list();	
+		}
+	);
+	$(function () {
+		
+	});
+	
+	
+</script>
+<style>
+.btn-del-item{
+	margin-bottom:10px;
+}
+
+.news-item-list{
+	border-bottom:3px dashed #ddd;
+	margin-bottom:10px;
+}
+
+#previewer{
+	width:350px;
+}
+.i-img{
+	width:320px;
+	height:160px;
+}
+
+.i-img-sub{
+	width:75px;
+	height:75px;
+}
+.tc {
+  text-align: center;
+}
+
+.b-dib {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+
+.rel {
+  position: relative;
+}
+.abs {
+  position: absolute;
+}
+
+/*msg-item*/
+.msg-item-wrapper {
+  position: relative;
+  margin-bottom: 26px;
+  border: 1px solid #d3d3d3;
+  background-color: #F4F4F4;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+}
+.msg-item {
+  padding: 2px 0;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #CCCCCC;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+}
+.msg-t {
+  margin: 6px 14px 0;
+  line-height: 28px;
+  max-height: 56px;
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+.msg-t a {
+  color: #333333;
+}
+.cover .msg-t a {
+  color: #FFFFFF;
+}
+.msg-meta {
+  margin: 0 14px 6px;
+  font-size: 13px;
+}
+.msg-text {
+  margin: 0 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-bottom: 8px;
+  text-align: left;
+}
+/*多条图文消息在msg-item后加.multi-msg*/
+.multi-msg .msg-meta {
+  margin: 0 14px;
+  line-height: 28px;
+}
+.cover {
+  margin: 0 14px 12px;
+  position: relative;
+  font-size: 0;
+  height: 160px;
+  overflow: hidden;
+}
+.cover .msg-t {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  color: #FFFFFF;
+  background: rgba(0, 0, 0, 0.6) !important;
+  filter: progid:dximagetransform.microsoft.gradient(GradientType=0, startColorstr='#82000000', endColorstr='#82000000');
+}
+.cover .i-title {
+  display: block;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+.cover img {
+  width: 100%;
+}
+.default-tip {
+  display: block;
+  text-align: center;
+  background-color: #ECECEC;
+  text-shadow: 0 1px 0 #FFFFFF;
+  -webkit-text-shadow: 0 1px 0 #FFFFFF;
+  -moz-text-shadow: 0 1px 0 #FFFFFF;
+}
+.cover .default-tip {
+  font-size: 22px;
+  color: #AAAAAA;
+  line-height: 160px;
+}
+/*sub-msg-item*/
+.sub-msg-item {
+  padding: 12px 14px;
+  overflow: hidden;
+  zoom: 1;
+  border-top: 1px solid #C6C6C6;
+}
+.sub-msg-item .msg-t {
+  margin-left: 0;
+  margin-right: 85px;
+  margin-top: 0;
+  padding-left: 4px;
+  padding-top: 12px;
+  line-height: 24px;
+  max-height: 48px;
+  font-size: 14px;
+  overflow: hidden;
+}
+.thumb {
+  float: right;
+  font-size: 0;
+}
+.thumb img {
+  width: 70px;
+  height: 70px;
+  border: 1px solid #B2B8BD;
+}
+.thumb .default-tip {
+  font-size: 16px;
+  color: #C0C0C0;
+  width: 70px;
+  line-height: 70px;
+  border: 1px solid #B2B8BD;
+}
+</style>

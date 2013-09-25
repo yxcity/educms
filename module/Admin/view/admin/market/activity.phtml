@@ -1,0 +1,525 @@
+<?php
+function get_activity_name($type){
+    if($type == 1){
+        return array("name"=>"大转盘",'link'=>'/s/activity/lottery/');
+    }else if($type == 2){
+        return array("name"=>"刮刮卡",'link'=>'/s/activity/stratch/');
+    }else{
+        return array("name"=>"其它",'link'=>'/s/activity/lottery/');
+    }
+}
+
+$act_info = get_activity_name($this->type);
+?>
+<div class="header">
+  <h1 class="page-title"><?php echo $this->action.$act_info['name']; ?>活动</h1>
+</div>
+<ul class="breadcrumb">
+  <li><a href="/home">首页</a> <span class="divider">/</span></li>
+  <li><a href="/market">营销活动</a> <span class="divider">/</span></li>
+  <li class="active"><?php echo $this->action.$act_info['name']; ?>活动</li>
+  <li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+<div class="container-fluid">
+  <div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+      <div class="btn-toolbar">
+        <button type="submit" name="submit" id="submit"  class="btn btn-primary" onclick="on_submit()">提交</button>
+        <div class="btn-group"></div>
+      </div>
+	  <div class="well">
+		<div class="row-fluid">
+			<div class="form">
+				<div class="control-group">
+				  <div class="controls">
+					<label for="title" class="control-label input-label">标题(*)：</label>
+                    <input type="text" id="title" placeholder="标题" data-required="true" />
+                   </div>
+				</div>
+                <div class="control-group">
+				  <div class="controls">
+					<label><input type="checkbox" id="ck_keyword" class="ck_event_trigger" checked/>活动关键字：</label>
+                    <label for="input_keyword"><input type="text" id="input_keyword" class="ck_event_handler" /><input type="checkbox" id="strict_match_keyword"/>完全匹配</label>
+                   </div>
+				</div>
+                <div class="control-group">
+				  <div class="controls">
+					<label><input type="checkbox" id="ck_menu" class="ck_event_trigger" <?php if($this->menus)echo "checked"; ?>/>绑定菜单：</label>
+                    <select class="ck_event_handler" id="sel_menu">
+                    <?php
+                        foreach($this->menus as $menu){
+                            if($menu['pid'] > 0){
+                                echo "<option value='" . $menu['id'] ."'>".$menu['menuname']."</option>";
+                            }
+                        }
+                    ?>
+                    </select>
+                   </div>
+				</div>
+                <div class="control-group">
+				  <div class="controls">
+					<button class="btn btn-sel-news" >选择活动介绍</button>
+                    <span id="span_news_info"></span>
+                    <input type="hidden" id="input_news_id" />
+                   </div>
+				</div>
+                <div class="control-group">
+				  <div class="controls">
+                  <fieldset>
+                    <legend>奖项设置：</legend>
+                       <b><span style="margin-left: 25px;margin-right: 190px;">奖项</span> <span style="margin-right: 190px;">奖励 </span><span>数量</span></b>
+					    <ol id="prize_list_sel">
+                        </ol>
+                        <button class="btn" id="add_prize">增加奖项</button>
+                    </fieldset>
+                   </div>
+				</div>
+                <div class="control-group">
+				  <div class="controls">
+                    <label  for='prize_pwd'>兑奖密码(*)：</label>
+                    <input type="text" id="prize_pwd" data-required/>
+                  </div>
+                </div>
+                <div class="control-group">
+				  <div class="controls">
+                    <label  for='total_play_count'>预计总抽奖次(*)：</label>
+                    <input type="text" id="total_play_count" data-required value="100" /><span>奖项中奖概率=奖项数目/预计总抽奖次</span>
+                  </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <label>活动时间：</label>
+                        <input type="radio" name="time_type" id="time_type_nolimit" value='0' checked>不限制</input>
+                        <input type="radio" name="time_type" id="time_type_range" value='1' >选择时间</input>
+                        <div id="datapicker" style="display:none;">
+                            <div class="input-append date data-picker" data-date-format="yyyy-MM-dd HH:ii p" data-link-field="open_time">
+                                <input size="10" type="text" placeholder="开始时间" readonly /><span class="add-on"><i class="icon-th"></i></span>
+                            </div>-
+                            <div class="input-append date data-picker" data-date-format="yyyy-MM-dd HH:ii p" data-link-field="close_time">
+                                <input size="10" type="text" placeholder="结束时间" readonly /><span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                            <input type="hidden" id="open_time" value="" />
+                            <input type="hidden" id="close_time" value="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+				  <div class="controls">
+                    <label  for='prz_score'>赠送积分(*)：</label>
+                    <input type="text" id="prz_score" data-required  value="0"/>
+                  </div>
+                </div>
+                <div class="control-group">
+				  <div class="controls">
+                    <label  for='try_count'>允许单用户抽奖数(*)：</label>
+                    <label><input type="text" id="try_count" data-required  value="1"/><input type="checkbox" id="can_accu_score"/>累积积分</label>
+                  </div>
+                </div>
+                <div class="control-group">
+				  <div class="controls">
+                    <label  for='not_open_tips'>未开始提示(*)：</label>
+                    <input type="text" id="not_open_tips" data-required />
+                  </div>
+                </div>
+                <div class="control-group">
+				  <div class="controls">
+                    <label  for='closed_tips'>活动己结束提示(*)：</label>
+                    <input type="text" id="closed_tips" data-required />
+                  </div>
+                </div>
+                <div class="control-group">
+				  <div class="controls">
+                    <label  for='req_score'>参与者最少积分(*)：</label>
+                    <input type="text" id="req_score" data-required  value="0"/>
+                  </div>
+                </div>
+                <div class="control-group">
+				  <div class="controls">
+                    <label  for='req_registed'>用户类型：</label>
+                    <select id="req_registed">
+                        <option value="0">所有用户</option>
+                        <option value="1">己注册用户</option>
+                    <select>
+                  </div>
+                </div>
+			</div>
+		</div>
+</div>
+<script id="prize_list_str" type="text/html"><#TS#/*TEMPLATES*/#TS#>
+<#TS#
+var prizes =["一等奖","二等奖","三等奖","四等奖","五等奖","六等奖"];
+for(var i=0;i< prize_list.length;i++){
+#TS#>
+<li>
+    <select name="prize_type">
+    <#TS#
+    for(var j=0;j<prizes.length;j++){
+    #TS#>
+        <option value="<#TS#=(j+1)#TS#>" <#TS#=prize_list[i].prize_type==(j+1)?"selected":""#TS#> ><#TS#=prizes[j]#TS#></option>
+    <#TS#
+    }
+    #TS#>
+    </select>
+    <input type="text"  name="prize_name" value="<#TS#=prize_list[i].prize_name#TS#>" data-required />
+    <input type="text"  name="prize_count" value="<#TS#=prize_list[i].prize_count#TS#>"  data-required/>
+    <button class="btn btn_del_prize_item">删除</button>
+</li>
+<#TS#
+}
+#TS#>
+</script>
+<script id="templ_news_list" type="text/html"><#TS#/*TEMPLATES*/#TS#>
+<table class="table-hover text-center">
+	<thead>
+		<th class="span5">标题</th><th class="span1">选择</th>
+	</thead>
+	<tbody >
+	<#TS#
+		for(var i=0;news && i<news.length;i++){
+	#TS#>
+	<tr><td><span><#TS#=news[i].title#TS#></span></td><td><button class="btn" data-news="<#TS#=generate_news_string(news[i])#TS#>" data-id="<#TS#=news[i].id#TS#>">选取</button></td></tr>
+	<#TS#
+		}
+	#TS#>
+	</tbody>
+</table>
+</script>
+<script>
+    var def_prize_list = [
+        {
+        'prize_name':'',
+        'prize_count':'',
+        'prize_type':1
+        },
+        {
+        'prize_name':'',
+        'prize_count':'',
+        'prize_type':2
+        },
+        {
+        'prize_name':'',
+        'prize_count':'',
+        'prize_type':3
+        }
+    ];
+    
+    var activity = <?php echo($this->activity?json_encode($this->activity):'null');?>;
+    var action_mode = 0;
+    function generate_news_string(news){
+        var flags=[];
+        if(news['id'] > 0){
+            var flagsflags = [];
+            if(news['pic_url']){
+                flags.push("图");
+            }else{
+                flags.push("文");
+            }
+            
+            if(news['type'] == 1){
+                flags.push("多");
+            }else{
+                flags.push("单");
+            }
+            return ("[" + flags.join(' ')+"]"+news['title']);
+        }else{
+            return "#";
+        }
+    }
+        
+    function load_form_data(data){
+        /*显示activity标准数据*/
+        $('#title').val(data['title']);
+        if(data['keyword']){
+            $('#ck_keyword').attr('checked',true);
+            $('#input_keyword').val(data['keyword']);
+        }
+        
+        $('#strict_match_keyword').attr('checked',data['strict_match_keyword']);
+        
+        if(data['menu_id']){
+            $('#ck_menu').attr('checked',true);
+            $('#sel_menu').val(data['menu_id']);
+        }
+        
+        /*显示标题！！*/
+        $('#input_news_id').val(data['news_id'])
+        
+        if(parseInt(data['time_type']) == 1){
+            $('#open_time').val(data['open_time']);
+            $('#close_time').val(data['close_time']);
+        }
+        
+        if(parseInt(data['time_type'])){
+            $('#time_type_range').attr('checked',true);
+            $('#time_type_nolimit').removeAttr('checked');
+            $('.data-picker:first').datetimepicker('update', new Date(Date.parse(data['open_time'].replace(/-/g,"/"))));
+            $('.data-picker:last').datetimepicker('update', new Date(Date.parse(data['close_time'].replace(/-/g,"/"))));
+            $('#datapicker').show();
+        }else{
+            $('#time_type_nolimit').attr('checked',true);
+            $('#time_type_range').removeAttr('checked');
+        }
+        
+        $('#req_score').val(data['req_score']);
+        $('#prz_score').val(data['prz_score']);
+        $('#try_count').val(data['try_count']);
+        $('#can_accu_score').attr('checked',data['can_accu_score']);
+        /*显示自定义数据*/
+        $('#not_open_tips').val(data['config']['not_open_tips']);
+        $('#closed_tips').val(data['config']['closed_tips']);
+        $('#req_registed').val(data['config']['req_registed']);
+        $('#prize_list_sel').html(SCRM.parse_tmpl("#prize_list_str",{prize_list:data['config']['prizes']}));
+        $('#prize_pwd').val(data['config']['prize_pwd']);
+        $('#total_play_count').val(data['config']['total_play_count']);
+        return data;
+    }
+    
+    function collect_form_data(){
+        var data = {};
+        /*标题activity数据*/
+        data['title'] = $('#title').val();
+        if($('#ck_keyword:checked').get(0)){
+            data['keyword'] = $('#input_keyword').val();
+        }else{
+            data['keyword'] = null;
+        }
+        
+        if($('#strict_match_keyword:checked').get(0)){
+            data['strict_match_keyword'] = 1;
+        }else{
+            data['strict_match_keyword'] = 0;
+        }
+        
+        if($('#ck_menu:checked').get(0)){
+            data['menu_id'] = $('#sel_menu').val();
+        }else{
+            data['menu_id'] = null;
+        }
+        
+        var news_id = $('#input_news_id').val();
+        if(isNaN(parseInt(news_id))){
+            msg_alert('请选择介绍图文！');
+            return false;
+        }
+        data['news_id'] = news_id;
+        data['time_type'] = parseInt($('input[name="time_type"]:checked').val());
+        if(data['time_type'] == 1){
+            data['open_time'] = $('#open_time').val();
+            data['close_time'] = $('#close_time').val();
+        }
+        
+        data['req_score'] = parseInt($('#req_score').val());
+        data['prz_score'] = parseInt($('#prz_score').val());
+        data['try_count'] = parseInt($('#try_count').val());
+        if($('#can_accu_score:checked').get(0)){
+            data['can_accu_score'] = 1;
+        }else{
+            data['can_accu_score'] = 0;
+        }
+        data['type'] = <?php echo $this->type?>;
+        if(action_mode == 1){
+            data['id'] = activity['id'];
+        }
+        /*自定义数据*/
+        var prizes = [];
+        $('#prize_list_sel li').each(function(){
+            var self = $(this);
+            prizes.push({
+                'prize_type':parseInt(self.find('select[name="prize_type"]').val()),
+                'prize_name':self.find('input[name="prize_name"]').val(),
+                'prize_count':parseInt(self.find('input[name="prize_count"]').val())
+            });
+        })
+        data['config']={};
+        data['config']['prizes'] = prizes;
+        data['config']['prize_pwd'] = $('#prize_pwd').val();
+        data['config']['total_play_count'] = parseInt($('#total_play_count').val());
+        data['config']['req_registed'] = parseInt($('#req_registed').val());
+        data['config']['not_open_tips'] = $('#not_open_tips').val();
+        data['config']['closed_tips'] = $('#closed_tips').val();
+        return data;
+    }
+    
+	function on_submit(){
+        if(!$('.form').check()){
+            msg_alert('请检查输入项！');
+            return;
+        }
+        
+        var post_data = collect_form_data();
+        if(!post_data){
+            return;
+        }
+        
+		$.ajax({
+            type: 'POST',
+            url: '/market/save?action='+(action_mode?'edit':'add'),
+            async: true,
+            data: post_data,
+            success: function (n) {
+                typeof n == 'string' && (n = $.parseJSON(n));
+                if(n.code=='ok'){
+                    window.location = '/market';
+                }else{
+                    msg_alert(n.msg);
+                }
+            },
+            error: function (e) {
+				msg_alert('保存失败！');
+            },
+        })
+	}
+    
+    $('#add_prize').click(function(){
+        if($('#prize_list_sel li').length >=6){
+            msg_alert('最多只允许6个奖项！');
+            return ;
+        }
+        $('#prize_list_sel').append(SCRM.parse_tmpl("#prize_list_str",{'prize_list':[{
+        'prize_name':'',
+        'prize_count':0,
+        'prize_type':1
+        }]}));
+    });
+    
+    $(document).delegate('.btn_del_prize_item','click',function(){
+        $(this).closest('li').remove();
+    });
+    
+    $('.ck_event_trigger').click(function(){
+        var self = $(this);
+        if(self.attr('checked')){
+            self.closest('.controls').find('.ck_event_handler').removeAttr("disabled");
+        }else{
+            self.closest('.controls').find('.ck_event_handler').attr("disabled","true");
+        } 
+    });
+    
+    function load_news_list(page){
+        var page_size = 10;
+        $.ajax({
+            type: 'get',
+            url: '/news/list?page=' + page + "&page_size=" + page_size,
+            async: true,
+            cache:false,
+            success: function (n) {
+                typeof n == 'string' && (n = $.parseJSON(n));
+                if (n && n.code == 'ok') {
+                    $('#news_list').html(tmpl_parser('#templ_news_list',{'news':n.data}));
+                }else{
+                    alert("加载消息列表出错!");/*lwq:alert统一换成界面出错提示*/
+                }
+                
+                $('.btn-page-next').unbind();/*避免重复绑定事件*/
+                $('.btn-page-next').one('click',function(){
+                    if(n.data && page * page_size < n.total){load_news_list(page+1)};
+                });
+                
+                $('.btn-page-prev').unbind();
+                $('.btn-page-prev').bind('click',function(){
+                    if(page > 1)load_news_list(page-1);
+                });
+            },
+            error: function (e) {
+                alert('加载消息列表出错');//lwq:alert不友好，换成统一界面文本提示。
+                $('.btn-page-prev').attr('diabled',true);
+                $('.btn-page-next').attr('diabled',true);
+            }
+        });
+    }
+    
+    $(document).delegate('#btn_refresh','click',function(){
+        load_news_list(1);
+    });
+    
+    $('.btn-sel-news').click(function(){
+        $('#dlg_add_intro_news').modal('show');
+        load_news_list(1);
+    });
+    
+    $(document).delegate('#news_list button','click',function(){
+        var self = $(this);
+        var news_id = self.attr('data-id');
+        $('#input_news_id').val(news_id);
+        $('#span_news_info').html(self.attr('data-news'));
+        $('#dlg_add_intro_news').modal('hide');
+    });
+
+    function prize_list_readonly(){
+        $('#prize_list_sel :input').attr('readonly','true');
+        $('#prize_list_sel button').hide();
+        $('#add_prize').hide();
+    }
+    $(document).ready(function(){
+        $('.data-picker').datetimepicker({
+            language:  'zh-CN',
+        });
+        
+        $('input[type="radio"]').click(function(){
+            debugger;
+            if(parseInt($(this).val())){
+                $('#datapicker').show();
+            }else{
+                $('#datapicker').hide();
+            }
+        });
+        
+        if(SCRM.getQueryString('action')=='edit'){
+            action_mode = 1;
+            if(activity){
+                load_form_data(activity);
+            }else{
+                msg_alert('初始化数据失败！');
+                return;
+            }
+            prize_list_readonly();
+        }else{
+            $('#prize_list_sel').html(SCRM.parse_tmpl("#prize_list_str",{'prize_list':def_prize_list}));
+        }
+        
+        
+        $(document).initCheck({
+            eachValidField : function() {
+                $(this).css('border-color','#468847');
+            },
+            eachInvalidField : function() {
+                $(this).css('border-color','#b94a48');
+            },
+            valid:function(){
+                var args = Array.prototype.slice.call(arguments);
+                if(args.length >= 3){
+                    args[2].each(function(){
+                        $(this).css('border-color','');
+                    });
+                }
+            }
+        });
+    });
+	
+	
+	
+</script>
+<link href="/lib/bootstrap/datepicker/datetimepicker.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="/lib/bootstrap/datepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/lib/bootstrap/datepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<div id="dlg_add_intro_news"  class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 id="myModalLabel">增加回复消息</h4>
+  </div>
+  <div class="modal-body">
+	<div id="news_list">
+	</div>
+	<div class="btn-group">
+		<button class="btn btn-page-prev">上一页</button>
+		<button class="btn btn-page-next">下一页</button>
+	</div>
+  </div>
+  <div class="modal-footer">
+  <div class="btn-group">
+	<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+    <button class="btn" onclick="window.open('/news/single')">新建活动介绍</button>
+	<button class="btn" id="btn_refresh">刷新</button>
+    </div>
+  </div>
+</div>

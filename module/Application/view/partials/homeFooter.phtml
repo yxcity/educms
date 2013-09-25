@@ -1,0 +1,20 @@
+<footer>
+			<hr>
+			<p class="pull-right">
+				<!-- A <a href="/home" target="_blank">Weixin CMS</a> by <a href="/home" target="_blank">微信</a> -->
+			</p>
+			<p>
+				© 2013  唯购<sup>&reg;</sup>微电商系统  [游太网络]
+			</p>
+</footer>
+
+ <script type="text/javascript">
+ $(document).ready(function(){
+	$("a.to_del").click(function(){
+		var this_id = this.id; //当前<tr>标签里的元素ID(如100_item)
+		var del_id = parseInt(this_id);//要删除的数据表中ID值
+		triggerDel(del_id);//###此方法由用户自行实现,用于执行删除操作的逻辑处理###
+	});
+});
+</script>
+ 

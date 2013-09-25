@@ -1,0 +1,73 @@
+<div class="header">
+	<h1 class="page-title">广告内容</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><a href="/advert">广告内容列表</a> <span class="divider">/</span></li>
+	<li class="active">添加广告内容</li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+<form id="tab" name="createAdvert" method="post" action=""  enctype="multipart/form-data" onsubmit="return clickAds();">
+		<div class="btn-toolbar">
+		    <input type="submit" name="submit" id="submit"  class="btn btn-primary" value="提交" />
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane active in" id="home">
+				        <div class="control-group" id="group-ads">
+							<label class="control-label" for="ads">广告位</label>
+							<div class="controls">
+								<select name="ads" id="ads">
+								<option value="">选择广告位</option>
+								<?php 
+								if ($this->ads)
+								{
+									foreach ($this->ads as $key=>$val) {
+										echo "<option value=\"{$key}\">{$val}</option>";
+									}
+								}
+								?>
+								</select>
+                                <span class="help-inline" id="help-ads"></span>
+							</div>
+						 </div>
+				         <div class="control-group" id="group-title">
+							<label class="control-label" for="title">广告名称</label>
+							<div class="controls">
+								<input type="text" value="" id="title" placeholder="请输入名称" name="title" class="input-xlarge">
+                                <span class="help-inline" id="help-title"></span>
+							</div>
+						 </div>
+						 <div class="control-group" id="group-fileField">
+							<label class="control-label" for="fileField">广告图片</label>
+							<div class="controls">
+								<input type="file" value="" id="fileField" placeholder="选择图片" name="fileField" class="input-xlarge">
+                                <span class="help-inline" id="help-fileField"></span>
+							</div>
+						 </div>
+						 <div class="control-group" id="group-url">
+							<label class="control-label" for="url">链接地址  [格式范例：http://www.veigou.com]</label>
+							<div class="controls">
+								<input type="text" value="" id="url" placeholder="请输入链接地址" name="url" class="input-xlarge">
+                                <span class="help-inline" id="help-url"></span>
+							</div>
+						 </div>
+						 <div class="control-group" id="group-valid">
+							<label class="control-label" for="valid">有效期</label>
+							<div class="controls">
+							    <script src="/lib/datepicker/WdatePicker.js"></script>
+								<input type="text" value="" name="valid" placeholder="请选择有效期" id="validity" class="Wdate" onclick="WdatePicker();">
+                                <span class="help-inline" id="help-valid"></span>
+							</div>
+						 </div>
+				</div>
+			</div>
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+</form>
+	</div>
+</div>

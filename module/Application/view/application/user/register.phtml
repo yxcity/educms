@@ -1,0 +1,131 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>注册</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<meta name="format-detection" content="telephone=no" />
+<link type="text/css" rel="stylesheet" href="/css/style.css" />
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+</head>
+
+<body>
+	<!--头部-->
+	<header class="ts1">
+		<a class="u_back fl" href="/">首页</a>
+	</header>
+	<!--主体-->
+	<div class="main">
+		<form method="post" action="" onsubmit="return Register.CheckSave();">
+			<div class="p_mod o_address">
+				<h2 class="p_mod_title">注册账号</h2>
+				<div id="city">
+					<ul>
+						<li>
+							<strong>用户名：</strong>
+							<input type="text" placeholder="请输入用户名或手机号" id="username"
+								name="username" value="" onblur="Register.UserNameValidate();">
+							<span id="username_msg" style="color: red"></span>
+						</li>
+						<li>
+							<strong>Email：</strong>
+							<input type="text" placeholder="请输入Email" id="email" name="email"
+								value="" onblur="Register.EmailValidate();">
+							<span id="email_msg" style="color: red"></span>
+						</li>
+						<li>
+							<strong>密&nbsp;&nbsp;码 ：</strong>
+							<input type="password" placeholder="请输入密码" id="password"
+								name="password" value="" onblur="Register.PasswordValidate();">
+							<span id="password_msg" style="color: red"></span>
+						</li>
+						<!-- <li><strong>确认密码：</strong> <input type="password"
+							placeholder="请再次输入密码" id="repassword" name="repassword" value="">
+						</li>-->
+					</ul>
+				</div>
+			</div>
+			<div class="o_btn clearfix">
+				<input type="button" class="o_btn_back ts1"
+					onclick="window.location.href='/user/login';" value="返回登陆">
+				<input type="submit" class="o_btn_submit ts1" value="保存">
+			</div>
+		</form>
+	</div>
+	<!--底部-->
+	<?php echo $this->partial ( 'partials/footer.phtml');?>
+	<script type="text/javascript">
+       var Register = {
+    		      UserNameValidate:function(){
+    		    	var username = $('#username').val();
+  					if (username == '' || username.length < 5) {
+  						$('#username_msg').html('用户名称不能为空，且不能小于5个字符');
+  						return false;
+  					}
+  					var regUser = /[^\w\/]/ig;
+  			        if (regUser.test(username)) {
+    			          $('#username_msg').html('只能输入字母或数字');
+  			            return false;
+  			        }
+    			    if (!$('#username').attr('lastvalue') || $('#username').attr('lastvalue') != $.trim($('#username').val())) {
+    	  		            //验证是否被使用
+    	  		            $.ajax({
+    	  		                type: 'GET',
+    	  		                url: '?ac=checking',
+    	  		                data: { "username": $("#username").val() },
+    	  		                dataType: 'text',
+    	  		                cache: false,
+    	  		                success: function (msg) {
+    	  		                    if (msg == '1') {
+      	  		                     $('#username_msg').html('用户名已经被注册');
+    	  		                        return false;
+    	  		                    }else
+    	  		                  {
+    	  		                    	$('#username_msg').html('');
+        	  		                }    
+    	  		                }
+    	  		            });
+    	  		        }
+    	  			$('#username').attr('lastvalue', $.trim($('#username').val())); //保存最后一次输入值
+    	  		    return true;     
+        		   },
+        		   EmailValidate:function(){
+          		    	var email = $('#email').val();
+        					if (email == '') {
+        						$('#email_msg').html('请输入邮箱');
+        						return false;
+        					}
+        					if (!email.match(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/))
+        					{
+        						$('#email_msg').html('邮件格式不合法');
+        						return false;
+        					}else
+        					{
+        						$('#email_msg').html('');
+        						return true;
+            				}    
+              		   },
+                   PasswordValidate:function(){
+                		var password = $('#password').val();
+              			if (password == '' || password.length < 6) {
+              				$('#password_msg').html('请输入密码，密码长度不能小于6');
+              				return false;
+              			}else
+              			{
+              				$('#password_msg').html('');
+              				return true;
+                  		}
+                      },
+                 CheckSave:function(){
+                      var fTag = true;
+                      if (!Register.UserNameValidate()) fTag=false;
+                      if (!Register.EmailValidate()) fTag=false;
+                      if (!Register.PasswordValidate()) fTag=false;
+                      return fTag;
+                 }
+    	};
+	</script>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

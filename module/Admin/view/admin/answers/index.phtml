@@ -1,0 +1,85 @@
+<div class="header">
+	<h1 class="page-title">问题列表</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li class="active">问题列表</li>
+	<?php if ($this->keywords){ ?>
+	    <span class="divider">=></span><li class="active">当前搜索关键词：”<?php echo $this->keywords; ?>“</li>
+	<?php }?>
+	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+	<?php 
+	if ($this->success)
+	{
+	    echo "<div class=\"alert alert-success\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+	}
+	?>
+		<div class="btn-toolbar">
+            <div class="search-well">
+                <form class="form-inline" action="" method="post" >        
+                    <input class="input-xlarge" id="keywords"  name="keywords" type="text" value="<?php echo $this->keywords ;?>" style="margin-right: 5px;">
+                    <button class="btn" type="submit" onclick="return checkform();"><i class="icon-search"></i> 搜索</button>
+                </form>
+            </div>
+			<a href="/answers/create" class="btn btn-primary"><i class="icon-plus"></i> 我有问题</a>
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="6%">#</th>
+						<th>提问内容</th>
+						<?php echo $this->user->power==3?'<th width="50px;">提问者域名</th>':'';?>
+						<th width="110px;">提问时间</th>
+						<th width="80px;">是否回复</th>
+						<!-- <th width="80px;">是否关闭</th> -->
+						<th width="110px;">回复时间</th>
+						<?php echo $this->user->power==3?'<th width="50px;">回复</th>':'';?>
+					</tr>
+				</thead>
+				<tbody>
+				<?php 
+				if ($this->rows)
+				{
+				    foreach ($this->rows as $val) {
+				?>
+					<tr>
+						<td><?php echo $val['id'];?></td>
+						<td><a href="/answers/view?id=<?php echo $val['id'];?>"><?php 
+						if($this->keywords)
+                           { 
+                           	echo str_replace($this->keywords,'<font color=red>'.$this->keywords.'</font>',strip_tags(htmlspecialchars_decode(stripcslashes($val['ask'])))); }
+                          else{ 
+								echo strip_tags(htmlspecialchars_decode(stripcslashes($val['ask']))); 
+							}?></a></td>							
+						<?php echo $this->user->power==3?"<td>{$val['domain']}</td>":'';?>
+						<td><?php echo date('Y-m-d',$val['askTime']);?></td>
+						<td><?php echo $val['answerTime']?'已回复':'未回复';?></td>
+						<!-- <td><?php //echo $val['close']?'已关闭':'<a href="/answers/create?fid='.$val['id'].'">继续追问</a>';?></td> -->
+						<td><?php if($val['answerTime']) echo date('Y-m-d',$val['answerTime']);?></td>
+						<?php echo $this->user->power==3?"<td><a href=\"/answers/answer?id={$val['id']}\">回复</a></td>":'';?>
+					</tr>
+				<?php
+				     } 
+				}
+				?>	
+				</tbody>
+			</table>
+		</div>
+		<?php 
+		echo $this->paginationcontrol($this->rows,'Sliding','pagination/pagination.phtml',array('key'=>$this->keywords));
+		?>
+		<?php 
+		echo $this->partial('partials/homeFooter.phtml');
+		?>
+	</div>
+</div>

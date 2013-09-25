@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>收货地址</title>
+<meta name="version" content="游太网络">
+<meta name="author" content="YOUTITLE">
+<meta name="robots" content="all">
+<meta name="copyright" content="Copyright (c) 2012 YOUTITLE. All Rights Reserved.">
+<meta name="keywords" content="关键词">
+<meta name="description" content="描述">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
+<meta name="format-detection" content="telephone=no">
+<link type="text/css" rel="stylesheet" href="/css/style.css">
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+<?php echo $this->partial ( 'partials/header.phtml');?> 
+<script type="text/javascript" src="/js/jquery.cityselect.js"></script> 
+<!--主体-->
+<div class="main">
+    	<div class="p_mod">
+    		<h2 class="p_mod_title">收货信息  [ <a href="/user/address">新增收货地址</a> ]</h2>    		
+    		<ul id="address_list">    		
+    		<?php
+    		$default='';
+    		if ($this->rows)
+    		{
+    			foreach ($this->rows as $val) {
+                if ($val['default']) $default=$val['id'];
+    		?>
+            <li>
+               <a href="javascript:void(0);" id="aid_<?php echo $val['id'];?>" onclick="selectAddress(<?php echo $val['id'];?>);" <?php echo $val['default']==1?'class="focus"':'';?> >
+               <?php echo $val['name'];?>  <?php echo $val['phone'];?> <?php echo $val['province'];?> <?php echo $val['city'];?>  <?php echo $val['address'];?> <?php echo $val['zipcode'];?> 
+               <span></span>
+               </a>
+            </li>
+            <?php 
+               }
+            }
+            echo "<input type=\"hidden\" name=\"address\" id=\"address_id\" value=\"{$default}\" >";
+            ?>
+            </ul>
+    	</div>
+</div>
+<script type="text/javascript">
+
+$('.paytype a').click(function(){
+    var key_type = $(this).attr('key');
+    $('#paytype').val(key_type); 
+    if (key_type == 'bank') {
+        $('.bankList').show();
+    } else {
+        $('.bankList').hide();
+    } 
+    $('.paytype a').removeClass("focus");
+    $(this).addClass("focus");
+})
+
+$('ul.banks li').click(function() {
+    $('ul.banks li').removeClass('active');
+    $(this).addClass('active');
+    $('#bank_type').val($(this).attr('bank_value'));
+});
+
+function selectAddress(i)
+{
+	$("#address_list a").each(function(){
+		$("#address_list a").removeClass();
+	});
+	$('#aid_'+i).addClass('focus');
+	$('#address_id').val(i);
+}
+</script> 
+<?php echo $this->partial ( 'partials/footer.phtml');?> 
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

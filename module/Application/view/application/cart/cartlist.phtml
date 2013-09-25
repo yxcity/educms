@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>我的购物车</title>
+<meta name="version" content="游太网络" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<meta name="format-detection" content="telephone=no" />
+<link type="text/css" rel="stylesheet" href="/css/style.css" />
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/cart.js"></script>
+<style>
+.blue {
+	color: #000;
+}
+#cart_0, .p_b {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 20px;
+}
+#cart_0 li {
+	background-repeat: repeat-x;
+	background-position: left bottom;
+	background-image: url(/images/png.png);
+	padding: 7px 7px 9px;
+	position: relative;
+}
+#cart_0 li dl dd {
+	float: left;
+}
+#cart_0 li dl dd img {
+	border: 2px solid #DADBDD;
+}
+#cart_0 li dl dt {
+	line-height: 1.8em;
+	margin-left: 100px;
+}
+.red {
+	color: #E8270C;
+}
+.dell_prod {
+	background: url(/images/del_icon.png) no-repeat center center;
+	-webkit-background-size: 20px 20px;
+	background-size: 20px 20px;
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	margin-top: -10px;
+}
+a:hover {
+	color: #000;
+}
+.p_b li {
+	line-height: 20px;
+	padding-left: 10px;
+	font-size: 14px;
+	color: #999;
+}
+.reduction {
+	background-image: url(/images/reduction.png);
+}
+.buycheck, .checkall {
+	background: #000;
+}
+.p_mod a {
+	color: red;
+	font-weight: bold;
+	width: 40%;
+	float: left;
+}
+
+	<!--9.9-->
+.p_b {padding: 10px;}
+.fl {float: left;}
+.ercen {width: 40%;display: inline-block;}
+.public_bt {text-align: center;border: 1px solid #B5B8BA;height: 37px;width: 100%;-webkit-border-radius: 3px;
+background: -webkit-gradient(linear,left top,left bottom,from(#F7F7F7),to(#EBEBEB));
+font-size: 120%;line-height: 37px;-webkit-box-shadow: inset 0 1px white;-webkit-box-shadow: 0 1px 5px #E2E3E5;color: #8B8D91;display: inline-block;}
+.fr {float: right;right: 4px;}
+</style>
+</head>
+<body>
+<!--头部-->
+	<?php echo $this->partial ( 'partials/header.phtml');?>
+<!--主体-->
+<div class="main">
+    <?php
+    if ($this->rows)
+    {
+     ?>
+  <ul id="cart_0">
+            <?php 
+            foreach ($this->rows as $val) {
+    ?>  
+    <li id="li<?php echo $val['id']?>" data-type="1" data-clothescode="<?php echo $val['id']?>" data-promoteeid="" data-promoteeindex="0">
+        <dl class="clearfix">
+        <dd>
+          <label>
+            <input class="buycheck" name="buyCode" id="box_<?php echo $val['id']?>" type="checkbox">
+            <img src="<?php echo $val['thumb'];?>" width="77" height="77" alt=""> </label>
+        </dd>
+        <dt> <a href="#" class="font16 blue"><?php echo $val['name']?><span class="red"></span><br>
+          <!-- <span class="info_l">颜色: 粉桔色</span><br>
+          <span class="info_l">尺码: M</span><br> -->
+          <span class="info_l" id="price_<?php echo $val['id']?>" price="<?php echo $val['rebate'];?>">单价: <span class="red">￥<?php echo $val['rebate'];?></span>元</span></a><br>
+          <span class="product_tit">数量:</span> 
+          <a id="subtract_<?php echo $val['id']?>" class="reduction" href="javascript:vCart.subtract('<?php echo $val['id']?>')" ></a> 
+          <input type="text" size="3" value="<?php echo $val['num']?>" maxlength="3" id="<?php echo $val['id']?>" onblur="vCart.import('<?php echo $val['id']?>');" tid="<?php echo $val['id']?>" class="number_info" onkeyup="value=value.replace(/[^\d]/g,'')">
+          <a id="add_<?php echo $val['id']?>" class="plus" href="javascript:vCart.add('<?php echo $val['id']?>');" ></a> </dt>
+      </dl>
+      <a class="dell_prod dell_item" href="javascript:vCart.del('<?php echo $val['id']?>')"></a> 
+    </li>
+    <?php  
+       }?>
+    <li id="0">
+      <dl class="clearfix">
+        <dd>
+          <label>
+            <input type="checkbox" value="" class="checkall" onclick="vCart.checkAll();">
+            全部 </label>
+        </dd>
+        <dt></dt>
+      </dl>
+      <a class="dell_prod del_all" onclick="" style="top: 5px" href="javascript:vCart.delall()"></a> 
+    </li>
+  </ul>
+  <ul class="p_b">
+    <li>产品数量：<span class="red" id="TotalNum">0</span>件</li>
+    <li>赠送积分：<span class="red" id="TotalPoint">0</span>分</li>
+    <li>活动优惠：<span class="red">￥<span id="Discount">0</span></span></li>
+    <li>产品金额：<span class="red">￥<span id="TotalPrice">0</span></span> </li>
+    <li class="t_cen">
+      <input type="button" value="去结算" class="bt_pink" id="btnSubmit" onclick="javascript:window.location.href='/product/indent';">
+      <br>
+      <span style="color: red;display: none" id="nocodetip">请选择要购买的商品</span> </li>
+  </ul>
+    <?php
+    }else{
+?>
+<div style="text-align:center;margin-top:10px;"> <img src="/images/none_car.png" width="183" height="218"> </div>
+<div class="clearfix p_b"> <span class="ercen fl"><a href="/index?ref=footer_index" class="public_bt">去首页</a></span> 
+<span class="ercen fr"><a href="/product/list?ref=footer_type" class="public_bt">去逛逛</a></span> </div>
+  <?php 
+  }
+  ?>
+  <!--<div class="p_mod p_tips clearfix">
+                    <font class="p_ren">官方认证商铺</font>
+                    <font class="p_tui">支持七天退换</font>
+            </div>--> 
+</div>
+<script src="/js/SlideTurnPage.js" type="text/javascript"></script> 
+<?php echo $this->partial('partials/footer.phtml'); ?>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

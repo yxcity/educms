@@ -1,0 +1,162 @@
+<div class="header">
+	<h1 class="page-title">添加账号</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><a href="/users">账号列表</a> <span class="divider">/</span></li>
+	<li class="active">添加账号</li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+    	<?php 
+    	if ($this->massage)
+    	{
+    		echo "<div class=\"alert alert-{$this->massage->alert}\">
+            <a class=\"close\" data-dismiss=\"alert\">×</a>
+            <strong>{$this->massage->title}</strong>  {$this->massage->message}</div>";
+    	}
+    	?>
+		<form id="tab" name="createUser" method="post" action="" onsubmit="return clickForm();">
+			<div class="btn-toolbar">
+				<input type="submit" name="submit" id="submit" class="btn btn-primary " value="提交" />
+				<div class="btn-group"></div>
+			</div>
+			<div class="well">
+				<!-- <ul class="nav nav-tabs">
+					<li class="active"><a href="#home" data-toggle="tab">基础配置</a></li>
+				</ul> -->
+
+				<div id="myTabContent" class="tab-content">
+					<div class="tab-pane active in" id="home">
+					   <?php 
+					   if ($this->user->power==3)
+					   {
+					   ?>
+					    <!-- <div class="control-group" id="group-domain">
+							<label class="control-label" for="domain">管理地址</label>
+							<div class="controls">
+								<input type="text" value="" name="domain" id="domain" title="管理地址：http://www.domain.com/admin/test 请输入：test 只能是小写英文字符" class="span3" onKeyUp ="value=value.replace(/[^\d|a-z]/g,'')"> 
+								<span class="help-inline" id="help-domain"></span>
+							</div>
+						</div> -->
+						<?php 
+					   }
+						?>
+						<div class="control-group" id="group-username">
+							<label class="control-label" for="username">账号<font color=#999>(字母开头，可是字母数字组合，长度6-15)</font></label>
+							<div class="controls">
+								<input type="text" value="" name="username" id="username"
+									class="span3"> <span class="help-inline" id="help-username"></span>
+							</div>
+						</div>
+						
+						<!--选择账户角色-->
+						<?php if($this->roles):?>
+							<?php if(count($this->roles) > 1):?>
+								<div class="control-group" id="group-roleid">
+									<label class="control-label" for="roleid">角色</label>
+									<div class="controls">
+										<select name="roleid" id="roleid">
+											<option value="0">---请选择---</option>
+											<?php foreach($this->roles as $ek=>$ev):?>
+												<option value="<?php echo $ek;?>"><?php echo $ev;?></option>
+											<?php endforeach;?>
+										</select>
+										<span class="help-inline" id="help-roleid"></span> 
+									</div>
+								</div>
+							<?php else:?>
+								<?php foreach($this->roles as $rk=>$rv):?>
+									<input type="hidden" name="roleid" value="<?php echo $rk?>">
+								<?php endforeach;?>
+								
+							<?php endif;?>
+						<?php else:?>
+							<input type="hidden" name="roleid" value="0">
+						<?php endif;?>
+						
+						
+						<!--选择账户类别-->
+						<?php if($this->user->roleid == 1):?>
+							<div class="control-group" id="group-userType">
+								<label class="control-label" for="userType">账户类别</label>
+								<div class="controls">
+									<select name="userType" id="userType">
+										<option value="0">---请选择---</option>
+										<option value="1">微站账户</option>
+										<option value="2">微商城账户</option>
+									</select>
+									<span class="help-inline" id="help-userType"></span> 
+								</div>
+							</div>
+						<?php endif;?>
+						
+						<div class="control-group" id="group-realname">
+							<label class="control-label" for="realname">名称</label>
+							<div class="controls">
+								<input type="text" value="" name="realname" id="realname"
+									class="span3"> <span class="help-inline" id="help-realname"></span>
+							</div>
+						</div>
+
+						<div class="control-group" id="group-email">
+							<label class="control-label" for="email">邮箱</label>
+							<div class="controls">
+								<input type="text" value="" name="email" id="email"
+									class="span3"> <span class="help-inline" id="help-email"></span>
+							</div>
+						</div>
+
+						<div class="control-group" id="group-tel">
+							<label class="control-label" for="tel">电话</label>
+							<div class="controls">
+								<input type="text" value="" name="tel" id="tel" class="span3"> <span
+									class="help-inline" id="help-tel"></span>
+							</div>
+						</div>
+						<?php 
+						if ($this->user->power==3)
+						{
+						?>
+						<div class="control-group" id="group-shopCount">
+							<label class="control-label" for="shopCount">门店数</label>
+							<div class="controls">
+								<input type="text" value="0" name="shopCount" id="shopCount" class="span3" onkeyup="value=value.replace(/[^\d]/g,'')"> 
+								(0为数量不限制)<span class="help-inline" id="help-shopCount"></span>
+							</div>
+						</div>
+                       <?php 
+						}
+                       ?>
+						<div class="control-group" id="group-password">
+							<label class="control-label" for="password">密码<font color=#999>(长度6-15)</font></label>
+							<div class="controls">
+								<input type="password" name="password" id="password"
+									class="span3"> <span class="help-inline" id="help-password"></span>
+							</div>
+						</div>
+
+						<div class="control-group" id="group-repassword">
+							<label class="control-label" for="repassword">确认密码</label>
+							<div class="controls">
+								<input type="password" name="repassword" id="repassword"
+									class="span3"> <span class="help-inline" id="help-repassword"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		<script type="text/javascript">
+        function parent(pid)
+        {
+        	$.post("/type/areas?pid="+pid,{},function(data){
+                $('#area').html(data);
+            	});
+        }
+        </script>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+</form>
+	</div>
+</div>

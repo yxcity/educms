@@ -1,0 +1,171 @@
+<div class="header">
+	<h1 class="page-title">编辑门店</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><a href="/shop">门店列表</a> <span class="divider">/</span></li>
+	<li class="active">编辑门店</li>
+</ul>
+            
+<link rel="stylesheet" id="current-theme" href="/css/map.css" type="text/css" media="screen" />
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/CityList/1.2/src/CityList_min.js"></script>
+<style>
+	.storemap {position:relative;}
+	.cityList{height:336px; width:600px;overflow-y:auto;}
+    .sel_container{font-size:12px;display:inline-block;width:130px;}
+    #map{display:inline-block;width:400px;}
+    .map_popup {position: absolute;z-index: 200000;width:600px; height:360px; top:25px;}
+    .map_popup .popup_main { background:#fff; border:1px solid #8BA4D8; height:100%; overflow:hidden; position:absolute; width:100%; z-index:2;}
+    .map_popup .title {background: url("http://map.baidu.com/img/popup_title.gif") repeat scroll 0 0 transparent;
+    color: #6688CC;font-size: 12px;font-weight: bold;height: 24px;line-height: 25px;padding-left: 7px;}
+    .map_popup button {background: url("/images/popup_close.gif") no-repeat scroll 0 0 transparent;
+    border: 0 none;cursor: pointer;height: 12px;position: absolute;right: 4px;top: 6px;width: 12px;}	
+</style>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+<form id="tab" name="createUser" method="post" action="?id=<?php echo $this->row['id'];?>" enctype="multipart/form-data">
+		<div class="btn-toolbar">
+		    <input type="submit" name="submit" id="submit"  class="btn btn-primary" value="提交" />
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#home" data-toggle="tab">基础信息</a></li>
+				<li><a href="#profile" data-toggle="tab">门店描述</a></li>
+				<li><a href="#pic" data-toggle="tab">门店图片</a></li>
+                <li><span class="help-inline" id="help-content"></span></li>
+			</ul>
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane active in" id="home">
+            <div class="control-group" id="group-shopname">
+              <label class="control-label" for="shopname">门店名称</label>
+              <div class="controls">
+                <input type="text" value="<?php echo $this->row['shopname'];?>" name="shopname" id="shopname" class="span3">
+                <span class="help-inline" id="help-shopname"></span> </div>
+            </div>
+            <div class="control-group" id="group-fileField">
+              <label class="control-label" for="fileField">门店缩略图</label>
+            <?php if($this->row['thumb']){ ?>
+                <div id="pics">
+                <?php
+                echo "<a href=\"".$this->row['thumb']."\" rel=\"[gall1]\" title=\"缩略图\"><img src=\"".$this->row['thumb']."\" alt=\"缩略图\" width=\"80\" height=\"60\" /></a>\n";
+                ?>
+                </div>
+            <?php } ?>
+              <div class="controls">
+                <input type="file" class="input-file" name="fileField" id="fileField" />
+                <span class="help-inline" id="help-fileField"></span> 
+                <?php echo $this->row['thumb']?" ":'  <font color="red">暂时未上传图片</font>'?>
+                </div>
+            </div>
+            <div class="control-group" id="group-address">
+              <label class="control-label" for="address">门店地址</label>
+              <div class="controls">
+                <input type="text" value="<?php echo $this->row['address'];?>" name="address" id="address" class="span3">
+                <span class="help-inline" id="help-address"></span> </div>
+            </div>
+            <div class="control-group" id="group-tel">
+              <label class="control-label" for="tel">门店电话</label>
+              <div class="controls">
+                <input type="text" value="<?php echo $this->row['tel'];?>" name="tel" id="tel" class="span3">
+                <span class="help-inline" id="help-tel"></span> </div>
+            </div>
+			
+                <div class="storemap">
+                  <div class="sel_container"><strong id="curCity"><?php echo $this->row['city'];?></strong> [<a id="curCityText" href="javascript:void(0)">切换城市</a>]</div>
+                  <span class="error" id="map">鼠标右键点击地图标注门店位置，鼠标左键双击可放大地图</span>
+                  <div class="map_popup" id="cityList" style="display:none;">
+                    <div class="popup_main">
+                      <div class="title">城市列表</div>
+                      <div class="cityList" id="citylist_container"></div>
+                      <button id="popup_close">关闭</button>
+                    </div>
+                  </div>
+                  <div id="storemap"></div>
+                </div>
+                <input type="hidden" name="province" id="store_location_province" value="<?php echo $this->row['province'];?>" />
+                <input type="hidden" name="city" id="store_location_city" value="<?php echo $this->row['city'];?>" />
+                <input type="hidden" name="locationX" id="store_position_lo" value="<?php echo $this->row['locationX'];?>" />
+                <input type="hidden" name="locationY" id="store_position_la" value="<?php echo $this->row['locationY'];?>" />
+          </div>
+				<div class="tab-pane fade" id="profile"> 
+                    <div class="control-group" id="group-content">
+                      <label class="control-label" for="content">门店描述</label>
+                      <div class="controls">
+                        <textarea name="content" id="content" rows="5" cols="300" class="span7" style="height: 200px;"><?php echo nl2br($this->row['content']);?></textarea>
+                        <span class="help-inline" id="help-content"></span> </div>
+                    </div>
+            
+                </div>
+				
+				
+				<?php echo $this->partial('partials/uploadify_edit.phtml')?>
+		  
+		  
+			</div>
+
+		</div>
+</form>
+        <?php 
+        echo $this->partial('partials/homeFooter.phtml');
+        ?>
+	</div>
+</div>
+<script type="text/javascript">
+a2a_linkname = document.title;
+a2a_linkurl = "";
+</script>
+<script type="text/javascript">
+var map = new BMap.Map("storemap");// 创建Map实例
+var point = new BMap.Point(<?php echo $this->row['locationX'];?>, <?php echo $this->row['locationY'];?>);
+map.centerAndZoom(point, 17);
+var marker1 = new BMap.Marker(new BMap.Point(<?php echo $this->row['locationX'];?>, <?php echo $this->row['locationY'];?>));// 创建标注
+map.addOverlay(marker1);// 将标注添加到地图中
+//map.enableScrollWheelZoom();
+map.addControl(new BMap.NavigationControl());//添加默认缩放平移控件
+var gc = new BMap.Geocoder();
+map.addEventListener("rightclick", function(e){
+	var pt = e.point;
+	gc.getLocation(pt, function(rs){
+        var addComp = rs.addressComponents;
+    	$("#store_position_lo").val(pt.lng);
+    	$("#store_position_la").val(pt.lat);
+        $("#store_location_province").val(addComp.province);
+        $("#store_location_city").val(addComp.city);
+    	map.clearOverlays();
+    	var marker = new BMap.Marker(new BMap.Point(e.point.lng, e.point.lat));// 创建标注
+    	map.addOverlay(marker);// 将标注添加到地图中
+    });
+});
+
+//创建CityList对象，并放在citylist_container节点内
+var myCl = new BMapLib.CityList({container : "citylist_container", map : map});
+
+// 给城市点击时，添加相关操作
+myCl.addEventListener("cityclick", function(e) {
+	// 修改当前城市显示
+	document.getElementById("curCity").innerHTML = e.name;
+
+	// 点击后隐藏城市列表
+	document.getElementById("cityList").style.display = "none";
+});
+
+// 给“更换城市”链接添加点击操作
+$("#curCityText").click(function(){
+	var cl = document.getElementById("cityList");
+	if (cl.style.display == "none") {
+		cl.style.display = "";
+	} else {
+		cl.style.display = "none";
+	}	
+});
+
+// 给城市列表上的关闭按钮添加点击操作
+$("#popup_close").click(function(){
+	$("#cityList").hide();
+	return false;	
+});
+</script>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>收货地址</title>
+<meta name="version" content="游太网络">
+<meta name="author" content="YOUTITLE">
+<meta name="robots" content="all">
+<meta name="copyright" content="Copyright (c) 2012 YOUTITLE. All Rights Reserved.">
+<meta name="keywords" content="关键词">
+<meta name="description" content="描述">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
+<meta name="format-detection" content="telephone=no">
+<link type="text/css" rel="stylesheet" href="/css/style.css">
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+<?php echo $this->partial ( 'partials/header.phtml');?> 
+<script type="text/javascript" src="/js/jquery.cityselect.js"></script> 
+<!--主体-->
+<div class="main">
+  <form method="post" action="?ac=<?php echo $this->ac;?>" onsubmit="return checkform();">
+    <div class="p_mod o_address">
+      <h2 class="p_mod_title">新增收货地址</h2>
+      <div id="city">
+        <ul>
+          <li><strong>姓名：</strong>
+            <input type="text" placeholder="请输入收货人姓名" id="member_address_name" name="name" value="">
+          </li>
+          <li><strong>手机：</strong>
+            <input type="text" placeholder="请输入联系人手机号" id="member_address_phone" name="phone" value="">
+          </li>
+          <li><strong>省份：</strong>
+            <select class="prov" name="province">
+            </select>
+          </li>
+          <li><strong>城市：</strong>
+            <select class="city" name="city" style="">
+            </select>
+          </li>
+          <li><strong>区镇：</strong>
+            <select class="dist" name="area" disabled="disabled" style="display: none; ">
+            </select>
+          </li>
+          <li><strong>邮编：</strong>
+            <input type="text" placeholder="请输入邮编号" id="member_address_code" name="zipcode" value="">
+          </li>
+          <li><strong>地址：</strong>
+            <input type="text" placeholder="请输入详细地址" id="member_address_address" name="address" value="">
+          </li>
+          <li><strong>默认：</strong>
+            <input type="checkbox" style="width: 16px;" name="default" value="1" checked="true">
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="o_btn clearfix">
+      <input type="button" class="o_btn_back ts1" onclick="history.go(-1);" value="返回">
+      <input type="submit" class="o_btn_submit ts1" value="保存">
+    </div>
+  </form>
+</div>
+<script type="text/javascript">
+$("#city").citySelect({  
+    url:"/js/city.min.js",  
+    prov : "北京", //省份 
+    city : "东城区", //城市 
+    dist : "", //区县 
+    nodata:"none" //当子集无数据时，隐藏select 
+});  
+function checkform() {
+    if ($('#member_address_name').val() == '' || $('#member_address_phone').val() == '' || $('#member_address_province').val() == '' || $('#member_address_city').val() == '' || $('#member_address_code').val() == '' || $('#member_address_address').val() == '' ) {
+        alert('请填写完所有项！');
+        return false;
+    }   
+}
+</script> 
+<?php echo $this->partial ( 'partials/footer.phtml');?> 
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

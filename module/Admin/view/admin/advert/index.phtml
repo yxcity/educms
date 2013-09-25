@@ -1,0 +1,97 @@
+<div class="header">
+	<h1 class="page-title">广告内容</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li class="active">广告内容</li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+	<?php 
+	if ($this->alert)
+	{
+	    echo "<div class=\"alert alert-{$this->alert->alert}\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->alert->title}</strong>  {$this->alert->message}</div>";
+	}
+	?>
+		<div class="btn-toolbar">
+				<i class="icon-plus"></i> <a href="/advert/create" class="btn btn-primary">添加广告</a>
+			<!-- <button class="btn">Import</button>
+			<button class="btn">Export</button> -->
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>广告位</th>
+						<th>广告内容</th>
+						<th>到期时间</th>
+						<th style="width: 50px;">改 / 删</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php 
+				if ($this->rows)
+				{
+				    foreach ($this->rows as $val) {
+                    if (isset($val['id']))
+                    {
+				?>
+					<tr id="advert_<?php echo $val['id'];?>">
+						<td><?php echo $val['id'];?></td>
+						<td><?php echo isset($this->ads[$val['ads']])?$this->ads[$val['ads']]:'未知广告位';?></td>
+						<td><?php echo $val['title'];?></td>
+						<td><?php echo date('Y-m-d',$val['valid']);?></td>
+						<td>
+						<a href="/advert/edit?id=<?php echo $val['id'];?>"><i class="icon-pencil"></i></a> &nbsp;
+						<a href="#myModal" role="button" data-toggle="modal" onclick="remove(<?php echo $val['id'];?>);"><i class="icon-remove"></i></a></td>
+					</tr>
+				<?php
+                    }
+        				
+				     } 
+				}
+				?>	
+				</tbody>
+			</table>
+		</div>
+		<div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<script type="text/javascript">
+           function remove(i){
+                 $('#remove').attr('onclick','delType('+ i +')');
+               }
+             function delType(i)
+             {
+                 $.post('/advert/delete?id='+i,{'id':i},function(data){
+                     if (data.isok==true)
+                     {
+                    	 $('#advert_'+i).hide();
+                     }
+                 },'json');
+             }
+		   </script>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除广告内容</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>是否删除选定的广告？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="remove" data-dismiss="modal">确定</button>
+			</div>
+		</div>
+		<?php 
+		echo $this->partial('partials/homeFooter.phtml');
+		?>
+	</div>
+</div>

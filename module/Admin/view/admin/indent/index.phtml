@@ -1,0 +1,159 @@
+<div class="header">
+	<h1 class="page-title">订单列表</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><a href="/indent">订单列表</a> <span class="divider">/</span></li>
+	<li class="active">
+	<?php 
+	echo $this->s?$this->status[$this->s]:'所有订单';
+	?>
+	</li>
+	<?php if ($this->keywords){ ?>
+	    <span class="divider">=></span><li class="active">当前搜索关键词：”<?php echo $this->keywords; ?>“</li>
+	<?php }?>
+	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+<div class="container-fluid">
+	<div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+	    <?php 
+	    if ($this->success)
+	    {
+	    	echo "<div class=\"alert alert-success\">
+	    	<a class=\"close\" data-dismiss=\"alert\">×</a>
+	    	<strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+	    }
+	    ?>
+	    <div class="btn-toolbar">
+            <div class="search-well">
+                <form class="form-inline" action="" method="post" >        
+                    <input placeholder="输入单号或名称..." class="input-xlarge" id="keywords"  name="keywords" type="text" value="<?php echo $this->keywords ;?>" style="margin-right: 5px;">
+                    <button class="btn" type="submit" onclick="return checkform();"><i class="icon-search"></i> 搜索</button>
+                </form>
+            </div>            
+			<a href="?s=5" class="btn btn-primary"> 已取消</a>
+			<a href="?s=2" class="btn btn-primary"> 未付款</a>
+			<a href="?s=1" class="btn btn-warning"> 已付款</a>
+			<a href="?s=3" class="btn btn-primary"> 已退款</a>
+			<a href="?s=4" class="btn btn-primary"> 已发货</a>
+			<a href="?s=6" class="btn btn-info"> 已确认收货</a>
+			<a href="?s=7" class="btn btn-danger"> 已完成</a>
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="10%">订单号[查看详情]</th>
+						<th>商品名称</th>
+						<th width="5%">数量</th>
+						<th width="5%">金额</th>
+						<th width="8%">生成时间</th>
+						<th width="5%">状态</th>
+						<th width="8%">支付方式</th>
+						<?php if ($this->s != 2 ) echo '<th width="12%">支付时间</th>';?>
+						<th style="width: 30px;">发货</th>
+						<th style="width: 20px;">删</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php 
+				if ($this->rows)
+				{
+					foreach ($this->rows as $val) {
+				?>
+					<tr id="tid_<?php echo $val['id'];?>">
+					   <?php if($this->keywords){ ?>
+						<td><a href="/indent/view?id=<?php echo $val['serialnumber'];?>"><?php echo str_replace($this->keywords,'<font color=red>'.$this->keywords.'</font>',$val['serialnumber']);?></a></td>
+						<td><?php echo str_replace($this->keywords,'<font color=red>'.$this->keywords.'</font>',$val['name']);?></td>
+						<?php }else{ ?>
+						<td><a href="/indent/view?id=<?php echo $val['serialnumber'];?>"><?php echo $val['serialnumber'];?></a></td>
+						<td><?php echo $val['name'];?></td>						
+						<?php } ?>
+						<td><?php echo $val['amount'];?></td>
+						<td><?php echo $val['sum'];?></td>
+						<td><?php echo date("Y-m-d",$val['addtime']);?></td>
+						<td><?php echo $this->status[$val['status']]; ?></td>
+						<td><?php echo $val['payment']=='alipay'?'支付宝':$val['payment'];?></td>
+						<?php if ($this->s != 2 ) echo "<td>";
+						echo $val['payTime']?date('Y-m-d H:i:s',$val['payTime']):'';
+						echo "</td>";?>	
+						<td>						
+						<?php if($val['status']!=2 && $val['status']!=3 && $val['status']!=5) echo $this->bp->genActLink('indent_edit',$this->bp->act_edit,'',array('id'=>$val['serialnumber']));?>	</td>
+						<td>	
+						<?php echo $this->bp->genActLink('indent_delete',$this->bp->act_del,'',array('del_id'=>$val['id']));?>
+						<!--
+						<td><a href="/indent/edit?id=<?php echo $val['serialnumber'];?>"><i class="icon-pencil"></i></a></td>	
+						<a href="#myModal" role="button" data-toggle="modal" onclick="remove(<?php echo $val['id'];?>);"><i class="icon-remove"></i></a>
+						-->
+						</td>
+					</tr>
+					<?php 
+					   }
+				 }
+					?>
+				</tbody>
+			</table>
+		</div>
+		<?php 
+		echo $this->paginationcontrol($this->rows,'Sliding','pagination/pagination.phtml',array('key'=>$this->keywords));
+		?>
+        <script type="text/javascript">
+			function triggerDel(del_id)
+		    {
+		   		$("#remove").click(function(){
+					
+					
+					$.post('/indent/delete?id='+del_id,{'id':del_id},function(data){
+						if (data.isok==true)
+	                     {
+	                    	 $('#tid_'+del_id).hide();
+	                     }
+	                 },'json');
+					
+				});		
+		    }
+			
+           /*function remove(i){
+                 $('#remove').attr('onclick','delIndent('+ i +')');
+               }
+             function delIndent(i)
+             {
+                 $.post('/indent/delete?id='+i,{'id':i},function(data){
+                     if (data.isok==true)
+                     {
+                    	 $('#tid_'+i).hide();
+                     }
+                 },'json');
+             }*/
+		   </script>
+		<div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除订单</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>
+					确认删除当前订单？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="remove" data-dismiss="modal">确认</button>
+			</div>
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+	</div>
+</div>
+<script type="text/javascript">
+function checkform(){
+    var keywords = $('#keywords').val();
+    if (keywords == 0 || keywords =='' ) {
+        alert('请填写关键词！');
+        return false;
+    }
+}
+</script>

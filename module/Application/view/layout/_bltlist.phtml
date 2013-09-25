@@ -1,0 +1,103 @@
+<!DOCTYPE html> 
+<html> <head> 
+    <title><?php echo $this->_bulletin?> - <?php echo $this->_siteInfo['realname'];?></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0;" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="<?php echo $this->_siteInfo['realname'];?>">
+    <meta name="keywords" content="<?php echo $this->_siteInfo['realname'];?>">
+    <link rel="stylesheet" type="text/css" href="/sitetem/default/css/party.css" />
+    <link type="text/css" rel="stylesheet" href="/sitetem/default/css/style.css" />
+ 	<link rel="stylesheet"type="text/css" href="/sitetem/default/css/ttt.css">
+    <link rel="stylesheet" type="text/css" href="/sitetem/common/css/commonjia.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/wz/css/font-awesome.css" media="all" />
+  	<script type="text/javascript" src="/sitetem/js/main.js"></script>
+  	<script>
+    window.addEventListener("DOMContentLoaded", function(){
+        btn = document.getElementById("plug-btn");
+        btn.onclick = function(){
+            var divs = document.getElementById("plug-phone").querySelectorAll("div");
+            var className = className=this.checked?"on":"";
+            for(i = 0;i<divs.length; i++){
+                divs[i].className = className;
+            }
+            document.getElementById("plug-wrap").style.display = "on" == className? "block":"none";
+        }
+    }, false);
+    </script>
+    </head>
+    <body>
+    	<section id="page-wrapper">
+        	<section id="menu-wrapper">
+            <?php echo $this->partial('partials/left_menu.phtml');?>
+            </section> <!-- #menu-wrapper -->        
+        	<section id="content-wrapper" style=" min-height:461px;">
+                <section id="header">
+                    <div id="header-left">
+                        <a href="#" id="a-menu"><img src="/sitetem/default/images/menu.png" alt="menu" /></a>
+                    </div>
+                   <div id="header-title"><h1><a class="ui-title" id="popmenu"><?php echo $this->_bulletin?></a></h1></div>
+                   <header>
+                   <ul class="navigationa">
+     					 <li class="nav_searcha"><a href="#"></a></li>
+    				</ul>
+                  </header>
+                </section>
+                <div class="gz_1">
+             <div id="search">
+      <form class="search" action="" method="GET">
+        <fieldset class=" ">
+        <input type="text" placeholder="请输入你要搜索的关键词" class="text " name="keyword">
+        <input type="submit" value="search" class="submit">
+        </fieldset>
+      </form>
+    </div>
+    <div style=" color:#666; padding:3px 0 3px 20px;background: url(/sitetem/default/images/list_home.png) left 10px no-repeat;height:20px; margin:10px;">
+		<a href="/">首页</a> 》 <a>内容列表</a></div>
+      <ul class="g_1">
+	  	<?php 
+			if(isset($this->bltlist)):
+				foreach($this->bltlist as $row):
+		?>
+         <li class="g_a">
+         <div class="g_v">
+         <a href="/index/bltdetail?art_id=<?php echo $row->art_id;?>"><img src="<?php echo $row->thumb?>" alt="" width="80" height="60"/></a>
+         	
+         </div>	
+			<div class="g_2">
+			<a href="/index/bltdetail?art_id=<?php echo $row->art_id;?>" class="list_title" target="_blank"><div><?php echo $row->art_title;?></div></a>
+				<div class="g_3"><?php echo $row->username;?></div>
+				<span style="float:left;">发表于<em><?php echo date('Y-m-d H:i:s',$row->created_time);?></em></span>
+			</div>
+		</li>
+		<?php
+				endforeach; 
+			endif;
+		?>
+     </ul>
+      </div>
+      <section id="Page_wrapper">
+          <div id="pNavDemo" class="c-pnav-con">
+                <section class="c-p-sec">
+                <?php if(isset($this->pager)) {echo $this->pager;}?>
+                </section>
+         </div>
+    </section> 
+        <div id="duty"><div id="ft" style="margin:10px 10px 0 10px"><p class="wrapper copyright">由&#160;[唯购]游太网络&#160;提供技术支持</p></div></div>
+            </section> <!-- #content-wrapper -->
+    	</section> <!-- #page-wrapper -->
+        <?php echo $this->partial('partials/bottomjia.phtml');?>
+        <script src="/sitetem/js/jquery.min.js"></script>
+		<script src="/sitetem/js/jquery-ui-1.8.16.custom.min.js"></script>
+        <script src="/sitetem/js/site.js"></script>
+        <script language="javascript">
+            function dourl()
+            {
+                $("#cPage").click(function(){
+                    window.location.href = $(this).val();
+                });
+            }
+        </script>
+        <?php echo $this->partial('partials/stats.phtml');?>
+    </body>
+</html>

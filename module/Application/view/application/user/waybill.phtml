@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>订单详情</title>
+<meta name="version" content="游太网络">
+<meta name="author" content="YOUTITLE">
+<meta name="robots" content="all">
+<meta name="copyright" content="Copyright (c) 2012 YOUTITLE. All Rights Reserved.">
+<meta name="keywords" content="关键词">
+<meta name="description" content="描述">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
+<meta name="format-detection" content="telephone=no">
+<link type="text/css" rel="stylesheet" href="/css/style.css">
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+<?php echo $this->partial ( 'partials/header.phtml');?> 
+<script type="text/javascript" src="/js/jquery.cityselect.js"></script> 
+<!--主体-->
+<div class="main">
+    <div class="p_mod o_address">
+      <h2 class="p_mod_title">订单详情</h2>
+      <div id="city">
+        <ul>
+          <?php
+          if ($this->rows)
+          {
+              $i=1;
+              $sum = 0;
+              $addtime=0;
+              $status=0;
+              $payTime=0;
+              $express=0;
+              $waybill=null;
+              $content=null;
+              foreach ($this->rows as $val) {
+                echo "<li><strong>商品名称({$i})：</strong>{$val['name']}</li>
+                      <li><strong>购买数量：</strong>{$val['amount']} 件</li>";
+                      $i++;
+                $sum = $sum+$val['sum'];
+                $addtime = $val['addtime'];
+                $status=$val['status'];
+                $payTime=$val['payTime'];
+                $express =$val['express'];
+                $waybill = $val['waybill'];
+                $content = $val['content'];
+              }
+          }
+          ?>
+          <li><strong>总金额：</strong>
+            <?php echo $sum;?> 元
+          </li>
+          <li><strong>订单时间：</strong>
+            <?php echo $addtime?date('Y-m-d H:i:s',$addtime):'未知时间';?>
+          </li>
+          <li><strong>订单状态：</strong>
+            <?php 
+            if ($status)
+            {
+                echo $this->status[$status];
+            }
+            ?>
+          </li>
+          <li><strong>支付时间：</strong>
+            <?php 
+            if ($payTime)
+            {
+                echo date('Y-m-d H:i:s',$payTime);
+            }
+            ?>
+          </li>
+          <li><strong>物流公司：</strong>
+            <?php 
+            if ($express)
+            {
+                echo $this->express[$express];
+            }
+            ?>
+          </li>
+          <li><strong>物流单号：</strong>
+            <?php echo $waybill;?>
+          </li>
+          <li><strong>收件地址：</strong>
+            <?php 
+            if ($this->address)
+            {
+              echo $this->address['province'].$this->address['city'].$this->address['address'].$this->address['zipcode'].'&nbsp;&nbsp;'.$this->address['name'].'&nbsp;&nbsp;'.$this->address['phone'];
+            }            
+            ?>
+          </li>
+          <li><strong>备注内容：</strong>
+            <?php echo htmlspecialchars_decode(stripslashes($content));?>
+          </li>
+        </ul>
+      </div>
+    </div>
+</div>
+<?php echo $this->partial ( 'partials/footer.phtml');?> 
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

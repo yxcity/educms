@@ -1,0 +1,29 @@
+<table class="table">
+	<tr>
+		<th>编号</th>
+		<th>标题</th>
+		<th>最后采集时间</th>
+		<th>操作</th>
+	</tr>
+	<?php 
+	if ($this->rows)
+	{
+	    foreach ($this->rows as $val) {
+	?>
+	<tr>
+		<td><?php echo $val['id']?></td>
+		<td><?php echo $val['title'];?></td>
+		<td><?php echo $val['lasttime']?date('Y-m-d H:i:s',$val['lasttime']):'未启动采集';?></td>
+		<td>
+		[<a href="<?php echo $this->url('collect',array('action'=>'edit', 'page' => $val->id));?>">编辑</a>] 
+		[删除] 
+		[<a href="<?php echo $this->url('collect',array('action'=>'do','page'=>$val->id));?>">启动</a>]</td>
+	</tr>
+	<?php
+	  } 
+	}
+	?>
+</table>
+<div>
+
+</div>

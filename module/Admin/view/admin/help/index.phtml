@@ -1,0 +1,114 @@
+<div class="header">
+	<h1 class="page-title">公告帮助-文章列表</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li class="active"><a href="/help">文章列表</a></li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+	<?php 
+	if ($this->success)
+	{
+	    echo "<div class=\"alert alert-success\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+	}
+	?>
+		<div class="btn-toolbar">
+            <div class="search-well">
+                <form class="form-inline" action="" method="post" >        
+                    <input class="input-xlarge" id="keywords"  name="keywords" type="text" value="<?php echo $this->keywords ;?>" style="margin-right: 5px;">
+                    <button class="btn" type="submit" onclick="return checkform();"><i class="icon-search"></i> 搜索</button>
+                </form>
+            </div>
+			<a href="/help/create" class="btn btn-primary"><i class="icon-plus"></i> 添加文章</a>
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="6%">#</th>
+						<th width="40%">标题</th>
+						<th>分类</th>
+						<th>访问UV</th>
+						<th>访问PV</th>
+						<th>创建时间</th>
+						<th>更新时间</th>
+						<th style="width: 58px;">改 / 删</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php 
+				if ($this->rows)
+				{
+				    foreach ($this->rows as $val) {
+				?>
+					<tr id="art_<?php echo $val['art_id'];?>">
+						<td><?php echo $val['art_id'];?></td>
+						<td><a href="/s/help/<?php echo $val['art_id'];?>" target="_blank"><?php if($this->keywords):?>
+						<?php echo str_replace($this->keywords,'<font color=red>'.$this->keywords.'</font>',$val['art_title']);?>
+						<?php else: ?>
+						<?php echo $val['art_title'];?>
+						<?php endif;?></a>
+						</td>
+						<td><?php echo isset($this->type[$val['subclassid']])?$this->type[$val['subclassid']]:'未知分类';?></td>
+						<td><?php echo $val['art_uv'];?></td>
+						<td><?php echo $val['art_pv'];?></td>
+						<td><?php if($val['created_time']){echo date('Y-m-d H:i:s',$val['created_time']);}?></td>
+						<td><?php if($val['updated_time']){echo date('Y-m-d H:i:s',$val['updated_time']);}?></td>
+						<td>
+						<?php echo $this->bp->genActLink('help_edit',$this->bp->act_edit,'',array('art_id'=>$val['art_id']));?>
+						&nbsp;&nbsp;&nbsp;
+						<?php echo $this->bp->genActLink('help_delete',$this->bp->act_del,'',array('del_id'=>$val['art_id']));?>
+						</td>
+					</tr>
+				<?php
+				  } 
+				}
+				?>	
+				</tbody>
+			</table>
+		</div>
+		<div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		   <script type="text/javascript">
+			 
+			 function triggerDel(del_id)
+		    {
+		   		$("#remove").click(function(){
+					
+					
+					$.post('/help/delete?art_id='+del_id,{'art_id':del_id},function(data){
+	                     alert(data.msg);
+						 if (data.req=="ok")
+	                     {
+							 window.location.reload();
+	                     }
+	                 },'json');
+					
+				});		
+		    }
+		   </script>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除文章</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>是否删除选定的文章？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="remove" data-dismiss="modal">确定</button>
+			</div>
+		</div>
+		<?php 
+		echo $this->partial('partials/homeFooter.phtml');
+		?>
+	</div>
+</div>

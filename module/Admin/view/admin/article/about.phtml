@@ -1,0 +1,89 @@
+<style type="text/css">
+	.editor{
+		width:900px;
+	}
+	
+</style>
+<div class="header">
+	<h1 class="page-title"><?php echo $this->class_label;?></h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li class="active"><?php echo $this->class_label;?></li>
+</ul>
+
+<div class="container-fluid">
+	<?php echo $this->partial('partials/flashMsg.phtml');?>
+	<div class="row-fluid">
+<form id="tab" name="createUser" method="post" action="" onsubmit="return checkArt();">
+		<div class="btn-toolbar">
+		    <input type="submit" name="submit" id="submit"  class="btn btn-primary" value="提交" />
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane active in" id="home">
+						<!-- <div class="control-group" id="group-byname">
+							<label class="control-label" for="byname">自定义名称<br><span style="font-size:8px;">[显示在首页导航里的名字，建议不超过6个字，如没有特别需求，不建议修改]</span>[<a href="/alias/index" target="_blank">我要修改</a>]</label>
+						</div> -->
+						<div class="control-group" id="group-art_title">
+							<label class="control-label" for="art_title">标题</label>
+							<div class="controls">
+								<input type="text" value="<?php echo $this->row['art_title'];?>" id="art_title" name="art_title" class="input-xxlarge">
+                                <span class="help-inline" id="help-art_title"></span>
+							</div>
+						</div>
+						
+						<div class="control-group" id="group-art_content">
+							<label class="control-label" for="art_content">内容</label>
+							<div class="controls editor-container">							
+								<textarea name="content" id="content" type="text"  style="width: 570px;height: 260px;"><?php echo $this->row['art_content']?></textarea>
+								<span class="help-inline" id="help-art_content"></span>
+							</div>
+						</div>
+						
+						<div class="control-group" id="group-art_uv">
+							<label class="control-label" for="art_uv">访问UV</label>
+							<div class="controls">
+								<input type="text" value="<?php echo $this->row['art_uv'];?>" id="art_uv" name="art_uv" class="input-xlarge" disabled="disabled">
+                                <span class="help-inline" id="help-art_uv"></span>
+							</div>
+						</div>
+						
+						<div class="control-group" id="group-art_pv">
+							<label class="control-label" for="art_pv">访问PV</label>
+							<div class="controls">
+								<input type="text" value="<?php echo $this->row['art_pv'];?>" id="art_pv" name="art_pv" class="input-xlarge" disabled="disabled">
+                                <span class="help-inline" id="help-art_pv"></span>
+							</div>
+						</div>
+						
+						<!-- <div class="control-group" id="group-created_time">
+							<label class="control-label" for="created_time">创建时间</label>
+							<div class="controls">
+								<input type="text" value="<?php echo $this->row['created_time_str'];?>" id="created_time" name="created_time" class="input-xlarge" disabled="disabled">
+                                <span class="help-inline" id="help-created_time"></span>
+							</div>
+						</div>
+						
+						<div class="control-group" id="group-updated_time">
+							<label class="control-label" for="updated_time">更新时间</label>
+							<div class="controls">
+								<input type="text" value="<?php echo $this->row['updated_time_str'];?>" id="updated_time" name="updated_time" class="input-xlarge" disabled="disabled">
+                                <span class="help-inline" id="help-updated_time"></span>
+							</div>
+						</div> -->
+						
+				</div>
+			</div>
+
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+</form>
+	</div>
+</div>
+
+<script src="/ueditor/ueditor.all.min.js"></script>
+<script src="/ueditor/ueditor.config.js"></script>

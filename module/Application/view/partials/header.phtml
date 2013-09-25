@@ -1,0 +1,16 @@
+<!--头部-->
+	<header class="ts1">
+	<?php 
+	if($this->keywords) { 
+?>
+		<ul class="u_home fl">
+		  <li><a href="#" class="color:#fff"><?php echo $this->keywords;?></a></li>
+		</ul>
+		<?php }else{ ?>
+		<a class="u_back fl" href="javascript:history.go(-1)">返回</a>
+		<?php } ?>
+		<ul class="topbar fr">
+			<li><a class="icon_user" href="/user?ref=footer_member"><i></i>我的</a></li>
+			<li><a class="icon_class" href="/type?ref=footer_type"><i></i>分类</a></li>
+		</ul>
+	</header>

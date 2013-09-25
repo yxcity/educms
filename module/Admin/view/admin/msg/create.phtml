@@ -1,0 +1,41 @@
+<div class="header">
+	<h1 class="page-title">错误提示</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><a href="/msg">提示列表</a> <span class="divider">/</span></li>
+	<li class="active">添加提示</li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+<form id="tab" name="createMsg" method="post" action="" >
+		<div class="btn-toolbar">
+		    <input type="submit" name="submit" id="submit"  class="btn btn-primary" value="提交" />
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane active in" id="home">
+				         <div class="control-group" id="group-code">
+							<label class="control-label" for="code">错误代码</label>
+							<div class="controls">
+								<input type="text" value="" id="code" placeholder="请输入数字代码" onkeyup="value=value.replace(/[^\d]/g,'')" name="code" class="input-xlarge">
+                                <span class="help-inline" id="help-code"></span>
+							</div>
+						 </div>
+						 <div class="control-group" id="group-msg">
+							<label class="control-label" for="msg">提示内容</label>
+							<div class="controls">
+								<input type="text" value="" id="msg" name="msg" placeholder="请输入提示内容" class="input-xlarge">
+                                <span class="help-inline" id="help-msg"></span>
+							</div>
+						</div>
+				</div>
+			</div>
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+</form>
+	</div>
+</div>

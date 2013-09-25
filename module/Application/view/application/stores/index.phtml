@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8" />
+	<title><?php echo $this->row['shopname'];?></title>
+	<meta name="version" content="游太网络" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+	<meta name="format-detection" content="telephone=no" />
+	<link type="text/css" rel="stylesheet" href="/css/style.css" />
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+	<?php echo $this->partial ( 'partials/header.phtml');?>	
+	<!--主体-->
+	<section class="i_list">
+				<div class="i_list_tui">
+			<h3>
+				<a href="/stores?id=<?php echo $this->row['id'];?>"><?php echo $this->row['shopname'];?></a>
+			</h3>
+			<div class="tui_img">
+				<a href="/stores?id=<?php echo $this->row['id'];?>">
+					<img src="<?php echo $this->row['thumb'];?>" />
+				</a>
+			</div>
+			
+		</div>
+		
+		<!--分享店铺二维码-->
+		<div class="toshare">
+			<a href="javascript:void(0);" title="分享店铺二维码">
+				<font>分享店铺二维码</font>
+				<span class="gt"></span>
+			</a>
+			<p>
+				<img src="http://api.kuaipai.cn/qr?chs=250x250&chl=<?php echo BASE_URL;?>/stores?id=<?php echo $this->row['id'];?>" />
+			</p>
+		</div>
+		<p class="line"></p>
+			<ul>
+				<?php 
+				if ($this->rows)
+				{
+				    foreach ($this->rows as $val) {
+				?>
+				<li>
+    				<a href="/product?id=<?php echo $val['id'];?>">
+    					<img src="<?php echo $val['thumb'];?>" />
+    					<h3><?php echo $val['name'];?></h3>
+    					<p class="tui_price ts2"><strong>￥<?php echo $val['rebate'];?></strong><del>￥<?php echo $val['price'];?></del><span><cite><?php echo $val['sold'];?></cite>人购买</span></p>
+    					<?php if($val['commend']) {?><div class="hot"><strong>推荐</strong></div><?php }?>
+    				</a>
+			   </li>
+			   <?php 
+			       }
+				}
+			   ?>
+			 </ul>
+			</section>
+			
+	<div class="p_mod p_short_desc">
+		<h2 class="p_mod_title">店铺介绍</h2>
+		<div class="p_con">
+			<?php echo htmlspecialchars_decode(stripcslashes($this->row['content']));?>
+		</div>
+	</div>
+	
+	<a href="javascript:void(0);" class="more" page=2>更多商品</a>
+	<!-- <div class="p_mod p_tips clearfix">
+		<font class="p_ren">官方认证商铺</font>
+		<font class="p_tui">支持七天退换</font>
+	</div> -->
+<?php echo $this->partial ( 'partials/footer.phtml');?>
+<script type="text/javascript">
+  $(function(){
+      var pageCount = <?php echo $this->pageCount;?>;
+      $('.more').click(function(){
+          var page=$('.more').attr('page');
+          $.post("/stores/more?id=<?php echo $this->row['id']?>&page="+page, { "time": <?php echo time();?>},function(o){
+               $('.i_list ul').append(o); 
+          });
+          page++;
+          if (pageCount < page)
+          {
+              $('.more').hide();
+              return false;
+          }
+          $('.more').attr('page',page);
+      });
+  });
+</script>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

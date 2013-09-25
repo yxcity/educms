@@ -1,0 +1,106 @@
+<style type="text/css">
+	#boxscroll {
+		height: 600px;
+		width: 375px;
+		border-radius: 6px;
+		border: 2px solid #dfdfdf;
+		overflow: auto;
+		float: left;
+	}
+
+	#boxframe {
+	  position:absolute;
+	  top:8px;
+	  left:420px;
+	  width:400px;
+	  height:300px;
+	  overflow:auto;
+		border: 2px solid #0F0;
+	}
+	.assign_group ul{
+		list-style: none;
+		margin: 0px;
+		padding: 0px;
+		padding-left: 20px;
+	}
+	.assign_group ul li{
+		line-height: 30px;
+	}
+	.item{
+		clear: both;
+	}
+	.sub_item{
+		/*float: left;*/
+		/*margin-left: 10px;*/
+	}
+</style>
+<div class="header">
+	<h1 class="page-title">权限分配</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><?php echo $this->bp->genActLink('role_index',$this->bp->act_link,'角色列表');?> <span class="divider">/</span></li>
+	<li class="active">权限分配</li> => 当前角色：<?php echo $this->role_name;?>
+</ul>
+
+<div class="container-fluid">
+	<?php
+	if ($this->success)
+	{
+		echo "<div class=\"alert alert-success\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+	}
+	if ($this->error)
+	{
+		echo "<div class=\"alert alert-error\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->error->title}</strong>  {$this->error->message}</div>";
+	} 
+	if ($this->massage)
+	{
+		echo "<div class=\"alert alert-{$this->massage->alert}\">
+	        <a class=\"close\" data-dismiss=\"alert\">×</a>
+	        <strong>{$this->massage->title}</strong>  {$this->massage->message}</div>";
+	}
+	?>
+	<div class="row-fluid">
+<form id="tab" name="createUser" method="post" action="">
+		<div class="btn-toolbar">
+		    <input type="submit" name="submit" id="submit"  class="btn btn-primary" value="提交" />
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane active in" id="home">
+						<div class="control-group assign_group" id="group-pid">
+							<div class="controls" id="boxscroll">
+							    <?php echo $this->select_opts;?>
+                                <span class="help-inline" id="help-pid"></span>
+							</div>
+						</div>
+				</div>
+			</div>
+
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+</form>
+	</div>
+</div>
+<script src="/lib/jquery.nicescroll.min.js"></script>
+<script language="javascript">
+	$(document).ready(function(){
+		$("#boxscroll").niceScroll({
+				touchbehavior:false,
+				cursorcolor:"#dfdfdf",
+				cursoropacitymax:0.7,
+				cursorwidth:10,
+				cursorborder:"1px solid gray",
+				cursorborderradius:"10px",
+				background:"#ccc",
+				autohidemode:"scroll"
+				}).cursor.css({"background-image":"url(img/mac6scroll.png)"});
+		
+	});
+</script>

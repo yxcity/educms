@@ -1,0 +1,89 @@
+﻿<!DOCTYPE HTML>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <title><?php echo $this->_siteInfo['realname'];?></title>
+        <meta name="description" content="<?php echo $this->_siteInfo['realname'];?>">
+        <meta name="keywords" content="<?php echo $this->_siteInfo['realname'];?>">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta content="initial-scale=1.0, user-scalable=no" name="viewport">   
+<link rel='stylesheet' id='camera-css'  href='/wz/css/camera.css' type='text/css' media='all' />
+<link rel='stylesheet' id='tiles-css'  href='/wz/css/tiles.css' type='text/css' media='all' />
+<link rel='stylesheet' id='styles-css'  href='/wz/css/style.css' type='text/css' media='all' />
+<link rel='stylesheet' id='fontawesome-css'  href='/wz/css/font-awesome.css' media='all' />
+<link rel='stylesheet' id='bootstrapdark-css'  href='/wz/css/bootstrap-dark.css' type='text/css' media='all' />
+<style type="text/css">
+a:hover {
+	text-decoration: none;
+}
+</style>
+<script type='text/javascript' src='/wz/js/jquery-1.8.3.min.js'></script>
+<script type='text/javascript' src='/wz/js/camera.js'></script>
+<script type='text/javascript' src='/wz/js/jquery.easing.1.3.js'></script>
+</head>
+<body  class="home blog">
+        <div class="spinnerbg">
+    		<div id="spinner">
+		<?php if($this->_flash):?>
+			<?php foreach($this->_flash as $f):?>
+				<a href="<?php echo $f['link']?>"><span class="ball"></span></a>
+			<?php endforeach;?>
+		<?php else:?>
+			<span id="first" class="ball"></span>
+        	<span id="second" class="ball"></span>
+        	<span id="third" class="ball"></span>
+		<?php endif;?>	
+        
+    </div>
+    </div>
+        
+                	<div class="wrapper">
+               	<div class="scrollable">
+                	<div class="webbutiles">
+       <div class='tile white t4x-b image'><div class='boxContent'>
+       <img src='/wz/images/metroentrance.jpg' alt='-'>
+       </div>
+       <div class='tilename '><div class='name'></div></div>
+       </div>
+<script>
+jQuery(function(){jQuery('.be07ca5315').camera({height: 'auto',loader: 'bar',pagination: false,thumbnails: false,time: 5000,transPeriod: 1500,});});
+</script>
+<div class='tile white t2x-b'>
+<div class='boxContent be07ca5315 camera_wrap' style='padding:0px;'>
+<?php if($this->_flash):?>
+    <?php foreach($this->_flash as $ef):?>
+        <div data-src='<?php echo $ef['thumb'];?>' data-link="<?php echo $ef['link']?>"></div>
+    <?php endforeach;?>
+<?php else:?>
+    <div data-src='/wz/images/slider1.jpg'></div> 
+    <div data-src='/wz/images/slider2.jpg'></div> 
+    <div data-src='/wz/images/slider3.jpg'></div>
+<?php endif;?>
+ 
+</div>
+</div>
+<a href='/user/login'  class='tile TBlue iconmain '><div class='boxContent'><i class='icon-group'></i></div><div class='tilename '><div class='name'>注册/登陆</div></div></a>
+<a href='/index/bltlist'  class='tile TDarkGreen iconmain '><div class='boxContent'><i class='<?php if(isset($this->icons['_bulletin'])){ echo $this->icons['_bulletin']; }else{ echo "icon-comments-alt"; }?>'></i></div><div class='tilename '><div class='name'><?php if(!$this->_bulletin || $this->_bulletin=='-'){ echo "公司公告"; }else{ echo $this->_bulletin;}?></div></div></a>
+
+<a href='/index/artlist'  class='tile TOrange  t2x iconmain '><div class='boxContent'><i class='<?php if(isset($this->icons['_artlist'])){ echo $this->icons['_artlist']; }else{ echo "icon-table"; }?>'></i></div><div class='tilename '><div class='name_1'><?php if(!$this->_artlist || $this->_artlist=='-'){ echo "新闻动态"; }else{ echo $this->_artlist;}?></div></div></a>
+<a href='/zhaopin'  class='tile TGreen iconmain '><div class='boxContent'><i class='<?php if(isset($this->icons['_zhaopin'])){ echo $this->icons['_zhaopin']; }else{ echo "icon-columns"; }?>'></i></div><div class='tilename '><div class='name'><?php echo $this->_zhaopin;?></div></div></a>
+<a href='/hezuo'  class='tile TBrown iconmain '><div class='boxContent'><i class='<?php if(isset($this->icons['_hezuo'])){ echo $this->icons['_hezuo']; }else{ echo "icon-briefcase"; }?>'></i></div><div class='tilename '><div class='name'><?php echo $this->_hezuo;?></div></div></a>
+<a href='/product/list'  class='tile white t2x image'><div class='boxContent'><img src='/wz/images/cp.jpg' alt='-'></div><div class='tilename TOrange'><div class='name_1'><?php if(!$this->_commoditylist || $this->_commoditylist=='-'){ echo "产品展示"; }else{ echo $this->_commoditylist;}?></div></div></a>
+
+<a href='/about'  class='tile TTwitterBlue t2x iconmain'><div class='boxContent'><i class='<?php if(isset($this->icons['_aboutus'])){ echo $this->icons['_aboutus']; }else{ echo "icon-reorder"; }?>'></i></div><div class='tilename '><div class='name_1'><?php echo $this->_aboutus;?></div></div></a>
+            
+            
+		<a href='/contact'  class='tile TLightPurple t2x iconmain '>
+		<div class='boxContent'><i class='icon-phone'></i></div>
+        	<div class='tilename '><div class='name_1'><?php echo $this->_contact;?></div></div></a>
+                    </div>
+                </div>
+            </div>
+   <div style=" float:left;width:100%; text-align:center; margin-top:20px;">
+              		<a>©2013 <?php echo $this->_siteInfo['realname'];?></a><br>
+       			 <div style=" background:#000; width:100%; line-height:30px; margin-top:10px;"><a href="#">技术支持:上海游太网络科技有限公司</a></div></div>
+
+        <?php echo $this->partial('partials/stats.phtml');?>
+    </body>
+</html>

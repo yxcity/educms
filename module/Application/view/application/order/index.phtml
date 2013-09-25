@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>我的订单</title>
+<meta name="version" content="" />
+<meta name="author" content="" />
+<meta name="robots" content="all" />
+<meta name="copyright" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<meta name="format-detection" content="telephone=no" />
+<link type="text/css" rel="stylesheet" href="/css/style.css" />
+<script type="text/javascript"
+	src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script type="text/javascript" src="/lib/jqall.js"></script>
+<script type="text/javascript" src="/lib/swipe.js"></script>
+</head>
+<body>
+	<!--头部-->
+<?php echo $this->partial ( 'partials/header.phtml');?>
+<!--主体-->
+	<div class="main">
+
+		<div class="user-order">
+			<ul>
+			<?php 
+			if ($this->rows)
+			{
+			    foreach ($this->rows as $val) {
+			?>
+				<li class="clearfix">
+					<p>
+						<a href="">订单号：<?php echo $val['serialnumber'];?></a>
+					</p> <img src="<?php echo $val['thumb']?$val['thumb']:'/images/170x170.gif';?>" />
+					<div class="text_intro">
+						<h3><?php echo $val['name']?></h3>
+						<p>
+							订单金额：<span class="orage">￥<?php echo $val['sum'];?></span>
+						</p>
+						<p>订单状态：<?php echo $val['status']==1?'已支付':'等待支付';?></p>
+						<p>下单时间：<?php echo date("Y-m-d H:i:s",$val['addtime']);?></p>
+						<a class="now_pay" href="/order/pay?id=<?php echo $val['id'];?>">立即付款</a>
+					    <a href="#" class="close_order">取消订单</a>
+					</div>
+				</li>
+				<?php 
+				}
+			}
+				?>
+			</ul>
+		</div>
+	</div>
+<?php echo $this->partial ( 'partials/footer.phtml');?>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

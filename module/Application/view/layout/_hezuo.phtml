@@ -1,0 +1,75 @@
+<!DOCTYPE html> 
+<html> <head> 
+    <title><?php echo $this->_siteInfo['realname'];?> - <?php echo $this->_class_label?></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0;" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="<?php echo $this->_siteInfo['realname'];?> - <?php echo $this->_class_label?>">
+    <meta name="keywords" content="<?php echo $this->_siteInfo['realname'];?> - <?php echo $this->_class_label?>">
+    <link rel="stylesheet" type="text/css" href="/sitetem/default/css/style.css" />
+    <link type="text/css" rel="stylesheet" href="/sitetem/default/css/party.css" />
+    <link rel="stylesheet" type="text/css" href="/sitetem/common/css/commonjia.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/wz/css/font-awesome.css" media="all" />
+  	<script type="text/javascript" src="/sitetem/js/main.js"></script>
+  	<script>
+    window.addEventListener("DOMContentLoaded", function(){
+        btn = document.getElementById("plug-btn");
+        btn.onclick = function(){
+            var divs = document.getElementById("plug-phone").querySelectorAll("div");
+            var className = className=this.checked?"on":"";
+            for(i = 0;i<divs.length; i++){
+                divs[i].className = className;
+            }
+            document.getElementById("plug-wrap").style.display = "on" == className? "block":"none";
+        }
+    }, false);
+    </script>
+    </head>
+    <body style="margin:0;">
+    	<section id="page-wrapper">
+        	<section id="menu-wrapper">
+            <?php echo $this->partial('partials/left_menu.phtml');?>
+            </section> <!-- #menu-wrapper -->
+        	<section id="content-wrapper" style=" min-height:461px;">
+                <section id="header">
+                    <div id="header-left">
+                        <a href="#" id="a-menu"><img src="/sitetem/default/images/menu.png" alt="menu" /></a>
+                    </div>
+                   <div id="header-title"><h1><a class="ui-title" id="popmenu"><?php echo $this->_class_label?></a></h1></div>                     
+                     <header>
+                       <ul class="navigationa">
+     					 <li class="nav_searcha"><a href="#"></a></li>
+    					</ul>
+                      </header>
+                        
+                    <div id="overlay"></div>
+                </section>
+          		<?php echo $this->partial('partials/search.phtml');?>
+     <div id="mess_title"><?php echo $this->art['art_title'];?></div>
+        <div id="mess_content">
+		<?php if($art):?>
+            <?php echo $this->art['art_content'];?>
+		<?php endif;?>
+        </div> 
+			
+		<?php //echo $this->partial('partials/share.phtml');?>
+		
+        <div id="duty"><div id="ft"><p class="wrapper copyright">由&#160;[唯购]游太网络&#160;提供技术支持</p></div></div>
+        <div id="ok">
+            <img src="http://login.veigou.com/images/plug/ok.png">
+            <div id="ok_text"></div>
+        </div>
+        <div id="cover"></div>
+        <div id="loading"><img src="http://login.veigou.com/images/plug/loading.gif">
+            <div id="loading_text"></div></div>
+        <div id="guide"><img src="http://login.veigou.com/images/plug/guide.png"></div>
+        <div id="toast"></div>
+        <script src="/sitetem/js/jquery.min.js"></script>
+		<script src="/sitetem/js/jquery-ui-1.8.16.custom.min.js"></script>
+        <script src="/sitetem/js/site.js"></script>
+        <script src="./index/read?art_id=<?php echo $this->art["art_id"];?>"></script>
+        </section></section>
+        <?php echo $this->partial('partials/bottomjia.phtml');?>
+        <?php echo $this->partial('partials/stats.phtml');?>
+    </body>
+</html>

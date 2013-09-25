@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>我的购物车</title>
+<meta name="version" content="" />
+<meta name="author" content="" />
+<meta name="robots" content="all" />
+<meta name="copyright" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<meta name="format-detection" content="telephone=no" />
+<link type="text/css" rel="stylesheet" href="/css/style.css" />
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+<body>
+	<!--头部-->
+<?php echo $this->partial ( 'partials/header.phtml');?>
+<!--主体-->
+	<div class="main">
+    <form action="#" method="post">
+    	<div class="p_mod">
+    		<h2 class="p_mod_title">购物车</h2>
+            <div class="car">
+                
+              <div class="car_list clearfix">
+                 <a href="#">
+                  <img src="http://weixin3.gg.pp.cc/data/product_logo/20130718211121643.jpg" />
+                </a>
+                <div class="car_content">
+                  <h3><a href="#">成友牌7003纯棉女袜</a></h3>
+                  <span class="price_now">单价：<font>￥6</font></span>
+                  <div class="o_num_input clearfix" id="a280275ccbd54c76bfb94ce29e2c30f3">
+    					<a class="minus ts2" href="javascript:void(0)">-</a>
+    		            <input type="input" readonly="true" name="num" class="num" value="1"/>
+    		            <a class="plus ts2 on" href="javascript:void(0)">+</a>
+                  </div>
+                  <a class="u_order_return delete" href="javascript:;" onclick="update_cart('a280275ccbd54c76bfb94ce29e2c30f3', 5608, 'del')">删除商品</a>
+                </div>
+              </div>
+                            <p><span class="price_now" id="total_fee">总价格：<font>￥6</font></span></p>
+            </div>            
+    	</div>
+            	<div class="o_btn clearfix">
+    		<input type="button" class="o_btn_back ts1" onclick="history.go(-1);" value="继续购物"/>
+    		<input type="submit" class="o_btn_submit ts1" value="去结算" />
+    	</div>
+     </form>
+     
+	</div>
+<?php echo $this->partial ( 'partials/footer.phtml');?>
+<script type="text/javascript">
+  //更新购物车
+  function update_cart(rowid, product_id, number) {
+    if (number == 'del') {
+        num = 0;
+        $('#'+rowid).parent().parent().remove();
+    } else {
+        var num = parseInt($('#' + rowid +' .qty').val());
+        num = num + parseInt(number);
+        if (num < 1) {
+            return false;
+        }        
+    }
+    $.get('http://weixin3.gg.pp.cc/wap/cart/update.html?num=' + num + '&rowid=' + rowid + '&product_id=' + product_id, function(data) {
+        if (data) {
+            data = eval('(' + data + ')');
+            if (data.status == 'error') {
+                alert(data.msg);
+                return false;
+            } else {
+                $('#' + rowid +' .qty').val(num);
+                $('#total_fee font').html('￥'+data.total_fee);
+                return true;
+            }
+        }
+    });    
+  }
+
+  $(".dining_type dd").click(function(){
+    $(this).parent().children('.on').removeClass('on');
+    $(this).addClass('on');
+    $(this).parent().children('input').removeAttr('checked');
+    $(this).children('input').attr('checked', 'true');
+    var table_class = $(this).children('input').attr('id');
+    $('.desks').hide();
+    $('.'+table_class).show();
+  })
+  $('.desks dd').click(function(){
+    $(this).parent().children('.on').removeClass('on');
+    $(this).addClass('on');
+    $(this).parent().children('input').removeAttr('checked');
+    $(this).children('input').attr('checked', 'true');    
+  }) 
+  
+</script>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

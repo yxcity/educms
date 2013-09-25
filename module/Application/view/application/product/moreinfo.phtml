@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8" />
+	<title><?php echo $this->row['name'];?></title>
+	<meta name="version" content="游太网络" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+	<meta name="format-detection" content="telephone=no" />
+	<link type="text/css" rel="stylesheet" href="/css/style.css" />
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+	<?php echo $this->partial ( 'partials/header.phtml');?>
+<!--主体-->
+	
+<div class="main">
+	<div class="p_buy clearfix" id="p_buy">
+		<span class="p_price">
+			￥<?php echo $this->row['rebate'];?>
+			<font class="p_price_pass">￥<?php echo $this->row['price'];?></font>
+		</span>
+
+		<!--检查库存-->
+		   <a href="/product/indent?id=<?php echo $this->row['id'];?>" class="p_btn_buy">
+			<span class="ts1">抢购</span>
+		   </a>
+	</div>
+	<h1 style="font-size: 14px; margin-left:10px;"><?php echo $this->row['name'];?></h1>
+	<div class="p_mod p_short_desc">
+		<h2 class="p_mod_title">图文详情</h2>
+		<div class="p_con">
+			<?php echo htmlspecialchars_decode(stripcslashes($this->row['content']));?>
+		</div>
+		   <a href="/product?id=<?php echo $this->row['id'];?>" class="p_to_desc">返回商品详情<span class="gt"></span></a>
+	</div>
+</div>
+<script type="text/javascript">
+window.onload = function(){
+	//价格与抢购按钮浮动
+	var f_obj = document.getElementById('p_buy');
+	var f_y = f_obj.offsetTop;
+	var f_class = f_obj.className;
+	document.onscroll = function(){
+		if(document.body.scrollTop>f_y){
+			f_obj.className += " fixed_t";
+		}else{
+			f_obj.className = f_class;
+		}
+	}
+	img_size();
+}
+
+function img_size(){
+    var banner_box = document.getElementById("banner");
+    var _img = banner_box.getElementsByTagName('img');
+    _img[0].style.maxWidth = document.body.clientWidth+"px";
+    _img[0].style.maxHeight = (document.body.clientWidth)/2+"px";
+}
+</script>
+<?php echo $this->partial ( 'partials/footer.phtml');?>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

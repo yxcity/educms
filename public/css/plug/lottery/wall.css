@@ -1,0 +1,16 @@
+.dzp_div { 	width: 301px;	height: 227px;	padding:50px 0;	position: relative;	margin: 0 auto;	background: url(/images/plug/lottery/dzp_bg.png) no-repeat center center;	text-align: center;}
+.dzp_bt {padding-top:13px;	width: 300px;	height: 300px;	position: absolute;	display: block;	top: 0;	left: 0;	z-index: 10;}
+
+.ds {	color: #fff;	width: 70px;	height: 16px;	line-height: 16px;	font-size: 12px;	overflow: hidden;	position: absolute;	text-shadow: 1px 1px 1px #333;}
+.ds1 {	z-index: 1;	-moz-transform:rotate(15deg);left: 147px;	top: 34px;}
+.ds2 {	z-index: 2;	-moz-transform:rotate(45deg);left: 201px;	top: 67px;}
+.ds4 {	z-index: 4;	-moz-transform:rotate(105deg);left: 231px;	top: 188px;}
+.ds5 {	z-index: 5;	-moz-transform:rotate(135deg);left: 204px;	top: 246px;}
+.ds6 {	z-index: 6;	-moz-transform:rotate(165deg);left: 147px;	top: 278px;}
+.ds7 {	z-index: 7;	-moz-transform:rotate(195deg);left: 83px;	top: 278px;}
+.ds8 {	z-index: 8;	-moz-transform:rotate(225deg);left: 30px;	top: 246px;}
+.ds9 {	z-index: 9;	-moz-transform:rotate(255deg);left: -1px;	top: 190px;}
+.ds3 {	z-index: 3;	-moz-transform:rotate(75deg);left: 233px;	top: 123px;}
+.ds10 {	z-index: 10;	-moz-transform:rotate(285deg);	left: -3px;	top: 125px;}
+.ds11 {	z-index: 11;	-moz-transform:rotate(315deg);	left: 30px;	top: 67px;}
+.ds12 {	z-index: 12;	-moz-transform:rotate(345deg);	left: 82px;	top: 34px;}

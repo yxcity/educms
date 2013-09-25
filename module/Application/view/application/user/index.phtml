@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8" />
+	<title>个人中心</title>
+	<meta name="version" content="微生活" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+	<meta name="format-detection" content="telephone=no" />
+	<link type="text/css" rel="stylesheet" href="/css/style.css" />
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+<?php echo $this->partial('partials/header.phtml');?>
+<div class="main">
+	<div class="u_index">
+		<div class="u_info clearfix">
+			<h2 class="u_name">微信用户：[<?php echo $this->username;?>]</h2>
+			<p class="u_level">初级会员</p>
+			<!-- <p class="u_fen">现有积分 <span>0</span> 分</p> -->
+		</div>
+		<ul class="u_index_a clearfix">
+			<li><a href="/user/indent" title="">我的订单</a></li>
+			<li><a href="/user/addresslist" title="">地址管理</a></li>
+		</ul>
+	</div>
+</div>
+<?php echo $this->partial('partials/footer.phtml');?>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

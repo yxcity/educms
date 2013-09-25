@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>无标题文档</title>
+<link rel="stylesheet" type="text/css" href="/assets/admin/style.css">
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+
+<!--[if lte IE 7]>
+<style>
+.content { margin-right: -1px; } /* 此 1px 负边距可以放置在此布局中的任何列中，且具有相同的校正效果。 */
+ul.nav a { zoom: 1; }  /* 缩放属性将为 IE 提供其需要的 hasLayout 触发器，用于校正链接之间的额外空白 */
+</style>
+<![endif]-->
+</head>
+
+<body>
+<div class="container">
+  <div class="header"><a href="#"><img src="http://img1.yxcity.net/images/logo.gif" alt="在此处插入徽标" name="Insert_logo"  id="Insert_logo" style="background: #8090AB; display:block;" /></a> 
+    <!-- end .header --></div>
+  <div class="sidebar1">
+    <ul class="nav">
+      <li><a href="">内容管理</a></li>
+      <li><a href="">添加内容</a></li>
+      <li><a href="">采集内容</a></li>
+      <li><a href="">库存内容</a></li>
+    </ul>
+  </div>
+  <div class="content"> <?php echo $this->content;?></div>
+  <div class="footer">
+    <p>版权所有</p>
+  </div>
+</div>
+</body>
+</html>

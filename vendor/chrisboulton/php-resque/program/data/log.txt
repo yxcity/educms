@@ -1,0 +1,289 @@
+
+Array
+(
+    [0] => HTTP/1.1 200 OK
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:05:59 GMT
+    [3] => Content-Type: application/json; charset=UTF-8
+    [4] => Connection: keep-alive
+    [5] => Content-Length: 65
+    [6] => Cache-Control: no-cache, must-revalidate
+)
+
+{"ret":"-20000", "msg":"Request is denied! "}
+Array
+(
+    [0] => HTTP/1.1 200 OK
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:07:31 GMT
+    [3] => Content-Type: application/json; charset=UTF-8
+    [4] => Connection: keep-alive
+    [5] => Content-Length: 65
+    [6] => Cache-Control: no-cache, must-revalidate
+)
+
+{"ret":"-20000", "msg":"Request is denied! "}
+{"ret":"-20000", "msg":"Request is denied! "}
+{"ret":"-20000", "msg":"Request is denied! "}
+{"ret":"-20000", "msg":"Request is denied! "}
+{"ret":"-20000", "msg":"Request is denied! "}
+Array
+(
+    [0] => HTTP/1.1 200 OK
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:12:18 GMT
+    [3] => Content-Type: application/json; charset=UTF-8
+    [4] => Connection: keep-alive
+    [5] => Content-Length: 65
+    [6] => Cache-Control: no-cache, must-revalidate
+)
+
+614
+Array
+(
+    [0] => HTTP/1.1 200 OK
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:16:10 GMT
+    [3] => Content-Type: application/json; charset=UTF-8
+    [4] => Connection: keep-alive
+    [5] => Content-Length: 65
+    [6] => Cache-Control: no-cache, must-revalidate
+)
+
+615
+Array
+(
+    [username] => lwq@etopshine.com
+    [pwd] => 285bc838bec7084221a200666f7e4d19
+    [f] => json
+)
+
+Array
+(
+    [0] => HTTP/1.1 200 OK
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:17:31 GMT
+    [3] => Content-Type: application/json; charset=UTF-8
+    [4] => Connection: keep-alive
+    [5] => Content-Length: 65
+    [6] => Cache-Control: no-cache, must-revalidate
+)
+
+617
+Array
+(
+    [username] => lwq@etopshine.com
+    [pwd] => 285bc838bec7084221a200666f7e4d19
+    [f] => json
+)
+
+Array
+(
+    [0] => HTTP/1.1 200 OK
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:20:03 GMT
+    [3] => Content-Type: application/json; charset=UTF-8
+    [4] => Connection: keep-alive
+    [5] => Content-Length: 65
+    [6] => Cache-Control: no-cache, must-revalidate
+)
+
+618
+Array
+(
+    [username] => lwq@etopshine.com
+    [pwd] => 285bc838bec7084221a200666f7e4d19
+    [f] => json
+)
+
+Array
+(
+    [0] => HTTP/1.1 200 OK
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:21:25 GMT
+    [3] => Content-Type: application/json; charset=UTF-8
+    [4] => Connection: keep-alive
+    [5] => Content-Length: 65
+    [6] => Cache-Control: no-cache, must-revalidate
+)
+
+{
+"Ret": 400,
+"ErrMsg": "",
+"ShowVerifyCode": 0,
+"ErrCode": -6
+}
+
+619
+Array
+(
+    [username] => lwq@etopshine.com
+    [pwd] => 285bc838bec7084221a200666f7e4d19
+    [f] => json
+    [imgcode] => 
+)
+
+Array
+(
+    [0] => HTTP/1.1 200 OK
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:22:46 GMT
+    [3] => Content-Type: application/json; charset=UTF-8
+    [4] => Connection: keep-alive
+    [5] => Content-Length: 65
+    [6] => Cache-Control: no-cache, must-revalidate
+)
+
+{
+"Ret": 400,
+"ErrMsg": "",
+"ShowVerifyCode": 0,
+"ErrCode": -6
+}
+
+619
+Array
+(
+    [username] => lwq@etopshine.com
+    [pwd] => 285bc838bec7084221a200666f7e4d19
+    [f] => json
+    [imgcode] => 
+)
+
+Array
+(
+    [0] => HTTP/1.1 200 OK
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:25:34 GMT
+    [3] => Content-Type: application/json; charset=UTF-8
+    [4] => Connection: close
+    [5] => Content-Length: 65
+    [6] => Cache-Control: no-cache, must-revalidate
+)
+
+{
+"Ret": 400,
+"ErrMsg": "",
+"ShowVerifyCode": 0,
+"ErrCode": -6
+}
+
+619
+Array
+(
+    [username] => lwq@etopshine.com
+    [pwd] => 285bc838bec7084221a200666f7e4d19
+    [f] => json
+    [imgcode] => 
+)
+
+620
+Array
+(
+    [username] => lwq@etopshine.com
+    [pwd] => 285bc838bec7084221a200666f7e4d19
+    [f] => json
+    [imgcode] => 
+)
+
+620
+Array
+(
+    [username] => lwq@etopshine.com
+    [pwd] => 285bc838bec7084221a200666f7e4d19
+    [f] => json
+    [imgcode] => 
+)
+
+Array
+(
+    [0] => HTTP/1.1 200 OK
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:32:19 GMT
+    [3] => Content-Type: application/json; charset=UTF-8
+    [4] => Connection: close
+    [5] => Content-Length: 65
+    [6] => Cache-Control: no-cache, must-revalidate
+)
+
+{
+"Ret": 400,
+"ErrMsg": "",
+"ShowVerifyCode": 0,
+"ErrCode": -6
+}
+
+620
+Array
+(
+    [username] => lwq@etopshine.com
+    [pwd] => 285bc838bec7084221a200666f7e4d19
+    [f] => json
+    [imgcode] => 
+)
+
+Array
+(
+    [0] => HTTP/1.1 200 OK
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:32:49 GMT
+    [3] => Content-Type: application/json; charset=UTF-8
+    [4] => Connection: close
+    [5] => Content-Length: 122
+    [6] => Cache-Control: no-cache, must-revalidate
+    [7] => Set-Cookie: cert=9hkNgFhXBbOYExNpjZO_QDIfj1Rdh2sq; Path=/; Secure; HttpOnly
+    [8] => Set-Cookie: slave_user=gh_a8c68e0f58b0; Path=/; Secure; HttpOnly
+    [9] => Set-Cookie: slave_sid=OWhrTmdGaFhCYk9ZRXhOcGpaT19RRElmajFSZGgyc3FqS2R4b3NzWUJmVmVNSUI0R28ydFpLSWlMd3RfeVZvUEZCbTAwT1lCMFJOTXltUGJJUENIeWhYZ05wZWppQzdWYXJWYWVSSmNIdlpjUExseEZuTjhHVlZnMnVhaWpzenU=; Path=/; Secure; HttpOnly
+)
+
+{
+"Ret": 302,
+"ErrMsg": "/cgi-bin/indexpage?t=wxm-index&lang=zh_CN&token=2127072406",
+"ShowVerifyCode": 0,
+"ErrCode": 0
+}
+
+header:Array
+(
+    [0] => HTTP/1.1 302
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:32:49 GMT
+    [3] => Content-Type: text/html; charset=UTF-8
+    [4] => Connection: keep-alive
+    [5] => Location: /cgi-bin/indexpage?t=wxm-index&lang=zh_CN&token=2127072406
+    [6] => Content-Length: 25583
+    [7] => Cache-Control: no-cache, must-revalidate
+)
+
+token:2127072406
+598
+header:Array
+(
+    [0] => HTTP/1.1 302
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:34:02 GMT
+    [3] => Content-Type: text/html; charset=UTF-8
+    [4] => Connection: keep-alive
+    [5] => Location: /cgi-bin/indexpage?t=wxm-index&lang=zh_CN&token=2127072406
+    [6] => Content-Length: 25583
+    [7] => Cache-Control: no-cache, must-revalidate
+)
+
+611
+token:2127072406
+610
+header:Array
+(
+    [0] => HTTP/1.1 302
+    [1] => Server: nginx/0.7.64
+    [2] => Date: Sat, 10 Aug 2013 13:37:24 GMT
+    [3] => Content-Type: text/html; charset=UTF-8
+    [4] => Connection: keep-alive
+    [5] => Location: /cgi-bin/indexpage?t=wxm-index&lang=zh_CN&token=2127072406
+    [6] => Content-Length: 25583
+    [7] => Cache-Control: no-cache, must-revalidate
+)
+
+623
+token:2127072406
+{"ret":"0", "msg":"ok"}

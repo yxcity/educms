@@ -1,0 +1,353 @@
+<div class="header">
+	<div class="stats" style="margin-right: 10px;">
+		<p class="stat">
+			<span class="number"><?php echo $this->askCount;?></span>问题
+		</p>
+		<p class="stat">
+			<span class="number"><?php echo $this->commodityCount;?></span>商品
+		</p>
+		<p class="stat">
+			<span class="number"><?php echo $this->IndentCount;?></span>订单
+		</p>
+	</div>
+	<h1 class="page-title">控制面板</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li class="active">控制面板</li>
+	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+            <div class="alert alert-info">
+            <?php if($this->user->roleid==4) echo "<font color=\"red\"><b>请&nbsp;&nbsp;注&nbsp;&nbsp;意：本系统为工作人员所有，供演示使用</b></font><br>";?>
+            <strong>欢&nbsp;&nbsp;迎&nbsp;&nbsp;您：</strong><?php echo $user->realname;?><br>
+            <strong>系统版本：</strong><?php echo $this->role_name?> v2.96
+            </div>
+            <?php 
+            if ($this->auth)
+            {
+            	//echo "<div class=\"alert alert-info\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button> <strong>{$this->auth->title}:</strong>{$this->auth->message}</div>";
+            }
+            ?>
+
+			<div class="block">
+				<a href="#page-stats" class="block-heading" data-toggle="collapse">预览统计</a>
+				<div id="page-stats" class="block-body collapse in">
+
+					<div class="stat-widget-container">
+						<div class="stat-widget">
+							<div class="stat-button">
+								<p class="title"><a href="/indent"><?php echo $this->IndentCount;?></a></p>
+								<p class="detail">订单数量</p>
+							</div>
+						</div>
+
+						<div class="stat-widget">
+							<div class="stat-button">
+								<p class="title"><a href="/shop"><?php echo $this->shopcount;?></a></p>
+								<p class="detail">门店数量</p>
+							</div>
+						</div>
+
+						<div class="stat-widget">
+							<div class="stat-button">
+								<p class="title"><a href="/commodity"><?php echo $this->commodityCount;?></a></p>
+								<p class="detail">商品数量</p>
+							</div>
+						</div>
+
+						<div class="stat-widget">
+							<div class="stat-button">
+								<p class="title"><a href="/keyword"><?php echo $this->keywordCount;?></a></p>
+								<p class="detail">用户提交</p>
+							</div>
+						</div>
+						
+						<div class="stat-widget">
+							<div class="stat-button">
+								<p class="title"><a href="/answers"><?php echo $this->askCount;?></a></p>
+								<p class="detail">问题反馈</p>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="block span6">
+				<a href="#tablewidget" class="block-heading" data-toggle="collapse">最新订单<!-- <span
+					class="label label-warning">+5</span> --></a>
+				<div id="tablewidget" class="block-body collapse in">
+					<table class="table">
+						<thead>
+							<tr>
+								<th width="10%">#</th>
+								<th width="50%">商品名称</th>
+								<th width="25%">生成时间</th>
+								<th width="15%">状态</th>
+							</tr>
+						</thead>
+						<tbody>
+        				<?php 
+        				if ($this->rows)
+        				{
+        				    foreach ($this->rows as $val) {
+        				?>
+        					<tr>
+        					    <td ><?php echo $val['id'];?></td>
+        						<td style="word-break : break-all; "><?php echo $val['name'];?></td>
+        						<td><?php echo date("Y-m-d",$val['addtime']);?></td>
+        						<td><?php echo $this->status[$val['status']]; ?></td>
+        					</tr>
+        				<?php
+        				  } 
+        				}
+        				?>	
+						</tbody>
+					</table>
+					<p>
+						<a href="/indent">More...</a>
+					</p>
+				</div>
+			</div>
+			
+			<div class="block span6">
+				<a href="#widget1container" class="block-heading"
+					data-toggle="collapse">最新通知<span
+					class="label label-warning">客服QQ：1316979957</span></a>
+				<div id="widget1container" class="block-body collapse in">
+					请通过有问必答平台进行提交，我们将及时进行答复<br>
+					<a href="http://pan.baidu.com/share/link?shareid=428235032&uk=3778530696" target="_blank">最新PPT教程下载</a>，提取密码：e75h
+					<!-- <h3>功能预告：</h3>
+					2013-07-?? (唯购1.X)自动回复、图文素材更加完善，订单、快递查询...<br>
+					2013-08-?? (唯购2.X)拟上线:团购？微站？营销插件？自媒体？自定义菜单？
+					2013-08-?? (唯购2.X)拟上线:营销插件？自媒体？完善的电商流程？ 更多开发中...
+					<h3>系统更新：</h3>
+					2013-09-??  微电商， 微站；全新登陆模式，会员管理，支付多选，权限重构，功能模块化；<br>
+					2013-09-??  营销插件，大转盘、刮刮卡、会员卡、易于管理的图片系统，品牌管理...<br>
+					2013-09-06     新增功能：营销插件-活动报名，添加活动，分享到朋友圈，收集信息 -->
+					<table class="table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th width="60%">标题</th>
+								<th>发布时间</th>
+							</tr>
+						</thead>
+						<tbody>
+        				<?php 
+        				if ($this->drows)
+        				{
+        				    foreach ($this->drows as $val) {
+        				?>
+        					<tr>
+        					    <td ><?php echo $val['art_id'];?></td>
+        						<td style="word-break : break-all; "><a href="/s/help/<?php echo $val['art_id'];?>/" target="_blank"><?php echo $val['art_title'];?></a></td>
+        						<td><?php echo date("Y-m-d",$val['created_time']);?></td>
+        					</tr>
+        				<?php
+        				  } 
+        				}
+        				?>	
+						</tbody>
+					</table>
+					<p>
+						<a href="#">More...</a>
+					</p>
+				</div>
+			</div>
+	    </div>
+		<div class="row-fluid">
+			<div class="block span6">
+				<a href="#tablewidget2" class="block-heading" data-toggle="collapse">业内动态</a>
+				<div id="tablewidget2" class="block-body collapse in">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th width="60%">标题</th>
+								<th>发布时间</th>
+							</tr>
+						</thead>
+						<tbody>
+        				<?php 
+        				if ($this->crows)
+        				{
+        				    foreach ($this->crows as $val) {
+        				?>
+        					<tr>
+        					    <td ><?php echo $val['art_id'];?></td>
+        						<td style="word-break : break-all; "><a href="/s/help/<?php echo $val['art_id'];?>/" target="_blank"><?php echo $val['art_title'];?></a></td>
+        						<td><?php echo date("Y-m-d",$val['created_time']);?></td>
+        					</tr>
+        				<?php
+        				  } 
+        				}
+        				?>	
+						</tbody>
+					</table>
+					<p>
+						<a href="#">More...</a>
+					</p>
+				</div>
+			</div>
+			
+			<div class="block span6">
+				<a href="#tablewidget1" class="block-heading" data-toggle="collapse">帮助教程</a>
+				<div id="tablewidget1" class="block-body collapse in">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th width="60%">标题</th>
+								<th>发布时间</th>
+							</tr>
+						</thead>
+						<tbody>
+        				<?php 
+        				if ($this->brows)
+        				{
+        				    foreach ($this->brows as $val) {
+        				?>
+        					<tr>
+        					    <td ><?php echo $val['art_id'];?></td>
+        						<td style="word-break : break-all; "><a href="/s/help/<?php echo $val['art_id'];?>/" target="_blank"><?php echo $val['art_title'];?></a></td>
+        						<td><?php echo date("Y-m-d",$val['created_time']);?></td>
+        					</tr>
+        				<?php
+        				  } 
+        				}
+        				?>	
+						</tbody>
+					</table>
+					<p>
+						<a href="#">More...</a>
+					</p>
+				</div>
+			</div>
+		</div>
+			
+			<!-- <div class="block span6">
+				<a href="#tablewidget" class="block-heading" data-toggle="collapse">最新关键字<span
+					class="label label-warning">+5</span></a>
+				<div id="tablewidget" class="block-body collapse in">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>关键字</th>
+								<th>提交时间</th>
+								<th>消息ID</th>
+							</tr>
+						</thead>
+						<tbody>
+        				<?php 
+        				/*if ($this->rows)
+        				{
+        				    foreach ($this->rows as $val) {
+        				?>
+        					<tr>
+        					    <td ><?php echo $val['id'];?></td>
+        						<td style="word-break : break-all; "><?php echo $val['content'];?></td>
+        						<td><?php echo date("Y-m-d",$val['createTime']);?></td>
+        						<td><?php echo $val['msgId'];?></td>
+        					</tr>
+        				<?php
+        				  } 
+        				}*/
+        				?>	
+						</tbody>
+					</table>
+					<p>
+						<a href="/keyword">More...</a>
+					</p>
+				</div>
+			</div>-->
+
+		<!-- <div class="row-fluid">
+			<div class="block span6">
+				<div class="block-heading">
+					<span class="block-icon pull-right"> <a href="#"
+						class="demo-cancel-click" rel="tooltip" title="Click to refresh"><i
+							class="icon-refresh"></i></a>
+					</span> <a href="#widget2container" data-toggle="collapse">最新用户</a>
+				</div>
+				<div id="widget2container" class="block-body collapse in">
+					<table class="table list">
+						<tbody>
+							<tr>
+								<td>
+									<p>
+										<i class="icon-user"></i> Mark Otto
+									</p>
+								</td>
+								<td>
+									<p>Amount: $1,247</p>
+								</td>
+								<td>
+									<p>Date: 7/19/2012</p> <a href="#">View Transaction</a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p>
+										<i class="icon-user"></i> Audrey Ann
+									</p>
+								</td>
+								<td>
+									<p>Amount: $2,793</p>
+								</td>
+								<td>
+									<p>Date: 7/12/2012</p> <a href="#">View Transaction</a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p>
+										<i class="icon-user"></i> Mark Tompson
+									</p>
+								</td>
+								<td>
+									<p>Amount: $2,349</p>
+								</td>
+								<td>
+									<p>Date: 3/10/2012</p> <a href="#">View Transaction</a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p>
+										<i class="icon-user"></i> Ashley Jacobs
+									</p>
+								</td>
+								<td>
+									<p>Amount: $1,192</p>
+								</td>
+								<td>
+									<p>Date: 1/19/2012</p> <a href="#">View Transaction</a>
+								</td>
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="block span6">
+				<p class="block-heading">系统信息</p>
+				<div class="block-body">
+					<h2>系统信息</h2>
+					加载中...
+				</div>
+			</div>
+		</div>
+		-->
+		 <?php 
+		 echo $this->partial('partials/homeFooter.phtml');
+		 ?>
+	</div>
+</div>

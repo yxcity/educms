@@ -1,0 +1,32 @@
+﻿<div id="menu-search" style="display: inline-block;">
+	<form class="search" action="/index/artlist" method="GET">
+	<input id="menu-search-input-text" type="text" placeholder="Search..." name="keyword"/>
+	<input id="menu-search-input-submit" type="submit" value="" />
+	</form>
+</div>
+				
+<ul class="menu">
+       <li class="icon q1"><a href="/"><span class="menu-li-title">首页</span><img class="menu-li-arrow" src="/sitetem/default/images/arrow-forward.png" alt="" /></a></li>
+       <li class="icon q7"><a href="/user/login"><span class="menu-li-title">注册/登陆</span><img class="menu-li-arrow" src="/sitetem/default/images/arrow-forward.png" alt="" /></a></li>
+       <li class="icon q6"><a href="/index/bltlist"><span class="menu-li-title"><?php echo $this->_bulletin;?></span><img class="menu-li-arrow" src="/sitetem/default/images/arrow-forward.png" alt="" /></a></li>
+       <li id="a-submenu-1" class="icon q8"><a href="#"><span class="menu-li-title"><?php echo $this->_artlist;?></span><img class="menu-li-arrow-submenu" src="/sitetem/default/images/submenu.png" alt="" /></a>
+           <ul id="submenu-1">
+             <?php if($this->subclasses):?>
+                  <?php foreach($this->subclasses as $sk=>$sv):?>
+                      <li>
+                      <a href="/index/artlist?sc=<?php echo $sv['id']?>">
+                      <span class="menu-li-title"><?php echo $sv['name']?></span>
+                      <img class="menu-li-arrow" src="/sitetem/default/images/arrow-forward.png" alt="" />
+                      </a>
+                      </li>
+                  <?php endforeach;?>
+              <?php endif;?>
+           </ul>
+       </li>
+       <li class="icon q6"><a href="/zhaopin"><span class="menu-li-title"><?php echo $this->_zhaopin;?></span><img class="menu-li-arrow" src="/sitetem/default/images/arrow-forward.png" alt="" /></a></li>
+       <li class="icon q6"><a href="/hezuo"><span class="menu-li-title"><?php echo $this->_hezuo;?></span><img class="menu-li-arrow" src="/sitetem/default/images/arrow-forward.png" alt="" /></a></li>
+       <li class="icon q4"><a href="/product/list"><span class="menu-li-title"><?php echo $this->_commoditylist;?></span><img class="menu-li-arrow" src="/sitetem/default/images/arrow-forward.png" alt="" /></a></li>
+       <li class="icon q3"><a href="/about"><span class="menu-li-title"><?php echo $this->_aboutus;?></span><img class="menu-li-arrow" src="/sitetem/default/images/arrow-forward.png" alt="" /></a></li>
+       <li class="icon q3"><a href="/contact"><span class="menu-li-title"><?php echo $this->_contact;?></span><img class="menu-li-arrow" src="/sitetem/default/images/arrow-forward.png" alt="" /></a></li> 
+</ul>
+<!-- .menu -->

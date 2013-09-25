@@ -1,0 +1,166 @@
+<div class="header">
+	<h1 class="page-title"><?php echo $this->sa['sl'];?></h1>
+</div>
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><a href="/article/index?s=<?php echo $this->sa['st']?>"><?php echo $this->sa['sl'];?></a></li>
+	<?php if ($this->keywords){ ?>
+	    <span class="divider">=></span><li class="active">当前搜索关键词：”<?php echo $this->keywords; ?>“</li>
+	<?php }?>
+	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+
+<div class="container-fluid">
+	<?php echo $this->partial('partials/flashMsg.phtml');?>
+	<div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+		<div class="btn-toolbar">
+            <div class="search-well">
+                <form class="form-inline" action="" method="post" >
+					<?php if($this->sa['st'] == "def"):?>
+						 <select name="subclassid" id="subclassid" style="margin-right: 5px;">
+			                <option value="0">--全部分类--</option>
+			                  <?php 
+								if ($this->select_items)
+								{
+									foreach ($this->select_items as $val) {
+										if($val['id'] == 60){
+											continue;
+										}
+										echo "<option value=\"{$val['id']}\"";
+										if ($this->subclassid==$val['id']) echo ' selected="true"';
+										echo ">{$val['name']}</option>";
+									}
+								}
+							 ?>
+			            </select> 
+					<?php endif;?>
+					       
+                    <input class="input-xlarge" id="keywords"  name="keywords" type="text" value="<?php echo $this->keywords ;?>" style="margin-right: 5px;">
+                    <button class="btn" type="submit" onclick="return checkform();"><i class="icon-search"></i> 搜索</button>
+                </form>
+            </div>
+				<?php
+				echo $this->bp->genActLink('article_create',$this->bp->act_add,'添加'.$this->sa['sl'],array('s'=>$this->sa['st']));
+				?>
+			<div class="btn-group"></div>
+		</div>
+        <script src="/lib/bootstrap/js/bootstrap-popover.js" type="text/javascript"></script>
+        <script src="/lib/bootstrap/js/bootstrap-tooltip.js" type="text/javascript"></script>
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="6%">#</th>
+						<th width="40%">标题</th>
+						<?php if($this->sa['st'] == "def"):?>
+							<th>分类</th>
+						<?php endif;?>
+						<th>访问UV</th>
+						<th>访问PV</th>
+						<th>创建时间</th>
+						<th>更新时间</th>
+						<th>推荐</th>
+						<th style="width: 58px;">改 / 删</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php 
+				if ($this->rows)
+				{
+				    $i=0;
+				    foreach ($this->rows as $val) {
+				?>
+					<tr id="art_<?php echo $val['art_id'];?>">
+						<td><?php echo $val['art_id'];?></td>
+						<td>
+						<div style="display: inline;" id="pics">
+						<a href="http://api.kuaipai.cn/qr?chs=350x350&chl=<?php echo BASE_URL;?>/index/artdetail?art_id=<?php echo $val['art_id'];?>" rel="[gall1]" title="微信扫一扫，在微信里预览！第<?php echo $i+1;?>张"><img src="http://api.kuaipai.cn/qr?chs=350x350&chl=<?php echo BASE_URL;?>/index/artdetail?art_id=<?php echo $val['art_id'];?>" alt="微信扫一扫，在微信里预览！第<?php echo $i+1;?>张" width="30" height="20" /></a></div>
+						<a href="/index/<?php if($this->sa['st']=='blt'){ echo "blt"; }else{ echo "art";}?>detail?art_id=<?php echo $val['art_id'];?>" target="_blank"><?php if($this->keywords):?>
+						<?php echo str_replace($this->keywords,'<font color=red>'.$this->keywords.'</font>',$val['art_title']);?>
+						<?php else: ?>
+						<?php echo $val['art_title'];?>
+						<?php endif;?></a>
+						</td>
+						<?php if($this->sa['st'] == "def"):?>
+							<td>
+							<?php echo isset($this->type[$val['subclassid']])?$this->type[$val['subclassid']]:'未知分类';?>
+								
+							</td>
+						<?php endif;?>
+						
+						<td><?php echo $val['art_uv'];?></td>
+						<td><?php echo $val['art_pv'];?></td>
+						<td><?php if($val['created_time']){echo date('Y-m-d H:i:s',$val['created_time']);}?></td>
+						<td><?php if($val['updated_time']){echo date('Y-m-d H:i:s',$val['updated_time']);}?></td>
+						<td><?php echo $val['commend']==''?'未推荐':''?><?php echo $val['commend']==0?'未推荐':''?><?php echo $val['commend']==1?'普通推荐':''?><?php echo $val['commend']==2?'首页推荐':''?></td>
+						<td>
+						<?php echo $this->bp->genActLink('article_edit',$this->bp->act_edit,'',array('art_id'=>$val['art_id'],'s'=>$this->sa['st']));?>
+						&nbsp;&nbsp;&nbsp;
+						<?php echo $this->bp->genActLink('article_delete',$this->bp->act_del,'',array('del_id'=>$val['art_id']));?>
+						</td>
+					</tr>
+				<?php
+				    $i++;
+				  } 
+				}
+				?>	
+				</tbody>
+			</table>
+		</div>
+		<?php 
+		echo $this->paginationcontrol($this->rows,'Sliding','pagination/pagination.phtml',array('key'=>$this->keywords));
+		?>
+		<div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		   <script type="text/javascript">
+			 
+			 function triggerDel(del_id)
+		    {
+		   		$("#remove").click(function(){
+					
+					var s = "<?php echo $this->sa['st']?>";
+					$.post('/article/delete?art_id='+del_id+'&s='+s,{'art_id':del_id},function(data){
+	                     alert(data.msg);
+						 if (data.req=="ok")
+	                     {
+							 window.location.reload();
+	                     }
+	                 },'json');
+					
+				});		
+		    }
+		   </script>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除<?php echo $this->sa['sl'];?></h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>确定删除指定的<?php echo $this->sa['sl'];?>信息？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="remove" data-dismiss="modal" >确认</button>
+			</div>
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+	</div>
+</div>
+<script type="text/javascript" charset="utf-8" src="/js/jquery-foxibox-0.2.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#pics a').foxibox();
+});
+a2a_linkname = document.title;
+a2a_linkurl = "";
+
+function checkform(){
+    var keywords = $('#keywords').val();
+    if (keywords == 0 || keywords =='' ) {
+        alert('请填写关键词！');
+        return false;
+    }
+}
+</script>

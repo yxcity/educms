@@ -1,0 +1,35 @@
+#!/bin/bash
+#chkconfig: - 85 15
+#description:dtask,a distributed task framework
+
+case "$1" in
+    start)
+	count=2 
+        if [[ "$3" -gt  0 ]] 
+        then 
+            count=$3
+        fi
+
+        if [[ "$2" == 'master' ]]
+	then
+            QUEUE=MasterTasks COUNT=$count php dtask.php
+        elif [[ "$2" == 'worker' ]]
+        then
+            QUEUE=SubTasks COUNT=$count  php dtask.php
+        else
+            echo "the 2th parameter should be master or worker."
+        fi
+        ;;
+    stop)
+        killall -9 php 
+        ;;
+    test)
+	php queue.php dtask\\MasterTask
+	;;
+    testsyn)
+	php syncuser_queue.php dtask\\MasterTask
+	;;
+    *)
+        echo "Please use start or stop as first argument"
+        ;;
+esac

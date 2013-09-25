@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8" />
+	<title><?php echo $this->row['name'];?>评论</title>
+	<meta name="version" content="评论" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+	<meta name="format-detection" content="telephone=no" />
+	<link type="text/css" rel="stylesheet" href="/css/style.css" />
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+	<?php echo $this->partial ( 'partials/header.phtml');?><!--主体-->
+<div class="main">
+	<div class="p_mod">
+		<h2 class="p_mod_title">总共（<?php echo $this->row['comment'];?>）条评论
+		<span class="p_comment clearfix">评分 
+		<font class="p_com_num">0.0</font>
+		<span class="p_com_b">
+		<span class="p_com_t" style="width: 10%;"></span></span></span></h2>
+		<ul class="p_com_list clearfix">
+        </ul>
+	</div>
+	<div class="p_mod p_seller_info p_tips ts2"><a href="/product?id=<?php echo $this->row['id'];?>">查看商品详情<span class="gt"></span></a></div>
+	<div class="p_buy clearfix fixed_b">
+		<span class="p_price">￥<?php echo $this->row['rebate'];?><font class="p_price_pass">￥<?php echo $this->row['price'];?></font></span>
+		<a href="/product/indent?id=<?php echo $this->row['id'];?>" class="p_btn_buy"><span class="ts1">抢购</span></a>
+	</div>
+</div>
+<?php echo $this->partial ( 'partials/footer.phtml');?>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

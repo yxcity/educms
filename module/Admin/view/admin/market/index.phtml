@@ -1,0 +1,157 @@
+<div class="header">
+	<h1 class="page-title">营销活动</h1>
+</div>
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+        <li class="active">营销活动列表</li>
+	<?php if ($this->keywords){ ?>
+	    <span class="divider">=></span><li class="active">当前搜索关键词：”<?php echo $this->keywords; ?>“</li>
+	<?php }?>
+  <li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+<div class="container-fluid">
+	<div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+        <div class="btn-toolbar">    		    
+            <div class="search-well">
+                <form class="form-inline" action="" method="post" >        
+                    <input class="input-xlarge" id="keywords"  name="keywords" type="text" value="<?php echo $this->keywords ?>" style="margin-right: 5px;">
+                    <button class="btn" type="submit" onclick="return checkform();"><i class="icon-search"></i> 搜索</button>
+                </form>
+            </div>
+		    <div class="btn-group">
+			<?php
+                $btns = array(
+                null,
+                '<a href="/market/activity?action=add&type=1" class="btn btn-primary"><i class="icon-plus"></i> 添加大转盘活动</a>',
+                '<a href="/market/activity?action=add&type=2" class="btn btn-primary"><i class="icon-plus"></i> 添加刮刮卡活动</a>',
+                '<a href="/market/vtconfig?action=add&type=1" class="btn btn-primary"><i class="icon-plus"></i> 添加文字投票</a><a href="/market/vtconfig?action=add&type=2" class="btn btn-primary"><i class="icon-plus"></i> 添加图片投票</a>'
+                );
+                if(isset($this->type) && isset($btns[$this->type])){
+                    echo $btns[$this->type];
+                }else{
+                    echo implode('',$btns);
+                }
+            
+            ?>
+            </div>
+        </div>
+        
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="32%">标题</th>
+						<th width="8%">活动类型</th>
+                        <th width="10%">关键字</th>
+						<th width="5%">菜单</th>
+                        <th width="15%">开始时间</th>
+                        <th width="15%">结束时间</th>
+						<th width="8%">操作</th>
+                        <th width="58px">改 / 删</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php
+                function get_activity_name($act){
+                    $type = $act['type'];
+                    $acts = array(
+                        array("name"=>"其它",'link'=>'/s/activity/lottery/','edit_url'=>'#','opt_url'=>'#','opt_name'=>'-'),
+                        array("name"=>"大转盘",'link'=>'/s/activity/lottery/','edit_url'=>'/market/activity?action=edit&id='.$act['id'],'opt_url'=>'/market/snmanager?id='.$act['id'],'opt_name'=>'兑奖管理'),
+                        array("name"=>"刮刮卡",'link'=>'/s/activity/scratch/','edit_url'=>'/market/activity?action=edit&id='.$act['id'],'opt_url'=>'/market/snmanager?id='.$act['id'],'opt_name'=>'兑奖管理'),
+                        array("name"=>"投票",'link'=>'/s/activity/vote/','edit_url'=>'/market/vtconfig?action=edit&id='.$act['id'],'opt_url'=>'/market/vtresult?id='.$act['id'],'opt_name'=>'投票结果')
+                        
+                    );
+                    if(isset($acts[$type])){
+                        return $acts[$type];
+                    }
+                    return $acts[0];
+                }
+                
+				if ($this->rows)
+				{
+				    $i=0;
+                    foreach ($this->rows as $val) {
+                        $act_info = get_activity_name($val);
+				?>
+					<tr id="activity_<?php echo $val['id'];?>">
+						<td><div style="display: inline;" id="pics">
+						<a href="http://api.kuaipai.cn/qr?chs=350x350&chl=<?php echo BASE_URL;?><?php echo $act_info['link'].$val['id'];?>" rel="[gall1]" title="微信扫一扫，在微信里预览！第<?php echo $i+1;?>张"><img src="http://api.kuaipai.cn/qr?chs=350x350&chl=<?php echo BASE_URL;?><?php echo $act_info['link'].$val['id'];?>" alt="微信扫一扫，在微信里预览！第<?php echo $i+1;?>张" width="30" height="20" /></a>
+						</div><a href="<?php echo $act_info['link'].$val['id'];?>" target="_blank"><?php echo $val['title'];?></a></td>
+						<td><?php echo $act_info['name']?></td>
+                        <td><?php echo $val['keyword']?$val['keyword']:'-';?></td>
+						<td><?php echo $val['menu_id']?$val['menu_id']:'-';?></td>
+						<td><?php echo $val['open_time']?$val['open_time']:'-';?></td>
+                        <td><?php echo $val['close_time']?$val['close_time']:'-';?></td>
+                        <td><a href="<?php echo $act_info['opt_url'];?>" title="<?php echo $act_info['opt_name'];?>"><?php echo $act_info['opt_name'];?></a></td>
+						<td>
+						<a href="<?php echo $act_info['edit_url'];?>" title="修改"><i class="icon-cog"></i></a>&nbsp;&nbsp;&nbsp;
+						<a href="#delete" role="button" data-toggle="modal" data-id="<?php echo $val['id'];?>" title="删除"><i class="icon-remove"></i></a>
+						</td>
+					</tr>
+					<?php 
+					$i++;
+					}
+					}
+					?>
+				</tbody>
+			</table>
+		</div>
+		<?php 
+		echo $this->paginationcontrol($this->rows,'Sliding','pagination/pagination.phtml',array('key'=>$this->keywords,'route'=>'market','action'=>'index'));
+		?>
+		<script type="text/javascript">
+        $(document).ready(function(){
+            $("a[href='#delete']").on('click',function(){
+                $('#btn_del_activity').attr('data-id',$(this).attr('data-id'));
+                $('#dlg_del_activity').modal('show');
+            });
+            
+            $('#btn_del_activity').on('click',function(){
+                 var self = $(this);
+                 var id = self.attr('data-id');
+                 $.post('/market/delete?id='+id,{'id':id},function(data){
+                     if (data.code=='ok')
+                     {
+                    	 $('#activity_'+id).hide();
+                     }
+                 },'json');
+            });
+        });
+        </script>
+		<div class="modal small hide fade" id="dlg_del_activity" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除活动</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>确定删除当前选定的活动？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="btn_del_activity" data-dismiss="modal">确认</button>
+			</div>
+		</div>
+		<?php 
+		echo $this->partial('partials/homeFooter.phtml');
+		?>
+	</div>
+</div>
+<script type="text/javascript" charset="utf-8" src="/js/jquery-foxibox-0.2.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#pics a').foxibox();
+});
+a2a_linkname = document.title;
+a2a_linkurl = "";
+
+function checkform(){
+    var keywords = $('#keywords').val();
+    if (keywords == 0 || keywords =='' ) {
+        alert('请填写关键词！');
+        return false;
+    }
+}
+</script>

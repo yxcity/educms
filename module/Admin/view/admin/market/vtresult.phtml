@@ -1,0 +1,40 @@
+<div class="header">
+  <h1 class="page-title">投票结果</h1>
+</div>
+<ul class="breadcrumb">
+  <li><a href="/home">首页</a> <span class="divider">/</span></li>
+  <li><a href="/market">营销活动</a> <span class="divider">/</span></li>
+  <li class="active">投票结果</li>
+  <li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div id="helpcontroller" class="collapse"></div>
+      <div class="btn-toolbar">
+        <button type="submit" name="submit" id="submit"  class="btn btn-primary" onclick="history.go(-1)">返回</button>
+        <div class="btn-group"></div>
+      </div>
+	  <div class="well">
+		<div class="row-fluid">
+			<h2><?php echo $this->title;?></h2>
+            <h4>总票数：<?php echo $this->total_count;?></h4>
+            <ol>
+                <?php 
+                if($this->stats){
+                foreach($this->stats as $item){?>
+                    <li>
+                    <span><?php echo $item['name'] . "，票数：" . $item['count'];?></span>
+                    <div class="progress">
+                          <div  class="bar" style="width: <?php echo $item['rate'];?>%;"><?php echo $item['rate'] . '%'?></div>
+                    </div>
+                    </li>
+                <?php
+                }
+                }
+                ?>
+            </ol>
+            
+		</div>
+      </div>
+  </div>
+</div>

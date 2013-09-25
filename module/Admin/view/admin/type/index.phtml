@@ -1,0 +1,160 @@
+<div class="header">
+	<h1 class="page-title">分类列表</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li class="active"><?php echo $this->class_label?></li>
+	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+	<?php 
+	if ($this->success)
+	{
+	    echo "<div class=\"alert alert-success\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+	}
+	?>
+		<div class="btn-toolbar">
+			<?php echo $this->bp->genActLink(
+				'type_create',
+				$this->bp->act_add,
+				'添加分类',
+				array(
+					'classid'=>$this->classid,
+					'route'=>'/t/create'
+				));
+			?>
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>类型名称</th>
+						<th>是否显示</th>
+						<th>排序序号</th>
+						<?php if($this->classid == 10):?>
+							<th>商品属性</th>
+						<?php endif;?>
+						<th style="width: 50px;">改 / 删</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+				
+				<?php 
+					if($this->rows):
+						foreach($this->rows as $val):
+							if($val['id'] == 60)://公司动态一级分类不显示
+								continue;
+							endif;
+				?>
+						<tr id="type_<?php echo $val['id'];?>">
+							<td><?php echo $val['id'];?></td>
+							<td><?php echo $val['name'];?></td>
+							<td><?php echo $val['display']==1?'显示':'隐藏';?></td>
+							<td>
+							<input type="text" id="s_<?php echo $val['id']?>" value="<?php echo $val['sorting'];?>" class="input-mini">
+							<a href="#" class="to_sorting" id="lk_<?php echo $val['id'];?>">更新排序</a>
+							</td>
+							
+							<?php if($this->classid == 10):?>
+								<td><?php echo $this->bp->genActLink('attribute_index',$this->bp->act_link,'查看详情',array('prod_class'=>$val['id']));?></td>
+							<?php endif;?>
+							
+							<td>
+							<?php if($val['domain'] != 'system'):?>
+								<?php echo $this->bp->genActLink(
+									'type_edit',
+									$this->bp->act_edit,
+									'',
+									array(
+										'id'=>$val['id'],
+										'route'=>'/t/edit'	
+									));?>
+								 &nbsp;
+								<?php echo $this->bp->genActLink('type_delete',$this->bp->act_del,'',array('del_id'=>$val['id']));?>
+							<?php endif;?>
+							</td>
+						</tr>
+				<?php	
+						endforeach; 
+					endif;
+				?>
+				
+				
+				
+				<!--Display List-->	
+				</tbody>
+			</table>
+		</div>
+		
+		<?php
+		if($this->pager_link){
+			echo $this->pager_link;
+		}
+		?>
+		
+		<div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<script type="text/javascript">
+		
+		
+		function triggerDel(del_id)
+	    {
+	   		$("#remove").click(function(){
+				
+				
+				$.post('/t/delete?id='+del_id,{'id':del_id},function(data){
+                     if (data.isok==true)
+                     {
+                    	 //$('#type_'+del_id).hide();
+						 window.location.reload();
+                     }
+                 },'json');
+				
+			});		
+	    }
+		
+		$(document).ready(function(){
+	   		$("a.to_sorting").click(function(){
+				var this_id = this.id;
+				var obj_id = this_id.replace("lk","s");
+				var sorting = parseInt($("#"+obj_id).val());
+				var id = parseInt(this_id.replace("lk_",""));
+				//alert("acl_sorting => "+acl_sorting + ",acl_id => " + acl_id);
+				$.post('/t/ajaxUpdateSorting?id='+id+'&sorting='+sorting,{},function(data){
+                    alert(data.msg);
+					if(data.req == "ok"){
+						window.location.reload();
+					}
+                 },'json');
+			});	
+	   });
+			   
+		   </script>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除分类</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>是否删除选定的分类？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="remove" data-dismiss="modal">确定</button>
+			</div>
+		</div>
+		<?php 
+		echo $this->partial('partials/homeFooter.phtml');
+		?>
+	</div>
+</div>

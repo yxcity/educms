@@ -1,0 +1,288 @@
+<div id="dlg_add_reply_text" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 id="myModalLabel">编辑回复文本</h4>
+  </div>
+  <div class="modal-body">
+     <div class="control-group" >
+      <label class="control-label" for="title">标题(*)：</label>
+      <div class="controls">
+        <input type="text" name="title" placeholder="标题" data-required="true" data-trim="true"/>
+        </div>
+    </div>
+    <div class="control-group" >
+      <label class="control-label" for="description">描述(*)：</label>
+      <div class="controls editor-container">
+        <textarea name="description"  rows="4" class="editor" placeholder="文本内容"></textarea>
+        </div>
+    </div>
+	<input type="hidden" name="ids" />
+  </div>
+  <div class="modal-footer">
+	<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+	<button class="btn btn-primary" id="btn_add_reply_text" onclick="onAddText()">确定</button>
+  </div>
+</div>
+
+<div id="dlg_add_reply_news"  class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 id="myModalLabel">增加回复消息</h4>没有图文？[<a href="/news/single" target="_blank">添加单图文素材</a>][<a href="/news/multi" target="_blank">添加多图文素材</a>]
+  </div>
+  <div class="modal-body">
+	<div class="btn-group">
+		<button class="btn btn-page-prev">上一页</button>
+		<button class="btn btn-page-next">下一页</button>
+	</div>
+	<div id="news_list">
+	</div>
+	<div class="btn-group">
+		<button class="btn btn-page-prev">上一页</button>
+		<button class="btn btn-page-next">下一页</button>
+	</div>
+  </div>
+  <div class="modal-footer">
+	<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+	<button class="btn btn-primary" id="btn_add_reply_news">确定</button>
+  </div>
+</div>
+
+<script id="templ_news_list" type="text/html"><#TS#/*TEMPLATES*/#TS#>
+<table class="table-hover text-center">
+	<thead>
+		<th class="span5">标题</th><th class="span1">选择</th>
+	</thead>
+	<tbody >
+	<#TS#
+		for(var i=0;news && i<news.length;i++){
+	#TS#>
+	<tr><td><span><#TS#=news[i].title#TS#></span></td><td><button class="btn" data-id="<#TS#='_'+news[i].id#TS#>">选取</button></td></tr>
+	<#TS#
+		}
+	#TS#>
+	</tbody>
+</table>
+</script>
+
+<div class="header">
+  <h1 class="page-title">微信菜单</h1>
+</div>
+<ul class="breadcrumb">
+  <li><a href="/home">首页</a> <span class="divider">/</span></li>
+  <li><a href="/menu">菜单列表</a> <span class="divider">/</span></li>
+  <li class="active">创建菜单</li>
+  	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+<div class="container-fluid">
+  <div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+    <?php 
+	if ($this->message)
+	{
+		echo "<div class=\"alert alert-{$this->message->alert}\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->message->title}</strong>  {$this->message->message}</div>";
+	}
+	?>
+	
+		<?php if(!$this->userData['appId'] || !$this->userData['appSecret']){ ?>
+		<div style="margin:10px;"><div class="well"><center><b>请您先进行 <font color=red><a href="/menu/config">自定义菜单通信配置</a></font> ，配置通过才能继续操作！</b></center></div></div>
+		<?php }else{?>
+    <form id="tab" class="form" method="post" action="">
+      <div class="btn-toolbar">
+        <input class="btn btn-primary" type="submit" value="提交"/>
+        <div class="btn-group"></div>
+      </div>
+      <div class="well">
+        <div id="myTabContent" class="tab-content">
+          <div class="tab-pane active in" id="home">
+            <div class="control-group" id="group-pid">
+              <label class="control-label" for="pid">选择菜单</label>
+              <div class="controls">
+               <select name="pid" id="pid">
+					<option value="">---请选择---</option>
+					<?php 
+					if ($this->rows)
+					{
+						foreach ($this->rows as $val) {
+                            echo '<option value="'.$val['id'].'">'.$val['menuname'].'</option>\n';
+						}
+					}
+					?>
+			   </select>
+                <span class="help-inline" id="help-pid"></span> </div>
+            </div>
+            <div class="control-group" id="group-menuname">
+              <label class="control-label" for="menuname">菜单名称</label>
+              <div class="controls">
+                <input type="text" value="" name="menuname" id="menuname" class="span3">
+                <span class="help-inline" id="help-menuname"></span> </div>
+            </div>
+            <div class="control-group" id="group-newsId">
+              <label class="control-label" for="newsId">回复内容</label>
+              <div class="controls">
+                    <span id="seled_news"></span>
+                    <div class="btn_reply_add btn-group">
+                        <button class="btn btn-small btn-reply-text" onclick="onShowTxtDlg();return false;">回复文本</button>
+                        <button class="btn btn-small btn-reply-news" onclick="onAddNewsReply();return false;">回复图文</button>
+                    </div>
+               </div>
+               <input type="hidden" name="news_id" />
+            </div>
+           
+          </div>
+        </div>
+      </div>
+      <script type="text/javascript">
+        var add_reply_text_editor;
+        $(document).ready(function(){
+            $(document).initCheck({
+                eachValidField : function() {
+                    $(this).css('border-color','#468847');
+                },
+                eachInvalidField : function() {
+                    $(this).css('border-color','#b94a48');
+                },
+                valid:function(){
+                    var args = Array.prototype.slice.call(arguments);
+                    if(args.length >= 3){
+                        args[2].each(function(){
+                            $(this).css('border-color','');
+                        });
+                    }
+                }
+            });
+            
+            function init_editor(dom){
+                if(dom){
+                    editor = new UE.ui.Editor();
+                    editor.setOpt('toolbars',[["link"]]);
+                    editor.render(dom);
+                    return editor;
+                }else{
+                    return null;
+                }
+            }
+            
+            add_reply_text_editor = init_editor($('#dlg_add_reply_text textarea[name="description"]').get(0));
+        });
+        function onShowTxtDlg(){
+            $('#dlg_add_reply_text').modal('show');
+        }
+        
+        function onAddNewsReply(){
+            
+            $('#dlg_add_reply_news').modal('show');
+            load_news_list(1);
+        }
+        
+        function generate_news_string(news){
+            var flags=[];
+            if(news['id'] > 0){
+                var flagsflags = [];
+                if(news['pic_url']){
+                    flags.push("图");
+                }else{
+                    flags.push("文");
+                }
+                
+                if(news['type'] == 1){
+                    flags.push("多");
+                }else{
+                    flags.push("单");
+                }
+                return ("[" + flags.join(' ')+"]"+news['title']);
+            }else{
+                return "#";
+            }
+        }
+        
+        function onAddText(){
+			var data_obj ={
+                'description':add_reply_text_editor.getPlainTxtEx(),
+                'title':$("#dlg_add_reply_text input[type='text']").val(),
+                'type':2/*文本消息*/
+            };
+            if(!$('#dlg_add_reply_text').check() || add_reply_text_editor.getPlainTxtEx()==''){
+                return;
+            }
+            $('#dlg_add_reply_text').modal('hide');
+            //$("#dlg_add_reply_text textarea").val('');
+            if(add_reply_text_editor)
+                add_reply_text_editor.setContent('')
+            $("#dlg_add_reply_text input[type='text']").val('')
+            
+            $.ajax({
+                type: 'POST',
+                url: '/news/create',
+                async: true,
+                data: data_obj,
+                success: function (n) {
+                    typeof n == 'string' && (n = $.parseJSON(n));
+                    if (n && n.code == 'ok') {
+                        $('input[name="news_id"]').val(n.data['id']);
+                        $('#seled_news').html(generate_news_string(n.data));
+                    }else{
+                        msg_alert("添加规则出错!");/*lwq:alert统一换成界面出错提示*/
+                    }
+                },
+                error: function (e) {
+                    msg_alert('保存失败！');//lwq:alert不友好，换成统一界面文本提示。
+                },
+            })
+		}
+            
+        
+        function load_news_list(page){
+            var page_size = 10;
+            $.ajax({
+                type: 'get',
+                url: '/news/list?page=' + page + "&page_size=" + page_size,
+                async: true,
+                cache:false,
+                success: function (n) {
+                    typeof n == 'string' && (n = $.parseJSON(n));
+                    if (n && n.code == 'ok') {
+                        $('#news_list').html(tmpl_parser('#templ_news_list',{'news':n.data}));
+                        $('#news_list button').bind('click',function(){
+                            var ids = $(event.srcElement || event.target).attr('data-id').split('_');
+                            $('input[name="news_id"]').val(ids[1]);
+                            for(var i=0;i<n.data.length;i++){
+                                if(n.data[i]['id'] == ids[1]){
+                                    $('#seled_news').html(generate_news_string(n.data[i]));
+                                }
+                            }
+                            
+                            $('#dlg_add_reply_news').modal('hide');
+                        });
+                    }else{
+                        msg_alert("加载消息列表出错!");
+                    }
+                    
+                    $('.btn-page-next').unbind();/*避免重复绑定事件*/
+                    $('.btn-page-next').one('click',function(){
+                        if(n.data && page * page_size < n.total){load_news_list(page+1)};
+                    });
+                    
+                    $('.btn-page-prev').unbind();
+                    $('.btn-page-prev').bind('click',function(){
+                        if(page > 1)load_news_list(page-1);
+                    });
+                },
+                error: function (e) {
+                    msg_alert('加载消息列表出错');
+                    $('.btn-page-prev').attr('diabled',true);
+                    $('.btn-page-next').attr('diabled',true);
+                }
+            });
+        }
+      </script> 
+    </form>
+      <?php 
+	}
+      echo $this->partial('partials/homeFooter.phtml');
+      ?>
+  </div>
+</div>
+<script src="/ueditor/ueditor.all.min.js"></script>
+<script src="/ueditor/ueditor.config_ex.js"></script>

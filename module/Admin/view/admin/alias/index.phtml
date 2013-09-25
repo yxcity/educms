@@ -1,0 +1,63 @@
+<div class="header">
+	<h1 class="page-title">别名列表</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li class="active">别名列表</li>
+	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+
+<div class="container-fluid">
+	<?php echo $this->partial('partials/flashMsg.phtml');?>
+	<div class="row-fluid">	
+    		<div id="helpcontroller" class="collapse"></div>
+		<div class="btn-toolbar">
+		</div>
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>菜单名称</th>
+						<!-- <th>Icon</th> -->
+						<th>别名</th>
+						<th style="width: 50px;">改</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+				
+				<?php 
+					if($this->rows):
+						foreach($this->rows as $val):
+				?>
+						<tr id="brand_<?php echo $val['acl_id'];?>">
+                            <td><?php echo $val['acl_id'];?></td>
+							<td><?php if($val['parent_id']!='0') echo "|--";?><?php echo $val['acl_name'];?></td>
+							<!-- <td><i class="<?php echo isset($map[$val['alias_key']]) ? $map[$val['alias_key']] : "#";?>" id="icon_i"></i></td> -->
+							<td><?php echo isset($map[$val['alias_key']]) ? $map[$val['alias_key']] : "#";?></td>
+							<td>
+							<?php echo $this->bp->genActLink('alias_edit',$this->bp->act_edit,'',array('acl_id'=>$val['acl_id']));?>
+							</td>
+						</tr>
+				<?php	
+						endforeach; 
+					endif;
+				?>
+				
+				
+				
+				<!--Display List-->	
+				</tbody>
+			</table>
+		</div>
+		
+		<?php
+		echo $this->paginationcontrol($this->rows,'Sliding','pagination/pagination.phtml',array('key'=>$this->keywords));
+		?>
+		<?php 
+		echo $this->partial('partials/homeFooter.phtml');
+		?>
+	</div>
+</div>

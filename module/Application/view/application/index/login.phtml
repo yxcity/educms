@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>商户快捷登录</title>
+<meta name="keywords" content="唯购" />
+<meta name="description" content="唯购" />
+<meta name="copyright" content="Copyright (c) 2013 Youtitle. All Rights Reserved." />
+<link href="http://www.veigou.com/css/6a.css" rel="stylesheet" type="text/css">
+<link href="http://www.veigou.com/css/index.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+
+</head>
+
+<body class="home" style="background-color: #CCCED1">
+	<div class="head_0" style="background-color: #EFEFEF; width:100%;">
+	<div class="head_1">
+		<div style=" float:left;"><img src="http://www.veigou.com/images/log.jpg"/></div>
+    	<ul class="head_1_1">
+        	<li><a href="http://www.veigou.com/index.html" title="首页" onmousemove="this.className='list_1'"  onMouseOut="this.className=' '">首页</a></li>
+            <li><a href="http://www.veigou.com/intro.html" title="产品功能" onmousemove="this.className='list_1'"  onMouseOut="this.className=' '">产品功能</a></li>
+            <li><a href="http://www.veigou.com/agent.html" title="合作代理" onmousemove="this.className='list_1'"  onMouseOut="this.className=' '">合作代理</a></li>
+            <li><a href="http://login.veigou.com/" title="管理中心"  class="list_1_11">管理中心</a></li>
+            <li><a href="http://www.veigou.com/custom.html" title="平台商家" onmousemove="this.className='list_1'"  onMouseOut="this.className=' '">平台商家</a></li>
+            <li><a href="http://www.veigou.com/about.html" title="关于我们" onmousemove="this.className='list_1'"  onMouseOut="this.className=' '">关于我们</a></li>
+        </ul>
+    </div>
+    </div>
+<script type="text/javascript">
+function userLogin(form) {
+	if ($.trim(form.username.value) == "") {
+		$(form).find("p.tips span").text("请输入用户名");
+		form.username.focus();
+		return false;
+	}
+
+	if (form.password.value == "") {
+		$(form).find("p.tips span").text("请输入密码");
+		form.password.focus();
+		return false;
+	}
+}
+</script>
+
+<!--主体-->
+<div id="banner_1">
+	<div class="banner_1 w">
+		<div class="login_bar_bg"></div>
+		<div id="login_bar">
+			<h3>商户快捷登录</h3>
+			<div class="lb_m">
+				<div id="con_one_1" class="hover hide">
+				</div>
+				<div id="con_one_2" class="hover">
+					<form method="post" name="login" onsubmit="return userLogin(this);">
+					<p>用户名：</p>
+					<p><input class="input5" type="text" name="username" placeholder="请输入用户名" /></p>
+					<p>密　码：</p>
+					<p><input class="input5" type="password" name="password"  placeholder="请输入密码" /></p>
+					<p class="tips">
+						<span style="color:red;"><?php 
+						if ($this->hint)
+						{
+							echo $this->hint['message'];
+						}
+						?></span>
+					</p>
+					<p>
+						<input type="submit" class="sbut_login" value="登 录"></p>
+					<p>
+						<a class="fr" href="javascript:void(0);" onclick="alert('联系客服专员：18964833361');" target="_blank" title="忘记密码?">忘记密码?</a>
+						<!-- <a class="reg_free b" href="http://register.<?php echo $this->host;?>/" title="商户登记">商户登记</a> -->
+					</p>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="http://www.veigou.com/js/footer.js" type="text/javascript"></script>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<div class="header">
+	<h1 class="page-title">门店列表</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li class="active">门店列表</li>
+	<?php if ($this->keywords){ ?>
+	    <span class="divider"> => </span><li class="active">当前搜索关键词：”<?php echo $this->keywords; ?>“</li>
+	<?php }?>
+	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+		<?php 
+		if ($this->success)
+		{
+			echo "<div class=\"alert alert-success\">
+			<a class=\"close\" data-dismiss=\"alert\">×</a>
+			<strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+		}
+    	?>
+			<div class="btn-toolbar">
+            <div class="search-well">
+                <form class="form-inline" action="" method="post" >        
+                    <input placeholder="输入门店名称" class="input-xlarge" id="keywords"  name="keywords" type="text" value="<?php echo $this->keywords ;?>" style="margin-right: 5px;">
+                    <button class="btn" type="submit" onclick="return checkform();"><i class="icon-search"></i> 搜索</button>
+                </form>
+            </div> 
+            <?php if (($this->userData['shopCount'] > $this->count || $this->userData['shopCount']==0) && empty($this->action)){?>
+			<a href="/shop/create" class="btn btn-primary"><i class="icon-plus"></i> 添加门店</a>
+			<?php }else{?>
+			<a class="btn btn btn-danger"><i class="icon-remove"></i> 门店数量已满<?php echo $this->userData['shopCount'];?>，不能再添加店铺</a>
+			<?php }?>
+			<!-- <button class="btn">Import</button>
+			<button class="btn">Export</button> -->
+			<div class="btn-group"></div>
+			</div>
+		<?php 
+		if ($this->action=='m')
+		{
+			echo "<form  name=\"editM\" method=\"post\" action=\"\">";
+		    echo "<div class=\"btn-toolbar\"><button class=\"btn\">提交</button><div class=\"btn-group\"></div></div>";
+		}
+		?>
+		
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="6%">#</th>
+						<th style="white-space:nowrap;overflow:hidden;max-width:40%;width:40%;">门店名称</th>
+						<th>电话</th>
+						<th>地址</th>
+						<th style="width: 50px;">改/删</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php 
+				if ($this->rows)
+				{
+				    $i=0;
+					foreach ($this->rows as $val) {
+				?>
+					<tr id="shop_<?php echo $val['id'];?>">
+						<td><?php 
+						if ($this->action=='m')
+						{
+							echo "<input type=\"checkbox\" name=\"id[]\" id=\"id\" value=\"{$val['id']}\"";
+							if (in_array($val['id'], $this->userShop)) echo ' checked="checked"';
+							echo " />";
+						}else 
+						{
+							echo $val['id'];
+						}
+						?></td>
+						<td><div style="display: inline;" id="pics">
+						<a href="http://api.kuaipai.cn/qr?chs=350x350&chl=<?php echo BASE_URL;?>/store?id=<?php echo $val['id'];?>" rel="[gall1]" title="微信扫一扫，在微信里预览！第<?php echo $i+1;?>张"><img src="http://api.kuaipai.cn/qr?chs=350x350&chl=<?php echo BASE_URL;?>/store?id=<?php echo $val['id'];?>" alt="微信扫一扫，在微信里预览！第<?php echo $i+1;?>张" width="30" height="20" /></a>
+						<?php echo $val['thumb']?' <a href="'.$val['thumb'].'" rel="[gall1]" title="第'.($i+1).'张"><img src="'.$val['thumb'].'" alt="第'.($i+1).'张" width="30" height="20" /></a>':'  <font color="red">无图</font>'?>
+						</div><?php 
+						if($this->keywords){ 
+                            echo str_replace($this->keywords,'<font color=red>'.$this->keywords.'</font>',$val['shopname']); 
+                        }else{ 
+                            echo $val['shopname']; 
+                        }?>
+						</td>
+						<td><?php echo $val['tel'];?></td>
+						<td><?php echo $val['address'];?></td>
+						<td>
+						<?php echo $this->bp->genActLink('shop_edit',$this->bp->act_edit,'修改',array('id'=>$val['id']));?>
+						 &nbsp;
+						<?php echo $this->bp->genActLink('shop_delete',$this->bp->act_del,'',array('del_id'=>$val['id']));?>
+						</td>
+					</tr>
+					<?php 
+					$i++;
+					  }
+			   }
+					?>
+				</tbody>
+			</table>
+		</div>
+		<?php 
+		  echo $this->action=='m'?'</form>':'';
+		  echo $this->paginationControl($this->rows, 'Sliding', 'pagination/pagination.phtml',array('ac'=>$this->action,'key'=>$this->keywords,'id'=>$this->id));
+        ?>
+        <script type="text/javascript">
+			 
+			 function triggerDel(del_id)
+		     {
+		   		$("#remove").click(function(){
+					 
+					  $.post('/shop/delete?id='+del_id,{'id':del_id},function(data){
+	                     if (data.isok==true)
+	                     {
+	                    	 $('#shop_'+del_id).hide();
+	                     }
+	                 },'json');
+					
+				});		
+		    }
+		   </script>
+		<div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除门店</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>确认删除当前选定的门店？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="remove" data-dismiss="modal">确认</button>
+			</div>
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+	</div>
+</div>
+<script type="text/javascript" charset="utf-8" src="/js/jquery-foxibox-0.2.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	  $('#pics a').foxibox();
+	});
+	a2a_linkname = document.title;
+	a2a_linkurl = "";
+function checkform(){
+    var keywords = $('#keywords').val();
+    if (keywords == 0 || keywords =='' ) {
+        alert('请填写关键词！');
+        return false;
+    }
+}
+</script>

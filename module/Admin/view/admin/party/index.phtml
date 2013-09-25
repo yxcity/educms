@@ -1,0 +1,139 @@
+<div class="header">
+	<h1 class="page-title">活动报名</h1>
+</div>
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><a href="/party/index">活动报名</a></li>
+	<?php if ($this->keywords){ ?>
+	    <span class="divider">=></span><li class="active">当前搜索关键词：”<?php echo $this->keywords; ?>“</li>
+	<?php }?>
+	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+
+<div class="container-fluid">
+	<?php echo $this->partial('partials/flashMsg.phtml');?>
+	<div class="row-fluid">
+    	<div id="helpcontroller" class="collapse"></div>
+		<div class="btn-toolbar">
+            <div class="search-well">
+                <form class="form-inline" action="" method="post" >        
+                    <input class="input-xlarge" id="keywords"  name="keywords" type="text" value="<?php echo $this->keywords ;?>" style="margin-right: 5px;">
+                    <button class="btn" type="submit" onclick="return checkform();"><i class="icon-search"></i> 搜索</button>
+                </form>
+            </div>
+				<?php echo $this->bp->genActLink('party_create',$this->bp->act_add,'添加活动/报名');?>
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="6%">#</th>
+						<th width="40%">二维码 / 标题</th>
+						<?php echo $this->user->power==3?'<th width="60px;">所在域</th>':'';?>
+						<th>报名列表</th>
+						<!--  <th>访问UV</th>-->
+						<th>访问PV</th>
+						<th>分享</th>
+						<th>创建时间</th>
+						<th>更新时间</th>
+						<th style="width: 58px;">改 / 删</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php 
+				if ($this->rows)
+				{
+				    $i=0;
+				    foreach ($this->rows as $val) {
+				?>
+					<tr id="party_<?php echo $val['party_id'];?>">
+						<td><?php echo $val['party_id'];?></td>
+						<td>
+						<div style="display: inline;" id="pics">
+						<a href="http://api.kuaipai.cn/qr?chs=350x350&chl=<?php echo BASE_URL;?>/s/party/<?php echo $val['party_id'];?>" rel="[gall1]" title="微信扫一扫，在微信里预览！第<?php echo $i+1;?>张"><img src="http://api.kuaipai.cn/qr?chs=350x350&chl=<?php echo BASE_URL;?>/s/party/<?php echo $val['party_id'];?>" alt="微信扫一扫，在微信里预览！第<?php echo $i+1;?>张" width="30" height="20" /></a>
+						</div>
+						<a href="/s/party/<?php echo $val['party_id'];?>" target="_blank">
+						<?php if($this->keywords){?>
+						<?php echo str_replace($this->keywords,'<font color=red>'.$this->keywords.'</font>',$val['party_title']);?>
+						<?php }else{ ?>
+						<?php echo $val['party_title'];?>
+						<?php }?></a>					
+						</td>
+						<?php echo $this->user->power==3?'<th width="60px;">'.$val['domain'].'</th>':'';?>
+						<td><a href="/party/partyusers?parentid=<?php echo $val['party_id'];?>">点击查看</a></td>
+						<!--<td><?php echo $val['party_uv'];?></td>-->
+						<td><?php echo $val['party_pv'];?></td>
+						<td><?php echo $val['party_share'];?></td>
+						<td><?php if($val['created_time']){echo date('Y-m-d',$val['created_time']);}?></td>
+						<td><?php if($val['updated_time']){echo date('Y-m-d',$val['updated_time']);}?></td>
+						<td>
+						<?php echo $this->bp->genActLink('party_edit',$this->bp->act_edit,'',array('party_id'=>$val['party_id']));?>
+						&nbsp;&nbsp;&nbsp;
+						<?php echo $this->bp->genActLink('party_delete',$this->bp->act_del,'',array('del_id'=>$val['party_id']));?>
+						</td>
+					</tr>
+				<?php
+					$i++;
+				  } 
+				}
+				?>	
+				</tbody>
+			</table>
+		</div>
+		<?php 
+		echo $this->paginationcontrol($this->rows,'Sliding','pagination/pagination.phtml',array('key'=>$this->keywords));
+		?>
+		<div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		   <script type="text/javascript">
+			 
+			 function triggerDel(del_id)
+		    {
+		   		$("#remove").click(function(){
+					
+					
+					$.post('/party/delete?party_id='+del_id,{'party_id':del_id},function(data){
+	                     alert(data.msg);
+						 if (data.req=="ok")
+	                     {
+							 window.location.reload();
+	                     }
+	                 },'json');
+					
+				});		
+		    }
+		   </script>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除活动</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>确定删除指定的活动，将删除活动下所有报名名单？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="remove" data-dismiss="modal" >确认</button>
+			</div>
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+	</div>
+</div>
+<script type="text/javascript" charset="utf-8" src="/js/jquery-foxibox-0.2.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#pics a').foxibox();
+});
+a2a_linkname = document.title;
+a2a_linkurl = "";
+
+function checkform(){
+    var keywords = $('#keywords').val();
+    if (keywords == 0 || keywords =='' ) {
+        alert('请填写关键词！');
+        return false;
+    }
+}
+</script>

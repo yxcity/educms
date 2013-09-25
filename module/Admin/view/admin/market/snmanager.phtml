@@ -1,0 +1,134 @@
+<div class="header">
+	<h1 class="page-title">兑奖管理</h1>
+</div>
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+    <li class="active">兑奖管理</li>
+    <li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+<div class="container-fluid">
+	<div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+        <div class="btn-toolbar">    		    
+            <div class="btn-group">
+			<a href="javascript:history.go(-1);" class="btn btn-primary"><i class="icon-plus"></i> 返回</a>
+            </div>
+        </div>
+        
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="5%">奖项</th>
+						<th width="15%">兑奖序号</th>
+						<th width="10%">状态</th>
+                        <th width="15%">OpenID</th>
+                        <th width="10%">用户名</th>
+                        <th width="10%">中奖时间</th>
+						<th width="10%">兑奖时间</th>
+                        <th width="58px">改 / 删</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php 
+				if ($this->rows)
+				{
+					foreach ($this->rows as $val) {
+				?>
+					<tr>
+                        <td><?php echo $val['type'] . "等奖"?></td>
+						<td><?php echo $val['sn'];?></td>
+						<td><span id="status_<?php echo $val['id'];?>"><?php echo $val['status']?><span></td>
+						<td><span id="openid_<?php echo $val['id'];?>"><?php echo $val['openid']?$val['openid']:'-'?><span></td>
+                        <td><span id="memb_<?php echo $val['id'];?>"><?php echo $val['memb_id']?$val['memb_id']:'-'?><span></td>
+						<td><span id="prize_time_<?php echo $val['id'];?>"><?php echo $val['prize_time']?$val['prize_time']:'-';?><span></td>
+                        <td><span id="cash_time_<?php echo $val['id'];?>"><?php echo $val['cash_time']?$val['cash_time']:'-';?><span></td>
+                        <td><div id="operate_<?php echo $val['id'];?>">
+                        <?php 
+                            if($val['status']==0){
+                                echo "-";
+                            }else if($val['status']==1){
+                                echo "<a href='#cash' data-id='".$val['id']."' title='兑奖'>兑奖</a>|<a href='#unuse' data-id='".$val['id']."' title='设置未使用'>设置未中奖</a>";
+                            }else{
+                                echo "<a href='#uncash' data-id='".$val['id']."' title='取消兑奖'>取消兑奖</a>";
+                                echo "|<a href='#unuse' data-id='".$val['id']."' title='设置未使用'>设置未中奖</a>";
+                            }
+                        ?>
+                        </div>
+						</td>
+					</tr>
+					<?php 
+					}
+					}
+					?>
+				</tbody>
+			</table>
+		</div>
+		<?php 
+		echo $this->paginationcontrol($this->rows,'Sliding','pagination/pagination.phtml',array('key'=>$this->keywords,'route'=>'market','action'=>'snmanager'));
+		?>
+		<script type="text/javascript">
+        function OperateSN(operation,obj){
+            var id = obj.data('id');
+            var url = '/market/snsave?action='+operation+"&id=" + id;
+            $.getJSON(url)
+            .success(function(result){
+                if(result.code !='ok'){
+                    msg_alert(result.msg);
+                    return;
+                }
+                if(operation =='cash'){
+                    $('#cash_time_'+id).html(result.data['cash_time']);
+                    $('#operate_'+id).html("<a href='#uncash' data-id='"+id+"' title='取消兑奖'>取消兑奖</a>|<a href='#unuse' data-id='"+id+"' title='设置未使用'>设置未中奖</a>");
+                    //obj.closest('tr').find()
+                }else if(operation =='uncash'){
+                    $('#cash_time_'+id).html('-');
+                    $('#prize_time_'+id).html('-');
+                    $('#operate_'+id).html("<a href='#cash' data-id='"+id+"' title='兑奖'>兑奖</a>|<a href='#unuse' data-id='"+id+"' title='设置未使用'>设置未中奖</a>");
+                    
+                }else if(operation =='unuse'){
+                    $('#cash_time_'+id).html('-');
+                    $('#operate_'+id).html("-");
+                    $('#openid_'+id).html("-");
+                    $('#prize_time_'+id).html('-');
+                }
+            })
+            .fail(function(){
+                msg_alert('操作失败！');
+            })
+        }
+        
+        $(document).ready(function(){
+            $(document).delegate("a[href='#cash']",'click',function(){
+                OperateSN('cash',$(this))
+            });
+            
+            $(document).delegate("a[href='#uncash']",'click',function(){
+                OperateSN('uncash',$(this))
+            });
+            
+            $(document).delegate("a[href='#unuse']",'click',function(){
+                OperateSN('unuse',$(this))
+            });
+        });
+        </script>
+		<div class="modal small hide fade" id="dlg_del_activity" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除消息</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>确定删除当前选定的消息？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="btn_del_activity" data-dismiss="modal">确认</button>
+			</div>
+		</div>
+		<?php 
+		echo $this->partial('partials/homeFooter.phtml');
+		?>
+	</div>
+</div>

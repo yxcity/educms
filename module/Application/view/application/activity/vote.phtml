@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><?php echo $this->news_info['title']; ?></title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <link rel="stylesheet" type="text/css" href="/css/plug/vote/vote.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="/lib/icheck/skins/all.css" media="all" />
+</head>
+<body id="vote-img">
+    <div class="vote">
+        <div class="form">
+            <input name="id" type="hidden" value="342"> <input name="sdid" type="hidden" value="8130"> <input name="fromUsername" type="hidden" value="o2uaijq2waJlsuMGjPNwiqaPIPCc">
+            <div class="votecontent">
+                <h2>图片投票</h2><span class="date"><?php echo $this->date; ?></span>
+                <div class="voteimg"><img src="<?php echo $this->news_info['pic_url']; ?>"></div>
+                <p class="content"><span><?php echo $this->news_info['description']; ?></span></p>
+                <p class="modus"><?php echo ($this->config['vote_sel_type']==1?'单选投票':'多选投票，可选最多'.$this->config['vote_sel_count'].'项');?>，共有<span class="number"><?php echo $this->total_played_count?></span>人参与投票</p>
+                <ul class="list" id="list">
+                    <?php
+                        if($this->config && is_array($this->config['options'])){
+                            for($i=0;$i<count($this->config['options']);$i++){
+                                $options = $this->config['options'][$i];
+                                echo "<li>";
+                                if($this->config['vote_type'] == 2){
+                                    echo '<p class="voteimg2"><a href=""><img src="'.$options['option_pic_url'].'" /></a></p>';
+                                }
+                                
+                                $stat = isset($this->stat['option_' . $i])?$this->stat['option_' . $i]:array('rate'=>0,'count'=>'');
+                    ?>
+                        <p>
+                            <input class="ckbx" name="options" tabindex="9" type="<?php echo ($this->config['vote_sel_type']==1?'radio':'checkbox');?>" value="<?php echo $i?>" />
+                            <span><?php echo $options['option_name'];?></span>
+                        </p>
+                        <?php
+                           if($this->config['vote_show_type'] == 1 
+                           || $this->play_count == 0)
+                           {
+                           
+                        ?>
+                        <div class="votebar" >
+                                <div class="pbg">
+                                    <div class="pbr" style="width: <?php echo $stat['rate']; ?>%; background-color:#ffcc00"></div>
+                                </div>
+                                <span class="percentage" style="color:#ffcc00"><span class="rate"><?php echo $stat['rate']; ?></span>%<span class="user">(<?php echo $stat['count']; ?>)</span></span>
+                        </div>
+                        <?php
+                        }
+                        ?>
+                        </li>
+                    <?php
+                            }
+                        }
+                    ?>
+                </ul><input class="pxbtn" id="btn_submit"  type="submit" value="确认提交">
+            </div>
+        </div>
+    </div>
+    <footer style="text-align:center; color:#ffd800;margin-right:20px">
+        @唯购提供
+    </footer>
+</body>
+</html>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/lib/icheck/jquery.icheck.min.js"></script>
+<script type="text/javascript" src="/js/nice_alert.js"></script>
+<script type="text/javascript" src="/js/jquery.cookie.js"></script>
+<script>
+var ERR_OK=0;
+var ERR_ILLEGAL_ID=1;
+var ERR_MISS_ID=2;
+var ERR_NOT_OPEN=3;
+var ERR_CLOSED=4;
+var ERR_NOT_LOGIN=5;
+var g_err_info = <?php echo json_encode($this->err_info); ?>;
+var g_err_code = <?php echo json_encode($this->err_code); ?>;
+var g_play_count = <?php echo json_encode($this->play_count); ?>;
+var g_prize_json = null
+function init_options(){
+    $('input').iCheck({
+        checkboxClass: 'icheckbox_flat',
+        radioClass: 'iradio_flat'
+    });
+    $("ins").click(function() {
+        var i = 0;
+        $(".checked").each(function() {
+            i++;
+        });
+        if (i > <?php echo ($this->config['vote_sel_count']>0?$this->config['vote_sel_count']:1) ?>) {
+            $(this).click();
+        }
+    });
+    $("label").click(function() {
+        var i = 0;
+        $(".checked").each(function() {
+            i++;
+        });
+        if (i > <?php echo ($this->config['vote_sel_count']>0?$this->config['vote_sel_count']:1) ?>) {
+            $(this).click();
+        }
+    });
+}
+
+function switch_readonly(){
+    $('#btn_submit').hide();
+    $('input').iCheck('disable');
+}
+
+function init_submit(){
+    $('#btn_submit').click(function(){
+        var seled = [];
+        $('input:checked').each(function(){
+            var self = $(this);
+            seled.push(self.val());
+        });
+        if(seled.length == 0){
+            nice_alert('请选择投票选项!');
+            return;
+        }
+        var submit_url = window.location.href.replace(/(\/vote)([^\w])/,'/save$2')
+        var post_data = {'data':seled};
+        $.ajax({
+        type: 'POST', 
+        url: submit_url, 
+        dataType: 'json',
+        data:post_data,
+        cache: false, 
+        error: function(){ 
+            nice_alert('出错了！'); 
+            return false; 
+        }, 
+        success:function(json){ 
+            if(json.code !='ok'){
+                nice_alert(json.msg);
+            }else{
+                /*if(--g_play_count){
+                    $('#list li').each(function(index){
+                        var info=json.data['option_' + index];
+                        if(info){
+                            var self = $(this);
+                            self.find('.rate').html(info['rate']);
+                            self.find('.user').html(info['count']);
+                            self.find('.pbr').css("width",info['rate']);
+                        }
+                    });
+                    $('input').iCheck('uncheck');
+                }else{
+                    switch_readonly();
+                }*/
+                window.location.reload();
+            }
+        }
+        });
+    });
+}
+
+function onLogin(){
+    document.cookie = "_refer=" + window.location.href + ";path=/";;
+	//$.cookie('_refer',window.location.href,{path:"/"});
+    window.location.href="/user/login";
+}
+
+function onRedirectHome(){
+    window.location.href="/";
+}
+
+$(document).ready(function(){ 
+    if(g_play_count <=0){
+        switch_readonly();
+        return;
+    }
+    
+    if(g_err_info){
+        if(g_err_code == ERR_NOT_LOGIN){
+            nice_alert(g_err_info,function(){onLogin();});
+        }else{
+            nice_alert(g_err_info,function(){onRedirectHome();});
+        }
+        return;
+    }
+    
+    init_options();
+    init_submit();
+});
+</script>
+        <?php echo $this->partial('partials/stats.phtml');?>

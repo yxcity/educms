@@ -1,0 +1,140 @@
+<style type="text/css">
+	span.red{
+		color:red;
+	}
+</style>
+<div class="header">
+	<h1 class="page-title">角色列表</h1>
+</div>
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><?php echo $this->bp->genActLink('role_index',$this->bp->act_link,'角色列表');?></li>
+	<?php if ($this->keywords){ ?>
+	    <span class="divider">=></span><li class="active">当前搜索关键词：”<?php echo $this->keywords; ?>“</li>
+	<?php }?>
+	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+	<?php 
+	if ($this->success)
+	{
+		echo "<div class=\"alert alert-success\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+	}
+	if ($this->error)
+	{
+		echo "<div class=\"alert alert-error\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->error->title}</strong>  {$this->error->message}</div>";
+	}
+	?>
+		<div class="btn-toolbar">
+            <div class="search-well">
+                <form class="form-inline" action="" method="post" >        
+                    <input class="input-xlarge" id="keywords"  name="keywords" type="text" value="<?php echo $this->keywords ;?>" style="margin-right: 5px;">
+                    <button class="btn" type="submit" onclick="return checkform();"><i class="icon-search"></i> 搜索</button>
+                </form>
+            </div>
+				 <?php echo $this->bp->genActLink('role_create',$this->bp->act_add,'添加角色');?>
+			<div class="btn-group"></div>
+		</div>
+        <script src="/lib/bootstrap/js/bootstrap-popover.js" type="text/javascript"></script>
+        <script src="/lib/bootstrap/js/bootstrap-tooltip.js" type="text/javascript"></script>
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="6%">#</th>
+						<th>角色名称</th>
+						<th>创建时间</th>
+						<th style="width: 128px;">分配权限</th>
+						<th style="width: 100px;">修改</th>
+						<th style="width: 100px;">删除</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php 
+				if ($this->rows)
+				{
+				    foreach ($this->rows as $val) {
+				?>
+					<tr id="user_<?php echo $val['role_id'];?>">
+						<td><?php echo $val['role_id'];?></td>
+						<td><?php if($this->keywords){ ?>
+						<?php echo str_replace($this->keywords,'<font color=red>'.$this->keywords.'</font>',$val['role_name']);?>
+						<?php }else{ echo $val['role_name']; }?></td>
+						
+						<td><?php echo date("Y-m-d H:i:s",$val['created_time']);?></td>
+						
+						
+						<?php if($this->user->roleid == $val['role_id']):?>
+							<td colspan="3">
+							<span class="red">(当前账户所属角色,不能对其进行相关操作)</span>
+							</td>
+						<?php else:?>
+							<td><?php echo $this->bp->genActLink('access_assign',$this->bp->act_edit,'分配权限',array('role_id'=>$val['role_id'],'role_name'=>$val['role_name']));?></td>
+							<td><?php echo $this->bp->genActLink('role_edit',$this->bp->act_edit,'修改角色信息',array('role_id'=>$val['role_id']));?></td>
+							<td><?php echo $this->bp->genActLink('role_delete',$this->bp->act_del,'',array('del_id'=>$val['role_id']));?></td>
+						<?php endif;?>
+						
+						
+						
+					</tr>
+				<?php
+				  } 
+				}
+				?>	
+				</tbody>
+			</table>
+		</div>
+		<?php 
+		echo $this->paginationcontrol($this->rows,'Sliding','pagination/pagination.phtml',array('key'=>$this->keywords));
+		?>
+		<div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		   <script type="text/javascript">
+		   function triggerDel(del_id)
+		   {
+		   		
+				$("#delid").click(function(){
+					$.post('/role/delete?role_id='+del_id,{'role_id':del_id},function(data){
+	                     alert(data.msg);
+						 if (data.req=="ok")
+	                     {
+						 	 window.location.reload();
+	                     }
+	                 },'json');
+				});
+		   }
+		   </script>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除角色</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>确定删除指定的角色？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="delid" data-dismiss="modal" >确认</button>
+			</div>
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+	</div>
+</div>
+
+<script type="text/javascript">
+function checkform(){
+    var keywords = $('#keywords').val();
+    if (keywords == 0 || keywords =='' ) {
+        alert('请填写关键词！');
+        return false;
+    }
+}
+</script>

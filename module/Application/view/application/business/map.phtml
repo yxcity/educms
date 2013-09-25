@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8" />
+	<title><?php echo $this->row['shopname'];?></title>
+	<meta name="version" content="游太网络" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+	<meta name="format-detection" content="telephone=no" />
+	<link type="text/css" rel="stylesheet" href="/css/style.css" />
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+	<?php echo $this->partial ( 'partials/header.phtml');?>	
+	<!--主体-->
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
+<div class="main">
+	<div class="p_map">
+    <div id="container"></div>
+        <script type="text/javascript">
+        $(function(){
+        	var wh = $(window).height();
+        	var bh = $('body').height();
+        	var mh = $('#container').css('height');
+        	mh = mh.replace('px', '');
+        	oh = bh - wh;
+        	nmh = mh - oh;
+        	$('#container').css('height', nmh+'px');
+        
+        	var sContent = function(id, name, imgsrc, address, tel){
+        		return "<h2 style='margin:0 0 7px 0;padding:0 0'>"+name+"</h2>" + 
+        		"<img style='float:right;margin:0px 0px 0px 4px' id='imgDemo' src='/uploads/"+imgsrc+"' width='120' height='80' />" + 
+        		"<p style='padding-right:10px'>地址："+address+"</p>" +
+        		"<p style=''>电话："+tel+"</p>" +
+        		"<p style='margin-top:10px;'><a style='display:inline-block;padding:3px 5px;background:#ff0000;color:#ffffff' href='/store/info.html?store_id=1283&store_id="+id+"'>进入门店</a></p>" +
+        		"</div>";
+        	}
+        	var storeList = [{"store_id":"<?php echo $this->row['id'];?>","store_name":"<?php echo $this->row['shopname'];?>","store_pic":"<?php echo $this->row['thumb'];?>","store_location_province":"<?php echo $this->row['province'];?>","store_location_city":"<?php echo $this->row['city'];?>","store_address":"<?php echo $this->row['address'];?>","store_traffic":"","store_tel":"<?php echo $this->row['tel'];?>","store_position_lo":"<?php echo $this->row['locationX'];?>","store_position_la":"<?php echo $this->row['locationY'];?>","store_desc":"","store_addtime":"<?php echo $this->row['addtime'];?>","store_userid":"","store_check":"2","store_score":"1.01"}];
+        	// 编写自定义函数,创建标注
+        	function addMarker(point, content){
+        	  var marker = new BMap.Marker(point);  // 创建标注
+        	  map.addOverlay(marker);
+        	  var infoWindow = new BMap.InfoWindow(content);
+        	  marker.addEventListener("click", function(){          
+        		   this.openInfoWindow(infoWindow);
+        		   //图片加载完毕重绘infowindow
+        		   document.getElementById('imgDemo').onload = function (){
+        		       infoWindow.redraw();
+        		   }
+        		});
+        	}
+        	var map = new BMap.Map("container");
+        	var point = new BMap.Point(<?php echo $this->row['locationX'];?>, <?php echo $this->row['locationY'];?>);
+        	map.centerAndZoom(point, 15);
+        	var user_marker = new BMap.Marker(point);  // 创建标注
+        	map.addOverlay(user_marker);
+            	   
+        	for (var i = 0, l=storeList.length; i < l; i ++) {
+        	  var point = new BMap.Point(storeList[i].store_position_lo, storeList[i].store_position_la);
+        	  var content = sContent(storeList[i].store_id,storeList[i].store_name,storeList[i].store_pic,storeList[i].store_address,storeList[i].store_tel);
+        	  addMarker(point, content);
+        	}
+        	for (var i = 0, l=storeList.province.length; i < l; i ++) {
+        	  var point = new BMap.Point(storeList.province[i].store_position_lo, storeList.province[i].store_position_la);
+        	  var content = sContent(storeList.province[i].store_id,storeList.province[i].store_name,storeList.province[i].store_pic,storeList.province[i].store_address,storeList.province[i].store_tel);
+        	  addMarker(point, content);
+        	}
+        });
+        </script>
+	</div>
+</div>
+<?php echo $this->partial ( 'partials/footer.phtml');?>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

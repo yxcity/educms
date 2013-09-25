@@ -1,0 +1,221 @@
+<div class="header">
+  <h1 class="page-title">单图文素材</h1>
+</div>
+<ul class="breadcrumb">
+  <li><a href="/home">首页</a> <span class="divider">/</span></li>
+  <li><a href="/news">消息管理</a> <span class="divider">/</span></li>
+  <li class="active">单条图文素材</li>
+  	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    		<div id="helpcontroller" class="collapse"></div>
+      <div class="btn-toolbar">
+        <button name="submit" id="submit"  class="btn btn-primary" onclick="on_submit()">提交</button>
+        <div class="btn-group"></div>
+      </div>
+      <div class="well">
+        <div class="row-fluid">
+            <div class="span5">
+                <div id="add_news_list">
+                </div>
+            </div>
+            <div class="pull-right" >
+                <div id="previewer" >
+                    <div class="msg-item-wrapper">
+                        <div id="msg_item_list" class="msg-item">
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+        <?php echo $this->partial('partials/homeFooter.phtml');?>
+<script src="/js/jquery.ui.widget.js"></script>
+<script src="/js/jquery.iframe-transport.js"></script>
+<script src="/js/jquery.fileupload.js"></script>
+<script id="templ_add_news" type="text/html"><#TS#/*TEMPLATES*/#TS#>
+<!--使用AJAX POST方式提交插入数据*/-->
+<div id="news_item">
+    <div class="control-group" >
+      <label class="control-label" for="title">标题(*)：</label>
+      <div class="controls">
+        <input type="text" name="title"  class="span6" value="<#TS#=title#TS#>"  data-required />
+      </div>
+    </div>
+    <div class="control-group" >
+      <label class="control-label" for="fileField">封面(*)：</label>
+      <div class="controls">
+        <input type="file" name="fileField" data-url="/news/upload" class="span6" />
+        </div>
+    </div>
+    <div class="control-group" >
+      <label class="control-label" for="description">摘要(*)：</label>
+      <div class="controls">
+        <textarea type="text" name="description" rows="4" class="span6" data-required><#TS#=description#TS#></textarea>
+       </div>
+    </div>
+    <div class="control-group" >
+      <label class="control-label" for="url">链接到(url)：<br/><span style="font-size:10px;">(小贴士：此项为“阅读原文”)</span></label>
+      <div class="controls">
+        <input type="text" name="url" class="span6" value="<#TS#=url#TS#>" data-validate="url" />
+       </div>
+    </div>
+    <div class="control-group" >
+      <label class="control-label" for="content">正文：<br><span style="font-size:10px;">(小贴士：1.正文如果留空，用户点击标题或摘要将直接跳转到上面的链接<br>2.请不要将word等文档里的内容直接Copy至这里，以免排版乱掉)</span></label>
+      <div class="controls editor-container">
+        <textarea type="text" name="content" class="editor" ><#TS#=obj.content?obj.content:null#TS#></textarea>
+      </div>
+    </div>
+</div>
+</script>
+<script id="templ_preview" type="text/html"><#TS#/*TEMPLATES*/#TS#>
+    <#TS#
+        var today = new Date();
+        today = today.getFullYear()+'-' + (today.getMonth()+1) + '-' + today.getDate();
+    #TS#>
+            <div class="appmsgItem">
+            <h4 class="msg-t"><span class="i-title"><#TS#=title#TS#></span></h4>
+            <p class="msg-meta"><span class="msg-date"><#TS#=today#TS#></span></p>
+            <div class="cover">
+              <p class="default-tip" style="display:<#TS#=pic_url ? 'none' : 'block'#TS#>">封面图片</p>
+              <img src="<#TS#=pic_url#TS#>" class="i-img" style="<#TS#=pic_url ? 'display:block' : 'display:none'#TS#>">
+            </div>
+            <div class="msg-t"><span class="i-description"><#TS#=description#TS#></span></div>
+          </div>
+    
+</script>
+
+<script>
+    var TMPL ={data:<?php
+        echo json_encode($this->news)
+    ?>};
+    var editor;
+    function on_submit()
+    {
+        if(!$('#news_item').check()){
+            return;
+        }
+        
+        if($("#previewer img").attr('src') ===''){
+            msg_alert("需要上传缩略图!");
+            return;
+        }
+        
+        var data_obj = {
+            'title':$("#news_item [name='title']").val(),
+            'url':$("#news_item [name='url']").val(),
+            'pic_url':$("#previewer img").attr('src'),
+            'description':$("#news_item textarea").val(),
+            'content':editor?editor.getContent():null,
+            'draft':0,
+            'type':0/*单图文本消息*/
+        };
+        var url = mode_edit?'/news/edit?id='+TMPL.data.id:'/news/create';
+        $.ajax({
+            type:'POST',
+            url: url,
+            async:false,
+            data:data_obj,
+            success: function (n) {
+                typeof n == 'string' && (n = $.parseJSON(n));
+                if (n && n.code == 'ok') {
+                    window.location.href="/news";
+                    return;
+                }
+            },
+            error: function (e) {
+                msg_alert('保存失败！');
+            }
+        })
+    }
+    
+    function init_data()
+    {
+        $('#add_news_list').html(tmpl_parser('#templ_add_news',TMPL.data));
+        /*初始化编辑器*/
+        (function init_editor(data){
+                editor = new UE.ui.Editor();
+                editor.setOpt('toolbars',[["link","emotion","insertimage","bold","italic","underline","backcolor","insertunorderedlist","insertorderedlist","removeformat","formatmatch"]]);
+                editor.render($("textarea[name='content']")[0]);
+                editor.ready(function(){
+                    if(data){
+                        this.setContent(data);
+                    }
+                });
+            })(TMPL.data['content']);
+            
+        $('#add_news_list :input').bind('keyup', function() {
+            /*读取输入框输入*/
+            $("#previewer span[class='i-title']").html($("#news_item [name='title']").val());
+            $("#previewer span[class='i-description']").html($("#news_item textarea").val());
+        });
+        //if(window.location
+        $('#msg_item_list').html(tmpl_parser('#templ_preview',TMPL.data));
+        $("input[type='file']").fileupload({
+            dataType: 'json',
+            done: function (e, data) {
+                var img_obj = $("#previewer img");
+                var tips_obj = $("#previewer p[class='default-tip']");
+                if(data.result.error){
+                    tips_obj.html(data.result.error);
+                    tips_obj.css('display',"block");
+                    img_obj.css('display',"none");
+                }else{
+                    img_obj.attr('src',data.result.url);
+                    tips_obj.css('display',"none");
+                    img_obj.css('display',"block");
+                }
+            }
+        });
+    }
+    
+    var mode_edit = false;
+    $(document).ready(
+        function(){
+            if(window.location.search.indexOf('action=edit') !=-1){
+                mode_edit = true;
+                //$("div[class=header] > h1").html('编辑消息');
+                //$("ul[class=breadcrumb] > li:last").html('编辑消息')
+                if(!(TMPL.data && typeof TMPL.data == 'object' )){
+                msg_alert("数据加载异常！");
+                return;
+                }
+            }else{
+                TMPL ={
+                    'data':{
+                            'title':null,
+                            'url':null,
+                            'pic_url':null,
+                            'content':null,
+                            'description':null
+                    }};
+            }
+            init_data();    
+            
+            $('#news_item').initCheck({
+                eachValidField : function() {
+                    $(this).closest('div:not(.controls)').removeClass('error').addClass('success');
+                },
+                eachInvalidField : function() {
+                    $(this).closest('div:not(.controls)').removeClass('success').addClass('error');
+                },
+                valid:function(){
+                    var args = Array.prototype.slice.call(arguments);
+                    if(args.length >= 3){
+                        args[2].each(function(){
+                            $(this).closest('div:not(.controls)').removeClass('success');
+                        });
+                    }
+                }
+            });
+    });
+</script>
+<link rel="stylesheet" href="/css/newsajax.css">
+<script src="/ueditor/ueditor.all.min.js"></script>
+<script src="/ueditor/ueditor.config_ex.js"></script>

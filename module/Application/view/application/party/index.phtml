@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title><?php echo $this->party['party_title'];?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" type="text/css" href="/css/party.css"/>
+<link rel="stylesheet" type="text/css" href="/sitetem/common/css/commonjia.css" media="all" />
+<link rel="stylesheet" type="text/css" href="/wz/css/font-awesome.css" media="all" />
+  	<script>
+    window.addEventListener("DOMContentLoaded", function(){
+        btn = document.getElementById("plug-btn");
+        btn.onclick = function(){
+            var divs = document.getElementById("plug-phone").querySelectorAll("div");
+            var className = className=this.checked?"on":"";
+            for(i = 0;i<divs.length; i++){
+                divs[i].className = className;
+            }
+            document.getElementById("plug-wrap").style.display = "on" == className? "block":"none";
+        }
+    }, false);
+    </script>
+<script> 
+var $=function(id){return document.getElementById(id);};
+var dataForWeixin={
+   //识别veigou.com网址为合作伙伴网址，则会自动读取dataForWeixin作为分享内容
+   appId:"",
+   MsgImg:"http://login.veigou.com/images/plug/share_msg.png",
+   TLImg:"http://login.veigou.com/images/plug/share.png",
+   path:"",
+   title:"唯购微电商、微站系统",
+   desc:"无论在朋友圈还是在聊天对话框，只需要输入一段代码，就可以让你挖掘更强大的信息处理功能。马上点击了解，瞬间让你发布的信息与众不同！",
+   fakeid:"",
+   callback:function(){_$("s/party/share?s=party/<?php echo $this->party["party_id"];?>","","");}
+};
+</script>
+<style>body{background-color:#f0f0f0;}</style>
+</head>
+<body>
+<div id="mess_title"><?php echo $this->party['party_title'];?></div>
+<div id="mess_info"><?php echo date('Y-m-d',$this->party['created_time']); ?> &nbsp;&nbsp;&nbsp;<?php echo $this->party['author'];?>&nbsp;&nbsp;&nbsp;阅读<?php echo $this->party['party_pv'];?>&nbsp;&nbsp;&nbsp;<!--  分享<?php echo $this->party['party_share'];?>--></div>
+<div id="mess_content"><?php echo $this->party['party_content'];?></div>
+<!-- <div id="mess_report"><a href="/report">举报</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/">添加到公号</a></div>
+<div id="mess_attch">
+    <div id="attch_title">已有<span id="party_counts">21</span>人报名</div>
+    <div id="record_manage" onclick="_party._manage(true)">查看已报名人员联系电话</div>
+    <div class="clear"></div>
+</div>
+<div id="attch_list">
+<div class="attch_item"><div class="left">的地方</div><div class="right">8-31 </div><div class="clear"></div></div>
+</div>
+<div id="attch_list"><div id="record_nodata">目前还没人报名</div></div>
+ -->
+<div><button  id="join_post" class="button1" onclick="_party._join(true)"><?php if($this->party['joinname']){ echo $this->party['joinname']; }else{ echo "我要报名"; }?></button></div>
+<div id="party_join" class="box"><div>输入你的名字与电话</div><div><input id="join_nick" type="text" placeholder="输入你的大名"  value="" maxlength="20"/></div><div><input id="join_phone" type="text" placeholder="手机号，别轻易向陌生人提供"  maxlength="11"/></div><div><button  class="button2" onclick="_join._post()">提交</button></div></div><div id="party_pass" class="box"><div>请先输入管理密码</div><div><input id="pass_pass" type="password" placeholder="输入管理密码"  maxlength="16"/></div><div><button  class="button2" onclick="_manage._post()">提交</button></div></div>
+<div id="mess_share">
+<div id="share_1"><button class="button2" onclick="_system._guide(true)"><img src="http://login.veigou.com/images/plug/icon_msg.png">&nbsp;发送给朋友</button></div><div  id="share_2"><button class="button2" onclick="_system._guide(true)"><img src="http://login.veigou.com/images/plug/icon_timeline.png">&nbsp;分享到朋友圈</button></div>
+<div class="clear"></div>
+</div >
+<?php if($this->party['mp']){?>
+<div><button class="button2" style="display:none" id="btn_follow" onclick="window.location='weixin://addfriend/<?php echo $this->party['mp'];?>';">关注我们的公众号</button></div>
+<script>
+function show_follow_button(){
+	if(/android/i.test(navigator.userAgent)){
+		document.getElementById('btn_follow').style.display='block';
+	}
+}
+show_follow_button();</script>
+<?php }?>
+<div id="duty">
+	<div id="ft" style="margin:20px">
+		<p class="wrapper copyright">由&#160;[唯购]游太网络&#160;提供技术支持</p>
+	</div>
+</div>
+<script>var _party={_join:function(show){if(show){_system._cover(true);$("party_join").show();$("party_join").center();window.onresize=function(){_system._cover(true);$("party_join").center();};$("cover").onclick=function(){_party._join();};}else{_system._cover();$("party_join").hide();$("cover").onclick=null;window.onresize=null;}},_manage:function(show){if(show){_system._cover(true);$("party_pass").show();$("party_pass").center();window.onresize=function(){_system._cover(true);$("party_pass").center();};$("cover").ontouchstart=function(){_party._manage();};}else{_system._cover();$("party_pass").hide();$("pass_pass").value="";$("cover").ontouchstart=null;window.onresize=null;}}};var _join={_post:function(){var _nick=$("join_nick").value.trim(),_phone=$("join_phone").value.trim();if(_nick==""){_system._toast("请报上您的大名");return;}if(_nick.len()>20){_system._toast("大名要在20字节以内");return;}if(_phone==""){_system._toast("请录入您的手机号码");return;}if(_phone.match(/(^1\d{10}$)|(^09\d{8}$)|(^(5|6|9)\d{7}$)|(^(66|68|62)\d{5}$)/)==null){_system._toast("手机号输入有误");return;}_$("./joinparty/<?php echo $this->party['party_id'];?>?nick=" + _nick.encode() + "&phone=" + _phone,"","请稍候","_join._ok");_party._join();},_ok:function(json){if(json.state=="0"){_system._toast("你填写的内容有问题");return;}if(json.state=="1"){_system._toast("您已经报过名了");return;}_system._ok("报名成功",function(){$("join_post").innerHTML="您已经报过名了";$("join_post").onclick=function(){_system._toast("你已经报过名了");};if($("record_nodata")){$("record_nodata").parentNode.removeChild($("record_nodata"));}$("attch_list").innerHTML="<div class='attch_item'><div class='left'>"+$("join_nick").value+"</div><div class='right'>刚刚</div><div class='clear'></div></div>"+$("attch_list").innerHTML;$("party_counts").innerHTML=parseInt($("party_counts").innerHTML)+1;});}};var _show={_post:function(){_$("./party_record","id=<?php echo $this->party['party_id'];?>","加载中","_show._ok");},_ok:function(json){if(json.state=="0"){_system._toast("您的操作有误");return;}$("attch_list").innerHTML=json.html;$("party_counts").innerHTML=json.counts;}};var _manage={_post:function(){var _pass=$("pass_pass").value.trim();if(_pass==""){_system._toast("请输入管理密码");return;}if(_pass.len()<6 || _pass.len()>16 ){_system._toast("密码输入有误");return;}_$("./party_manage","id=<?php echo $this->party['party_id'];?>&pass="+_pass.encode(),"请稍候","_manage._ok");_party._manage();},_ok:function(json){if(json.state=="0"){_system._toast("密码输入有误");return;}$("attch_list").innerHTML=json.html;$("party_counts").innerHTML=json.counts;}};(function(){dataForWeixin.MsgImg="http://login.veigou.com/images/plug/party_msg.png";dataForWeixin.TLImg="http://login.veigou.com/images/plug/party.png";dataForWeixin.path="party/<?php echo $this->party['party_id'];?>";dataForWeixin.title="<?php echo $this->party['party_title'];?>";dataForWeixin.desc="<?php echo $this->party_intro;?>";dataForWeixin.callback=function(){_$("./share?id=<?php echo $this->party['party_id'];?>","","");};})();</script>
+<div id="ok"><img src="http://login.veigou.com/images/plug/ok.png"><div id="ok_text"></div>
+</div>
+<div id="cover"></div>
+<div id="loading"><img src="http://login.veigou.com/images/plug/loading.gif"><div id="loading_text"></div></div>
+<div id="guide"><img src="http://login.veigou.com/images/plug/guide.png"></div>
+<div id="toast"></div>
+        <?php echo $this->partial('partials/bottomjia.phtml');?>
+<script src="http://login.veigou.com/js/party.js"></script>
+<script src="./read/<?php echo $this->party["party_id"];?>"></script>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

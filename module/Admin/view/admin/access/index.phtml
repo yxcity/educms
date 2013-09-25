@@ -1,0 +1,149 @@
+﻿<div class="header">
+	<h1 class="page-title">操作列表</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li class="active">操作列表</li>
+	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+
+<div class="container-fluid">
+	<?php
+	if ($this->success)
+	{
+		echo "<div class=\"alert alert-success\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+	}
+	if ($this->error)
+	{
+		echo "<div class=\"alert alert-error\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->error->title}</strong>  {$this->error->message}</div>";
+	} 
+	if ($this->massage)
+	{
+		echo "<div class=\"alert alert-{$this->massage->alert}\">
+	        <a class=\"close\" data-dismiss=\"alert\">×</a>
+	        <strong>{$this->massage->title}</strong>  {$this->massage->message}</div>";
+	}
+	?>
+	<div class="row-fluid">	
+    		<div id="helpcontroller" class="collapse"></div>
+		<div class="btn-toolbar">
+			<?php echo $this->bp->genActLink('access_create',$this->bp->act_add,'添加操作');?>
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th><input type="checkbox" id="btn_chk"/></th>
+						<th>#</th>
+						<th>操作名称</th>
+						<th>链接地址</th>
+						<th>操作唯一标识</th>
+						<th>是否为菜单项</th>
+						<th>排序序号</th>
+						<th style="width: 50px;">改/删</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+				
+				<?php 
+					if($this->rows):
+						foreach($this->rows as $val):
+				?>
+						<tr id="type_<?php echo $val['acl_id'];?>">
+							<td><input type="checkbox" name="chkItem"  value="<?php echo $val['acl_id']?>"/></td>
+							<td><?php echo $val['acl_id'];?></td>
+							<td><?php echo $val['acl_name'];?></td>
+							<td><?php echo $val['acl_url'];?></td>
+							<td><?php echo $val['act_key'];?></td>
+							<td><?php echo $val['is_menu']==1?'是':'否';?></td>
+							<td>
+							<input type="text" id="s_<?php echo $val['acl_id']?>" value="<?php echo $val['acl_sorting'];?>" class="input-mini">
+							<a href="#" class="to_sorting" id="lk_<?php echo $val['acl_id'];?>">更新排序</a>	
+								
+							</td>
+							<td>
+							<?php echo $this->bp->genActLink('access_edit',$this->bp->act_edit,'',array('acl_id'=>$val['acl_id']));?>
+							 &nbsp;
+							<?php echo $this->bp->genActLink('access_delete',$this->bp->act_del,'',array('del_id'=>$val['acl_id']));?>
+							</td>
+						</tr>
+				<?php	
+						endforeach; 
+					endif;
+				?>
+				
+				
+				
+				<!--Display List-->	
+				</tbody>
+			</table>
+		</div>
+		
+		<?php
+		if($this->pager_link){
+			echo $this->pager_link;
+		}
+		?>
+		
+		<div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<script type="text/javascript">
+			  function triggerDel(del_id)
+			   {
+			   		$("#delid").click(function(){
+						
+						
+						$.post('/access/delete?acl_id='+del_id,{'acl_id':del_id},function(data){
+		                     //alert(data.msg);
+							 if (data.req=="ok")
+		                     {
+		                    	 $('#type_'+del_id).hide();
+		                     }
+		                 },'json');
+						
+					});		
+			   }
+			   
+			   $(document).ready(function(){
+			   		$("a.to_sorting").click(function(){
+						var this_id = this.id;
+						var obj_id = this_id.replace("lk","s");
+						var acl_sorting = parseInt($("#"+obj_id).val());
+						var acl_id = parseInt(this_id.replace("lk_",""));
+						//alert("acl_sorting => "+acl_sorting + ",acl_id => " + acl_id);
+						$.post('/access/ajaxUpdateSorting?acl_id='+acl_id+'&acl_sorting='+acl_sorting,{},function(data){
+		                    alert(data.msg);
+							if(data.req == "ok"){
+								window.location.reload();
+							}
+		                 },'json');
+					});	
+			   });
+			   
+		   </script>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除操作</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>是否删除选定的操作？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="delid" data-dismiss="modal">确定</button>
+			</div>
+		</div>
+		<?php 
+		echo $this->partial('partials/homeFooter.phtml');
+		?>
+	</div>
+</div>

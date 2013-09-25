@@ -1,0 +1,58 @@
+<div class="header">
+	<h1 class="page-title">添加分类</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><?php echo $this->bp->genActLink('role_index',$this->bp->act_link,'角色列表');?> <span class="divider">/</span></li>
+	<li class="active">修改角色</li>
+</ul>
+
+<div class="container-fluid">
+	<?php
+	if ($this->success)
+	{
+		echo "<div class=\"alert alert-success\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+	}
+	if ($this->error)
+	{
+		echo "<div class=\"alert alert-error\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->error->title}</strong>  {$this->error->message}</div>";
+	} 
+	if ($this->massage)
+	{
+		echo "<div class=\"alert alert-{$this->massage->alert}\">
+	        <a class=\"close\" data-dismiss=\"alert\">×</a>
+	        <strong>{$this->massage->title}</strong>  {$this->massage->message}</div>";
+	}
+	?>
+	<div class="row-fluid">
+<form id="tab" name="createRole" method="post" action="?role_id=<?php echo $this->row['role_id']?>" onsubmit="return clickRole();">
+		<div class="btn-toolbar">
+		    <input type="submit" name="submit" id="submit"  class="btn btn-primary" value="提交修改" />
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane active in" id="home">
+				       
+						 <div class="control-group" id="group-roleName">
+							<label class="control-label" for="roleName">角色名称</label>
+							<div class="controls">
+								<input type="text" value="<?php echo $this->row['role_name']?>" id="roleName" name="role_name" class="input-xlarge">
+                                <span class="help-inline" id="help-roleName"></span>
+							</div>
+						</div>
+						
+				</div>
+			</div>
+
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+</form>
+	</div>
+</div>

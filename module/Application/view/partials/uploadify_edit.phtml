@@ -1,0 +1,112 @@
+<!--此文件是批量上传文件的通用管理模版-->
+<link rel="stylesheet" href="/lib/uploadify/uploadify.css">
+<style type="text/css">
+	#pics ul{
+		overflow:hidden;
+	}
+	#pics ul li{
+		float: left;
+		margin-right:5px;
+		margin-bottom: 10px;
+	}
+	#pics ul li img{
+		margin-bottom: 5px;
+	}
+</style>
+<div class="tab-pane fade" id="pic">
+  <div id="pics">
+  	<ul>
+  		<?php if($this->files):?>
+			<?php foreach($this->files as $ef):?>
+				<li id="file_<?php echo $ef->file_id?>" class="pic_fancy">
+					<a href="<?php echo $ef->thumbs['640_320_']?>" rel="[gall1]"><img src="<?php echo $ef->thumbs[$this->uploadParams['thumb_size'].'_']?>"  width="120px" height="120px"/></a>
+					<div>
+					<input type="button" class="del_file btn" id="<?php echo $ef->file_id?>_pic" value="删除图片"/>
+					</div>
+				</li>
+			<?php endforeach;?>
+		<?php endif;?>
+	</ul>
+  </div>
+    <div class="control-group" id="group-fileField">
+      <label class="control-label" for="fileField">上传图片<br><span style="font-size:8px;">[小贴士：1.请不要上传超过2MB的图片，分辨率640PX：320px<br>2.本功能是多图上传，请将要传的图片全部选中上传<br>3.上传建议不超过5张，更多图文请在“图文详情”里描述]</span></label>
+      <div class="controls">
+        <input type="file" name="upload" id="upload" />
+        <span id="uploads"></span> <span class="help-inline" id="help-sold"></span>                 
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	<?php $timestamp = time();?>
+    $(function(){
+       $('#upload').uploadify({
+       'buttonText' : '选择文件',
+       'fileSizeLimit' : '2048KB',
+	   'fileTypeDesc' : '选择图片',
+       'fileTypeExts' : '*.gif; *.jpg; *.png',
+       'fileObjName' : 'fileField',
+       'method'   : 'post',
+		'formData'     : {
+			'timestamp' : '<?php echo $timestamp;?>',
+			'token'     : '<?php echo md5("unique_salt" . $timestamp);?>',
+				'_identify'	: '<?php echo $this->uploadParams["_identify"]?>',
+				'module_id'	: '<?php echo $this->uploadParams["module_id"]?>',
+				'target_id'	: '<?php echo $this->uploadParams["target_id"]?>',
+				'thumb_size': '<?php echo $this->uploadParams["thumb_size"]?>'
+		},
+		'swf'      : '/lib/uploadify/uploadify.swf',
+		'uploader' : '/commodity/ajaxUpload',
+			'onQueueComplete' : function(queueData) {
+			if(queueData.uploadsSuccessful > 0){
+					//window.location.reload();//全部上传完毕重新加载页面
+				}
+		},
+		'onUploadSuccess':function(file,data,response){
+                if (response && data!="error")
+                    {
+						var jsonRst = eval('('+data+')');
+						if(jsonRst.req == "ok"){
+							var apHtml = "<li id=\"file_"+jsonRst.file_id+"\">";
+							apHtml+="<img src=\""+jsonRst.file_path+"\" weight=\"120px\" height=\"120px\"/>";
+							apHtml+="<div>";
+							apHtml+="<input type=\"button\" class=\"del_file btn\" id=\""+jsonRst.file_id+"_pic\" value=\"删除图片\"/>";
+							apHtml+="</div></li>";
+							$("#pics ul").append(apHtml);
+							bindBtnClick();//重新绑定Click事件
+						}
+                    }
+			}
+		});
+	});
+	
+	function bindBtnClick()
+	{
+		 $(".del_file").bind("click",function(){
+	  		
+		  		var file_id = parseInt(this.id);
+				var target_id = "<?php echo $this->uploadParams['target_id']?>";
+				var module_id = "<?php echo $this->uploadParams['module_id']?>";
+				if(!confirm("您确定要删除此图片吗？")){
+					return false;
+				}
+				$("#file_"+file_id+" input").val("正在删除...");
+				$.post("/commodity/ajaxRemoveFile?file_id="+file_id+"&target_id="+target_id+"&module_id="+module_id,{},function(data){
+		        	if(data.req == "ok"){
+						$("#file_"+file_id).hide();
+					}else{
+						alert(data.msg);
+						$("#file_"+file_id+" input").val("删除图片");
+					}
+		    	},'json');
+		  });
+	}
+	
+	$(document).ready(function(){
+		$('#pics a').foxibox();
+		//删除图片操作
+  		bindBtnClick();
+	});
+</script>
+<script type="text/javascript" charset="utf-8" src="/js/jquery-foxibox-0.2.min.js"></script>
+<script src="/lib/uploadify/jquery.uploadify.min.js"></script> 

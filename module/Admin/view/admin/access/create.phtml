@@ -1,0 +1,123 @@
+﻿<div class="header">
+	<h1 class="page-title">添加操作</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><?php echo $this->bp->genActLink('access_index',$this->bp->act_link,'操作列表');?> <span class="divider">/</span></li>
+	<li class="active">添加操作</li>
+</ul>
+
+<div class="container-fluid">
+	<?php
+	if ($this->success)
+	{
+		echo "<div class=\"alert alert-success\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+	}
+	if ($this->error)
+	{
+		echo "<div class=\"alert alert-error\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->error->title}</strong>  {$this->error->message}</div>";
+	} 
+	if ($this->massage)
+	{
+		echo "<div class=\"alert alert-{$this->massage->alert}\">
+	        <a class=\"close\" data-dismiss=\"alert\">×</a>
+	        <strong>{$this->massage->title}</strong>  {$this->massage->message}</div>";
+	}
+	?>
+	<div class="row-fluid">
+<form id="tab" name="createAccess" method="post" action="" onsubmit="return clickAccess();">
+		<div class="btn-toolbar">
+		    <input type="submit" name="submit" id="submit"  class="btn btn-primary" value="提交" />
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			
+			
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane active in" id="home">
+						<div class="control-group" id="group-aclName">
+							<label class="control-label" for="aclName">名称</label>
+							<div class="controls">
+								<input type="text" value="" id="aclName" name="acl_name" class="input-xlarge">
+                                <span class="help-inline" id="help-aclName"></span>
+							</div>
+						</div>
+						<div class="control-group" id="group-pid">
+							<label class="control-label" for="pid">上级菜单</label>
+							<div class="controls">
+							    <?php echo $this->select_opts;?>
+                                <span class="help-inline" id="help-pid"></span>
+							</div>
+						</div>
+						<div class="control-group" id="group-aclIcon">
+							<label class="control-label" for="aclIcon">图标(Icon)</label>
+							<div class="controls">
+								<input type="text" value="" id="aclIcon" name="acl_icon" class="input-xlarge">
+                                <span class="help-inline" id="help-aclIcon"></span>
+							</div>
+						</div>
+						<div class="control-group" id="group-actKEY">
+							<label class="control-label" for="actKEY">操作唯一标识</label>
+							<div class="controls">
+								<input type="text" value="" id="actKEY" name="act_key" class="input-xlarge">
+                                <span class="help-inline" id="help-actKEY"></span>
+							</div>
+						</div>
+                        
+                        <div class="control-group" id="group-alias_key">
+							<label class="control-label" for="alias_key">别名标识</label>
+							<div class="controls">
+								<input type="text" value="" id="alias_key" name="alias_key" class="input-xlarge">
+                                <span class="help-inline" id="help-alias_key"></span>
+							</div>
+						</div>
+                        
+						<div class="control-group" id="group-aclURL">
+							<label class="control-label" for="aclURL">链接地址</label>
+							<div class="controls">
+								<input type="text" value="#" id="aclURL" name="acl_url" class="input-xlarge">
+                                <span class="help-inline" id="help-aclURL"></span>
+							</div>
+						</div>
+                        <div class="control-group" id="group-isMenu">
+							<label class="control-label" for="isMenu">设为菜单项</label>
+							<div class="controls">
+								是 <input type="radio" value="1" name="is_menu" checked />    
+						        否 <input type="radio" value="0" name="is_menu"  /> 
+                                <span class="help-inline" id="help-isMenu"></span>
+							</div>
+						</div>
+						
+						<div class="control-group" id="group-content">
+							<label class="control-label" for="content">使用帮助</label>
+							<div class="controls editor-container">							
+								<textarea name="acl_help" id="acl_help" type="text" class="editor"></textarea>
+								<span class="help-inline" id="help-content"></span>
+							</div>
+						</div>
+						
+				</div>
+			</div>
+
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+</form>
+	</div>
+</div>
+<script src="/ueditor/ueditor.all.js"></script>
+<script src="/ueditor/ueditor.config_ex.js"></script>
+<script>
+$(document).ready(    	
+/*wwww初始化编辑器www*/
+function (){
+		editor = new UE.ui.Editor();
+		editor.setOpt('toolbars',[["link","emotion","insertimage","bold","italic","underline","backcolor","insertunorderedlist","insertorderedlist","removeformat","formatmatch"]]);
+		editor.render($("textarea[name='acl_help']")[0]);
+	});
+    	
+</script>

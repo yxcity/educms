@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8" />
+	<title>我的订单</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+	<meta name="format-detection" content="telephone=no" />
+	<link type="text/css" rel="stylesheet" href="/css/style.css" />
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+</head>
+
+<body>
+<!--头部-->
+<header class="ts1">
+	<a class="u_back fl" href="javascript:history.go(-1)">返回</a>
+	<ul class="u_topbar fr">
+        		<li><a <?php echo $this->s==3 ? 'class="current"':'';?> href="?s=3">已退款</a></li>
+        		<li><a <?php echo $this->s==2 ? 'class="current"':'';?> href="?s=2">未支付</a></li>
+        		<li><a <?php echo $this->s==1 ? 'class="current"':'';?> href="?s=1">已支付</a></li>
+        	</ul>
+</header>
+<!--主体-->
+<div class="u_main">
+       <?php 
+       if ($this->count)
+       {
+       ?>
+        <ul class="u_order clearfix">
+        <?php 
+        $color='';
+        foreach ($this->rows as $serVal) {
+            $count = count($serVal);
+            $color = $color=='#f7f7f7'?'#e6e6e6':'#f7f7f7';
+            foreach ($serVal as $key=>$val) {
+                $key++;
+        ?>
+         <li style="background-color: <?php echo $color;?>">
+            <div class="u_img">
+                <a href="/product?id=<?php echo $val['pid'];?>">
+                    <img src="<?php echo $val['thumb'];?>" alt="<?php echo $val['name'];?>" />
+                </a>
+           </div>
+            <div class="u_text">
+                <h2><?php echo $val['name'];?></h2>
+                <p class="u_color1">数量：<font class="org"><?php echo $val['amount']?></font>  总价： <font class="org">￥<?php echo $val['sum']?></font><br><span class="u_mt5">方式：支付宝</span></p><p>
+                  <?php 
+                  if ($val['status']==2 && $count==$key) echo "<a class=\"u_btn ts1\" href=\"/alipay/pay?id={$val['serialnumber']}\">支 付</a>
+                  <!--<a class=\"u_btn_1 ts1\" href=\"#\">取 消</a>-->";
+                  if (($val['status']==1 || $val['status']==4) && $count==$key) {
+                  	echo "<a class=\"u_btn ts1\" href=\"/user/waybill?id={$val['serialnumber']}\">{$this->status[$val['status']]}</a>";
+                  }
+                  ?>
+                </p>
+            </div>
+        </li>
+        <?php 
+           }
+        }
+        ?>
+        </ul> 
+        <?php 
+       }else 
+       {
+        ?>
+        <div class="none_order ts2">
+        <img src="/images/u_sad.jpg" width="77" height="77" alt="sad face" />
+        <h2>您还没有<?php if ($this->s) echo $this->status[$this->s].'的'; ?>订单～</h2>
+        <p>微购物，体验精彩微生活！</p>
+         <?php 
+       }
+       ?>
+       </div>
+</div>
+<?php echo $this->partial('partials/footer.phtml');?>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+    "name": "youtitle/dtask",
+    "description": "distrubited task managent",
+    "license": "BSD-3-Clause",
+    "type": "project",
+    "keywords": [
+        "distrubited",
+        "task",
+        "gearman",
+        "redis"
+    ],
+    "homepage": "http://www.youtitle.com/",
+    "repositories": [],
+    "autoload": {
+        "psr-0": { "dtask\\": "src/"}
+    },
+    "require": {
+        "php": ">=5.3.3",
+        "chrisboulton/php-resque": "1.2.x",
+        "monolog/monolog": "1.6.*"
+    },
+    "authors": [
+        {
+            "name": "Youtitle Tech",
+            "email": "support@youtitle.com",
+            "homepage": "http://www.youtitle.com",
+            "role": "Developer"
+        }]
+}

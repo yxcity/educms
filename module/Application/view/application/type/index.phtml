@@ -1,0 +1,69 @@
+﻿<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8" />
+	<title>分类</title>
+	<meta name="version" content="游太网络" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+	<meta name="format-detection" content="telephone=no" />
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+</head>
+
+<body>
+	<?php echo $this->partial ( 'partials/header.phtml');?>
+<!--主体-->
+<section class="c_list">
+	<b>全部分类：</b>
+	<dl>
+		<dt><a href="/product/list">全部商品<i></i>
+		</a>
+	</dl>
+	<div id="menu">
+	<?php echo $this->typeStr;?>
+	</div>
+		</section>
+<?php echo $this->partial ( 'partials/footer.phtml');?>
+
+<script language="JavaScript">
+<!--//
+function ShowMenu(obj,noid){
+	var block =	document.getElementById(noid);
+	var n = noid.substr(noid.length-1);
+	$('h2').removeClass('prhh');
+	$('#'+noid+'_h2').addClass('prhh');
+	if(noid.length==4){
+		var ul = document.getElementById(noid.substring(0,3)).getElementsByTagName("ul");
+		var h2 = document.getElementById(noid.substring(0,3)).getElementsByTagName("h2");
+		
+		for(var i=0; i<h2.length;i++){
+			h2[i].innerHTML = h2[i].innerHTML.replace("∨","≡");
+			h2[i].style.color = "";
+		}
+		obj.style.color = "#FF0000";
+		for(var i=0; i<ul.length; i++){if(i!=n){ul[i].className = "no";}}
+	}else{
+		var span = document.getElementById("menu").getElementsByTagName("span");
+		var h1 = document.getElementById("menu").getElementsByTagName("h1");
+		for(var i=0; i<h1.length;i++){
+			h1[i].innerHTML = h1[i].innerHTML.replace("∨","≡");
+			h1[i].style.color = "";
+		}
+		obj.style.color = "#0000FF";
+		for(var i=0; i<span.length; i++){if(i!=n){span[i].className = "no";}}
+	}
+	if(block.className == "no"){
+		block.className = "";
+		obj.innerHTML = obj.innerHTML.replace("≡","∨");
+	}else{
+		block.className = "no";
+		obj.style.color = "";
+	}
+}
+//-->
+</script>
+
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

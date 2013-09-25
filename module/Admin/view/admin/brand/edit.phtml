@@ -1,0 +1,83 @@
+<div class="header">
+	<h1 class="page-title">编辑品牌</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><?php echo $this->bp->genActLink('brand_index',$this->bp->act_link,'品牌列表');?> <span class="divider">/</span></li>
+	<li class="active">编辑品牌</li>
+</ul>
+
+<div class="container-fluid">
+	<?php echo $this->partial('partials/flashMsg.phtml');?>
+	<div class="row-fluid">
+<form id="tab" name="createAccess" method="post" action="" onsubmit="return checkBrand();" enctype="multipart/form-data">
+		<div class="btn-toolbar">
+		    <input type="submit" name="submit" id="submit"  class="btn btn-primary" value="提交" />
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			
+			
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane active in" id="home">
+						<div class="control-group" id="group-brand_name">
+							<label class="control-label" for="brand_name">品牌名称</label>
+							<div class="controls">
+								<input type="text" value="<?php echo $this->row['brand_name']?>" id="brand_name" name="brand_name" class="input-xlarge">
+                                <span class="help-inline" id="help-brand_name"></span>
+							</div>
+						</div>
+						<div class="control-group" id="group-fileField">
+			              <label class="control-label" for="fileField">LOGO</label>
+						  <?php if($this->row['thumb']){ ?>
+				                <div id="pics">
+				                <?php
+				                echo "<a href=\"".$this->row['brand_logo']."\"  title=\"缩略图\" target='_blank'><img src=\"".$this->row['thumb']."\" alt=\"缩略图\" width=\"80\" height=\"60\" /></a>\n";
+				                ?>
+				                </div>
+				          <?php } ?>
+			              <div class="controls">
+			                <input type="file" value="" name="fileField">
+			                <span class="help-inline" id="help-fileField"></span> </div>
+			            </div>
+						
+						<div class="control-group" id="group-site_url">
+							<label class="control-label" for="site_url">网址</label>
+							<div class="controls">
+								<input type="text" value="<?php echo $this->row['site_url']?>" id="site_url" name="site_url" class="input-xlarge">
+                                <span class="help-inline" id="help-site_url"></span>
+							</div>
+						</div>
+						
+						<div class="control-group" id="group-content">
+							<label class="control-label" for="content">品牌描述</label>
+							<div class="controls editor-container">							
+								<textarea name="brand_desc" id="brand_desc" type="text" class="editor"><?php echo $this->row['brand_desc']?></textarea>
+								<span class="help-inline" id="help-content"></span>
+							</div>
+						</div>
+						
+				</div>
+			</div>
+
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+</form>
+	</div>
+</div>
+<script src="/ueditor/ueditor.all.js"></script>
+<script src="/ueditor/ueditor.config_ex.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/jquery-foxibox-0.2.min.js"></script>
+<script>
+$(document).ready(  	
+/*wwww初始化编辑器www*/
+function (){
+		$('#pics a').foxibox();  
+		
+		editor = new UE.ui.Editor();
+		editor.setOpt('toolbars',[["link","emotion","insertimage","bold","italic","underline","backcolor","insertunorderedlist","insertorderedlist","removeformat","formatmatch"]]);
+		editor.render($("textarea[name='brand_desc']")[0]);
+	});
+    	
+</script>

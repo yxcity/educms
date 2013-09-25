@@ -1,0 +1,68 @@
+<div class="header">
+	<h1 class="page-title">角色列表</h1>
+</div>
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li class="active">权限分配</li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+	<?php 
+	if ($this->success)
+	{
+		echo "<div class=\"alert alert-success\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+	}
+	if ($this->error)
+	{
+		echo "<div class=\"alert alert-error\">
+        <a class=\"close\" data-dismiss=\"alert\">×</a>
+        <strong>{$this->error->title}</strong>  {$this->error->message}</div>";
+	}
+	?>
+		<div class="btn-toolbar">
+			<div class="btn-group"></div>
+		</div>
+        <script src="/lib/bootstrap/js/bootstrap-popover.js" type="text/javascript"></script>
+        <script src="/lib/bootstrap/js/bootstrap-tooltip.js" type="text/javascript"></script>
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="6%">#</th>
+						<th>角色名称</th>
+						<th>创建时间</th>
+						<th style="width: 100px;">修改权限</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php 
+				if ($this->rows)
+				{
+				    foreach ($this->rows as $val) {
+				?>
+					<tr id="user_<?php echo $val['role_id'];?>">
+						<td><?php echo $val['role_id'];?></td>
+						<td><?php if($this->keywords){ ?>
+						<?php echo str_replace($this->keywords,'<font color=red>'.$this->keywords.'</font>',$val['role_name']);?>
+						<?php }else{ echo $val['role_name']; }?></td>
+						
+						<td><?php echo date("Y-m-d H:i:s",$val['created_time']);?></td>
+						
+						<td>
+						<?php echo $this->bp->genActLink('access_assign',$this->bp->act_edit,'',array('role_id'=>$val['role_id']));?>
+						&nbsp;&nbsp;&nbsp;
+						</td>
+					</tr>
+				<?php
+				  } 
+				}
+				?>	
+				</tbody>
+			</table>
+		</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+	</div>
+</div>

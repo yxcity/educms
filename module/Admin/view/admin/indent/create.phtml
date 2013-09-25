@@ -1,0 +1,85 @@
+<div class="header">
+	<h1 class="page-title">添加账号</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><a href="users.html">用户列表</a> <span class="divider">/</span></li>
+	<li class="active">添加账号</li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+<form id="tab" name="createUser" method="post" action="" enctype="multipart/form-data">
+		<div class="btn-toolbar">
+		    <input type="submit" name="submit" id="submit"  class="btn btn-primary" value="提交" />
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#home" data-toggle="tab">基础配置</a></li>
+				<li><a href="#profile" data-toggle="tab">密码设置</a></li>
+			</ul>
+			
+			<div id="myTabContent" class="tab-content">
+			
+				<div class="tab-pane active in" id="home">
+					
+						<label>昵称</label> 
+						<input type="text" value="" name="username" class="input-xlarge"> 
+						<label>用户名</label> 
+						<input type="text" value="" name="realname" class="input-xlarge"> 
+						<label>邮箱</label> 
+						<input type="text" value="" name="email" class="input-xlarge">
+						<label for="fileField">上传</label>
+                        <input type="file" name="fileField" id="fileField" />
+				</div>
+				<div class="tab-pane fade" id="profile">
+					
+						<label>密码</label> <input type="password" name="password" class="input-xlarge">
+						<label>确认密码</label> <input type="password" name="repassword" class="input-xlarge">
+					
+				</div>
+				
+			</div>
+
+		</div>
+
+		<div class="modal small hide fade" id="myModal" tabindex="-1"
+			role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除账号</h3>
+			</div>
+			<div class="modal-body">
+
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>你确认删除当前的账号数据吗？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" data-dismiss="modal" >确认</button>
+			</div>
+		</div>
+
+
+
+		<footer>
+			<hr>
+
+			<!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
+			<p class="pull-right">
+				A <a href="http://www.portnine.com/bootstrap-themes" target="_blank">Free
+					Bootstrap Theme</a> by <a href="http://www.portnine.com"
+					target="_blank">Portnine</a>
+			</p>
+
+			<p>
+				© 2012 <a href="http://www.portnine.com" target="_blank">Portnine</a>
+			</p>
+		</footer>
+</form>
+	</div>
+</div>

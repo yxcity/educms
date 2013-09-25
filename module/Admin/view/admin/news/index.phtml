@@ -1,0 +1,175 @@
+<div class="header">
+	<h1 class="page-title">图文素材</h1>
+</div>
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+        <li><a href="/news">消息管理</a> <span class="divider">/</span></li>
+        <li class="active">素材列表</li>
+	<?php if ($this->keywords){ ?>
+	    <span class="divider">=></span><li class="active">当前搜索关键词：”<?php echo $this->keywords; ?>“</li>
+	<?php }?>	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+<div class="container-fluid">
+	<div class="row-fluid">
+    	<div id="helpcontroller" class="collapse"></div>
+	<?php 
+      if ($this->success)
+    	{
+    		echo "<div class=\"alert alert-success\">
+    		<a class=\"close\" data-dismiss=\"alert\">×</a>
+    		<strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+    	}
+       if ($this->action=='c'){
+           echo "<form name=\"newsC\" method=\"post\"  >
+        	     <div class=\"btn-toolbar\">
+		         <button class=\"btn\">设为欢迎推荐</button>
+			     <div class=\"btn-group\"></div></div>
+	             ";
+       }else 
+       {
+       	echo "<div class=\"btn-toolbar\">    		    
+            <div class=\"search-well\">
+                <form class=\"form-inline\" action=\"\" method=\"post\" >        
+                    <input class=\"input-xlarge\" id=\"keywords\"  name=\"keywords\" type=\"text\" value=\"".$this->keywords."\" style=\"margin-right: 5px;\">
+                    <button class=\"btn\" type=\"submit\" onclick=\"return checkform();\"><i class=\"icon-search\"></i> 搜索</button>
+                </form>
+            </div>
+		    <div class=\"btn-group\">
+			<a href=\"/news/single\" class=\"btn btn-primary\"><i class=\"icon-plus\"></i> 添加单图文素材</a>
+			<a href=\"/news/multi\" class=\"btn btn-primary\"><i class=\"icon-plus\"></i> 添加多图文素材</a></div>
+		</div>";
+       }
+       ?>
+		
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="3%">#</th>
+						<th style="max-width:40%; width:40%">标题</th>
+						<th width="15%">创建时间</th>
+						<th width="15%">上次发送</th>
+                        <th width="10%">发送次数</th>
+                        <th width="10%">阅读次数</th>
+						<th style="width: 50px;">改 / 删</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php 
+				if ($this->list)
+				{
+				    $i=0;
+					foreach ($this->list as $val) {
+				?>
+					<tr id="news_<?php echo $val['id'];?>">
+						<td><?php 
+						echo "<input type=\"checkbox\" name=\"id[]\" id=\"id\" value=\"{$val['id']}\"";
+						echo " />";?></td>
+						<td>
+						<div class="rows-fluid">
+						<div style="display: inline;" id="pics">
+						<a href="http://api.kuaipai.cn/qr?chs=350x350&chl=<?php echo BASE_URL;?>/s/news/<?php echo $val['id'];?>" rel="[gall1]" title="微信扫一扫，在微信里预览！第<?php echo $i+1;?>张"><img src="http://api.kuaipai.cn/qr?chs=350x350&chl=<?php echo BASE_URL;?>/s/news/<?php echo $val['id'];?>" alt="微信扫一扫，在微信里预览！第<?php echo $i+1;?>张" width="30" height="20" /></a>
+						</div><span><a href="/s/news/<?php echo $val['id'];?>" target="_blank"><?php
+                                                        $flags=array();
+                                                        if(isset($val['pic_url'])){
+                                                            array_push($flags,"图");
+                                                        }else{
+                                                            array_push($flags,"文");
+                                                        }
+                                                        if($val['type'] == 1){
+                                                            array_push($flags,"多");
+                                                        }else{
+                                                            array_push($flags,"单");
+                                                        }
+                                                        $flags = "[" . implode(",",$flags) . "]";
+                                                        echo $flags . str_replace($this->keywords,'<font color=red>'.$this->keywords.'</font>',$val['title']);
+														
+							
+						?></a>
+						</span>
+							<?php if(isset($val['children']) && $val['children']){
+								echo "<ol>";
+									foreach($val['children'] as $child){
+							?>
+							<li><div style="display: inline;" id="pics">
+    						<a href="http://api.kuaipai.cn/qr?chs=350x350&chl=<?php echo BASE_URL;?>/s/news/<?php echo $child['id'];?>" rel="[gall1]" title="微信扫一扫，在微信里预览！第<?php echo $i+1;?>张"><img src="http://api.kuaipai.cn/qr?chs=350x350&chl=<?php echo BASE_URL;?>/s/news/<?php echo $child['id'];?>" alt="微信扫一扫，在微信里预览！第<?php echo $i+1;?>张" width="30" height="20" /></a>
+    						</div><a href="/s/news/<?php echo $child['id'];?>" target="_blank"><?php echo str_replace($this->keywords,'<font color=red>'.$this->keywords.'</font>',$child['title']);?></a>[阅读次数：<?php echo $child['read_count'];?>]</li>
+							<?php }
+								echo "<ol>";
+							}?>
+						</div>
+						</td>
+						<td><?php echo $val['create_time'];?></td>
+						<td><?php echo $val['last_send_time'];?></td>
+						<td><?php echo $val['send_count'];?></td>
+                        <td><?php echo $val['read_count'];?></td>
+						<td>
+						<a href="/news/<?php echo ($val['type']==0?"single":"multi")."?id=${val['id']}&action=edit";?>" title="修改"><i class="icon-pencil"></i></a>&nbsp;&nbsp;&nbsp;
+						<a href="#delete" role="button" data-toggle="modal" data-id="<?php echo $val['id'];?>" title="删除"><i class="icon-remove"></i></a>
+						</td>
+					</tr>
+					<?php 
+				    $i++;
+					}
+					}
+					?>
+				</tbody>
+			</table>
+		</div>
+		<?php 
+		echo $this->paginationcontrol($this->rows,'Sliding','pagination/pagination.phtml',array('key'=>$this->keywords));
+		?>
+		<script type="text/javascript">
+        $(document).ready(function(){
+            $("a[href='#delete']").on('click',function(){
+                $('#btn_del_news').attr('data-id',$(this).attr('data-id'));
+                $('#dlg_del_news').modal('show');
+            });
+            
+            $('#btn_del_news').on('click',function(){
+                 var self = $(this);
+                 var id = self.attr('data-id');
+                 $.post('/news/delete?id='+id,{'id':id},function(data){
+                     if (data.code=='ok')
+                     {
+                    	 $('#news_'+id).hide();
+                     }
+                 },'json');
+            });
+        });
+        </script>
+		<div class="modal small hide fade" id="dlg_del_news" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除消息</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>确定删除当前选定的消息？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="btn_del_news" data-dismiss="modal">确认</button>
+			</div>
+		</div>
+		<?php 
+		echo $this->partial('partials/homeFooter.phtml');
+		?>
+	</div>
+</div>
+<script type="text/javascript" charset="utf-8" src="/js/jquery-foxibox-0.2.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	  $('#pics a').foxibox();
+	});
+	a2a_linkname = document.title;
+	a2a_linkurl = "";
+function checkform(){
+    var keywords = $('#keywords').val();
+    if (keywords == 0 || keywords =='' ) {
+        alert('请填写关键词！');
+        return false;
+    }
+}
+</script>

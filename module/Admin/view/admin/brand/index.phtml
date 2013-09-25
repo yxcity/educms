@@ -1,0 +1,120 @@
+<div class="header">
+	<h1 class="page-title">品牌列表</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li class="active">品牌列表</li>
+	<li style="float: right;"><button class="btn btn-small btn-danger" data-toggle="collapse" data-target="#helpcontroller" onclick="show_help()">[展开/关闭] - 使用帮助</button></li>
+</ul>
+
+<div class="container-fluid">
+	<?php echo $this->partial('partials/flashMsg.phtml');?>
+	<div class="row-fluid">	
+    		<div id="helpcontroller" class="collapse"></div>
+		<div class="btn-toolbar">
+			<?php echo $this->bp->genActLink('brand_create',$this->bp->act_add,'添加品牌');?>
+			<div class="btn-group"></div>
+		</div>
+		<div class="well">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>品牌名称</th>
+						<th>网址</th>
+						<th>排序序号</th>
+						<th style="width: 50px;">改/删</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+				
+				<?php 
+					if($this->rows):
+						foreach($this->rows as $val):
+				?>
+						<tr id="brand_<?php echo $val['brand_id'];?>">
+							<td><?php echo $val['brand_id'];?></td>
+							<td><?php echo $val['brand_name'];?></td>
+							<td><a href="<?php echo $val['site_url'];?>" target="_blank"><?php echo $val['site_url'];?></a></td>
+							<td>
+							<input type="text" id="s_<?php echo $val['brand_id']?>" value="<?php echo $val['sorting'];?>" class="input-mini">
+							<a href="#" class="to_sorting" id="lk_<?php echo $val['brand_id'];?>">更新排序</a>	
+								
+							</td>
+							<td>
+							<?php echo $this->bp->genActLink('brand_edit',$this->bp->act_edit,'',array('brand_id'=>$val['brand_id']));?>
+							 &nbsp;
+							<?php echo $this->bp->genActLink('brand_delete',$this->bp->act_del,'',array('del_id'=>$val['brand_id']));?>
+							</td>
+						</tr>
+				<?php	
+						endforeach; 
+					endif;
+				?>
+				
+				
+				
+				<!--Display List-->	
+				</tbody>
+			</table>
+		</div>
+		
+		<?php
+		echo $this->paginationcontrol($this->rows,'Sliding','pagination/pagination.phtml',array('key'=>$this->keywords));
+		?>
+		
+		<div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<script type="text/javascript">
+			  function triggerDel(del_id)
+			   {
+			   		$("#delid").click(function(){
+						
+						
+						$.post('/brand/delete?brand_id='+del_id,{'brand_id':del_id},function(data){
+							 if (data.req=="ok")
+		                     {
+		                    	 $('#brand_'+del_id).hide();
+		                     }
+		                 },'json');
+						
+					});		
+			   }
+			   
+			   $(document).ready(function(){
+			   		$("a.to_sorting").click(function(){
+						var this_id = this.id;
+						var obj_id = this_id.replace("lk","s");
+						var acl_sorting = parseInt($("#"+obj_id).val());
+						var acl_id = parseInt(this_id.replace("lk_",""));
+						$.post('/brand/ajaxUpdateSorting?brand_id='+acl_id+'&sorting='+acl_sorting,{},function(data){
+		                    alert(data.msg);
+							if(data.req == "ok"){
+								window.location.reload();
+							}
+		                 },'json');
+					});	
+			   });
+			   
+		   </script>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+				<h3 id="myModalLabel">删除品牌</h3>
+			</div>
+			<div class="modal-body">
+				<p class="error-text">
+					<i class="icon-warning-sign modal-icon"></i>是否删除选定的品牌？
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+				<button class="btn btn-danger" id="delid" data-dismiss="modal">确定</button>
+			</div>
+		</div>
+		<?php 
+		echo $this->partial('partials/homeFooter.phtml');
+		?>
+	</div>
+</div>

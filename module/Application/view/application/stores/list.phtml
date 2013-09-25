@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8" />
+	<title><?php echo $this->row['shopname'];?>[分店列表]</title>
+	<meta name="version" content="游太网络" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+	<meta name="format-detection" content="telephone=no" />
+	<link type="text/css" rel="stylesheet" href="/css/style.css" />
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+	<?php echo $this->partial ( 'partials/header.phtml');?>	
+<div class="main">
+	<div class="p_place">
+		<h1><?php echo $this->row['shopname'];?></h1>
+		<span><?php echo $this->countshop; ?>家分店</span>
+	</div>
+
+			<div class="p_mod">
+		<h2 class="p_mod_title"><a href="#">汉口东风4S维修店</a></h2>
+		<ul>
+			<li class="p_address">
+				<a href="#">
+					<strong>地址：</strong>
+					<font>汉口竹叶山</font>
+					<span class="gt"></span>
+				</a>
+			</li>
+			<li class="p_phone">
+				<a href="tel:18675733757">
+					<strong>电话：</strong>
+					<font>18675733757</font>
+					<span class="gt"></span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<strong>交通路线：</strong>
+					<font>公交：10路
+地铁：2号线
+</font>
+					<span class="gt"></span>
+				</a>
+			</li>
+		</ul>
+	</div>
+			
+		<div class="p_mod p_seller_info p_tips ts2">
+		<a href="#">查看商品详情<span class="gt"></span></a>
+	</div>
+	</div>
+<?php echo $this->partial ( 'partials/footer.phtml');?>
+<script type="text/javascript">
+window.onload = function(){
+	//价格与抢购按钮浮动
+	var f_obj = document.getElementById('p_buy');
+	var f_y = f_obj.offsetTop;
+	var f_class = f_obj.className;
+	document.onscroll = function(){
+		if(document.body.scrollTop>f_y){
+			f_obj.className += " fixed_t";
+		}else{
+			f_obj.className = f_class;
+		}
+	}
+}
+
+  $(function(){
+      var pageCount = <?php echo $this->pageCount;?>;
+      $('.more').click(function(){
+          var page=$('.more').attr('page');
+          $.post("/stores/more?id=<?php echo $this->row['id']?>&page="+page, { "time": <?php echo time();?>},function(o){
+               $('.i_list ul').append(o); 
+          });
+          page++;
+          if (pageCount < page)
+          {
+              $('.more').hide();
+              return false;
+          }
+          $('.more').attr('page',page);
+      });
+  });
+</script>
+<?php echo $this->partial('partials/stats.phtml');?>
+</body>
+</html>

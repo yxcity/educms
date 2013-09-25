@@ -1,0 +1,72 @@
+<div class="header">
+	<h1 class="page-title">有问必答</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li><a href="/home">首页</a> <span class="divider">/</span></li>
+	<li><a href="/answers">有问必答</a> <span class="divider">/</span></li>
+	<li class="active">提交问题</li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+	    <?php 
+    	if ($this->success)
+    	{
+    		echo "<div class=\"alert alert-success\">
+            <a class=\"close\" data-dismiss=\"alert\">×</a>
+            <strong>{$this->success->title}</strong>  {$this->success->message}</div>";
+    	}
+    	?>
+		<form id="tab" name="createAnswers" method="post" action="" onsubmit="return clickForm();">
+			<div class="btn-toolbar">
+				<input type="submit" name="submit" id="submit"
+					class="btn btn-primary " value="提交" />
+				<div class="btn-group"></div>
+			</div>
+			<div class="well">
+				<div id="myTabContent" class="tab-content">
+					<div class="tab-pane active in" id="home">
+					<?php if(!$this->fid) { ?>
+						<div class="control-group" id="group-realname">
+							<label class="control-label" for="realname">联系人</label>
+							<div class="controls">
+								<input type="text" value="" name="realname" id="realname" class="span3"> 
+								<span class="help-inline" id="help-realname"></span>
+							</div>
+						</div>
+						<div class="control-group" id="group-contact">
+							<label class="control-label" for="contact">联系方式</label>
+							<div class="controls">
+								<input type="text" value="" name="contact" id="contact" class="span3"> 
+								<span class="help-inline" id="help-contact"></span>
+							</div>
+						</div>
+						<?php  }?>
+						<div class="control-group" id="group-content">
+							<label class="control-label" for="content"><?php if($this->fid) echo "追问"; ?>问题</label>
+							<div class="controls editor-container">							
+								<textarea name="content" id="content" type="text" class="editor"></textarea>
+								<span class="help-inline" id="help-content"></span>
+							</div>
+						</div>
+    
+					</div>
+				</div>
+			</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+</form>
+	</div>
+</div>
+<script src="/ueditor/ueditor.all.js"></script>
+<script src="/ueditor/ueditor.config_ex.js"></script>
+<script>
+$(document).ready(    	
+/*wwww初始化编辑器www*/
+function (){
+		editor = new UE.ui.Editor();
+		editor.setOpt('toolbars',[["link","emotion","insertimage","bold","italic","underline","backcolor","insertunorderedlist","insertorderedlist","removeformat","formatmatch"]]);
+		editor.render($("textarea[name='content']")[0]);
+	});
+    	
+</script>

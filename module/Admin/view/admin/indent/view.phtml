@@ -1,0 +1,180 @@
+<style>
+.result-info .status {
+	width: 50px;
+	background: url("/images/ico_status.gif") -50px center no-repeat
+}
+
+.result-info .status {
+	width: 50px;
+	background: url("/images/ico_status.gif") -50px center no-repeat
+}
+
+.result-info .status-first {
+	background: url("/images/ico_status.gif") 0px center no-repeat
+}
+
+.result-info .status-check {
+	background: url("/images/ico_status.gif") -150px center no-repeat
+}
+
+.result-info .status-wait {
+	background: url("/images/ico_status.gif") -100px center no-repeat
+}
+
+.result-info .last td {
+	color: #FF8c00;
+	border-bottom: none;
+	!
+	important
+}
+</style>
+<div class="header">
+	<h1 class="page-title">订单详情</h1>
+</div>
+
+<ul class="breadcrumb">
+	<li>
+		<a href="/home">首页</a>
+		<span class="divider">/</span>
+	</li>
+	<li>
+		<a href="/indent">订单列表</a>
+		<span class="divider">/</span>
+	</li>
+	<li class="active">订单详情</li>
+</ul>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+
+		<div class="btn-toolbar">
+			<input type="submit" name="submit" id="submit"
+				class="btn btn-primary" value="返回上一页"
+				onclick="javascript:history.go(-1);" />
+			<div class="btn-group"></div>
+		</div>
+		<div class="well" style="margin-top: 10px;">
+			<ul class="nav nav-tabs">
+				<li class="active">
+					<a>订单详情</a>
+				</li>
+				<li>
+					<a href="/indent/edit?id=<?php echo $this->id;?>">商家发货</a>
+				</li>
+			</ul>
+
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane active in" id="home">
+                                       <?php
+                                       if ($this->rows) 
+                                           {
+                                           $i=1;
+                                           $sum = 0;
+                                           $addtime=0;
+                                           $status=0;
+                                           $payTime=0;
+                                           $express=0;
+                                           $waybill=null;
+                                           $content=null;
+                                           $trade_status=null;
+                                           foreach ($this->rows as $val) {
+                                               
+                                        ?>
+					<div class="control-group" id="group-realname">
+						<label class="control-label" for="realname">
+							<b>商品名称(<?php echo $i;?>)：</b><?php echo $val['name'];?></label>
+					</div>
+                                        <div class="control-group" id="group-contact">
+						<label class="control-label" for="ask">
+							<b>购买数量：</b><?php echo $val['amount'];?></label>
+				        </div>
+                                        <?php 
+                                        $i++;
+                                        $sum = $sum+$val['sum'];
+                                        $addtime = $val['addtime'];
+                                        $status = $val['status'];
+                                        $payTime = $val['payTime'];
+                                        $express = $val['express'];
+                                        $waybill = $val['waybill'];
+                                        $content = $val['content'];
+                                        $trade_status = $val['trade_status'];
+                                           }
+                                           }
+                                        ?>
+                                    <hr>
+					<div class="control-group" id="group-contact">
+						<label class="control-label" for="contact">
+							<b>买家电话：</b><?php echo $this->address['phone'];?></label>
+					</div>
+					
+					<div class="control-group" id="group-ask">
+						<label class="control-label" for="ask">
+							<b>总&nbsp;&nbsp;金&nbsp;&nbsp;额：</b><?php echo $sum;?>元</label>
+					</div>
+					<div class="control-group" id="group-ask">
+						<label class="control-label" for="ask">
+							<b>支付时间：</b><?php echo $payTime?date('Y-m-d H:i:s',$payTime):"";?></label>
+					</div>
+					<div class="control-group" id="group-contact">
+						<label class="control-label" for="contact">
+							<b>收件地址：</b><?php if ($this->address) echo $this->address['province'].$this->address['city'].$this->address['address'].$this->address['zipcode'].'&nbsp;&nbsp;'.$this->address['name'].'&nbsp;&nbsp;'.$this->address['phone'];?></label>
+					</div>
+					<div class="control-group" id="group-contact">
+						<label class="control-label" for="contact">
+							<b>备注内容：</b><?php echo htmlspecialchars_decode(stripslashes($content));?></label>
+					</div>
+					<div class="control-group" id="group-ask">
+						<label class="control-label" for="ask">
+							<b>订单时间：</b><?php echo $addtime?date('Y-m-d H:i:s',$addtime):'未知';?></label>
+					</div>
+					<div class="control-group" id="group-ask" style="color: orange;">
+						<label class="control-label" for="ask">
+							<b>订单状态：</b><?php echo $this->status[$status];?></label>
+					</div>
+					<div class="control-group" id="group-pay">
+						<label class="control-label" for="pay">
+							<b>交易状态：</b>
+							<?php echo $trade_status?$this->trade[$trade_status]:'';?></label>
+					</div>
+					<div class="control-group" id="group-ask">
+						<label class="control-label" for="ask">
+							<b>物流公司：</b><?php echo $express;?></label>
+					</div>
+					<div class="control-group" id="group-contact">
+						<label class="control-label" for="contact">
+							<b>物流单号：</b><?php echo $waybill;?></label>
+					</div>
+						
+						<?php
+						if ($express && $waybill) {
+							echo '<div class="control-group" id="group-express" style="padding:10px;border-style: dashed dashed dashed dashed;background: whiteSmoke;border: 1px dotted #785;"><label class="control-label" for="contact"><b>物流跟踪：</b></label><table class="result-info"><tbody>';
+							if ($this->expLog) {
+								$num = count ( $this->expLog );
+								if ($this->ischeck) {
+									$state = " status-check";
+								} else {
+									$state = " status-wait";
+								}
+								foreach ( array_reverse ( $this->expLog ) as $key => $val ) {
+									if ($key + 1 == $num) {
+										echo "<tr style=\"color:orange;font-weight:bold;\"><td>{$val['time']}</td><td width=\"50\" align=\"center\" class=\"status" . $state . "\"></td><td>{$val['context']}</td></tr>";
+									} elseif ($key == 0) {
+										echo "<tr><td>{$val['time']}</td><td width=\"50\" align=\"center\" class=\"status status-first\"></td><td>{$val['context']}</td></tr>";
+									} else {
+										echo "<tr><td>{$val['time']}</td><td width=\"50\" align=\"center\" class=\"status\"></td><td>{$val['context']}</td></tr>";
+									}
+								}
+							} else {
+								echo "<tr><td><font color=orange>获取数据不成功，请稍后再试，或检查您的快递信息是否填写正确！</font></td></tr>";
+							}
+							echo '</tbody></table></div>';
+						}
+						?>
+						</div>
+
+			</div>
+		</div>
+	</div>
+		<?php echo $this->partial('partials/homeFooter.phtml');?>
+	</div>
+</div>

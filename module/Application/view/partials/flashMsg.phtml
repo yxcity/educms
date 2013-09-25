@@ -1,0 +1,13 @@
+<?php 	
+        use module\Application\src\Model\Tool;
+        $this->flash = Tool::getFlash();
+        if(!empty($this->flash)):
+			foreach($this->flash as $fk=>$fv):
+				if($fk == "success" || $fk == "error"):
+					echo "<div class=\"alert alert-$fk\"><a class=\"close\" data-dismiss=\"alert\">×</a><strong>{$fv->title}</strong>  {$fv->message}</div>";
+				else:
+					echo "<div class=\"alert alert-{$fv->alert}\"><a class=\"close\" data-dismiss=\"alert\">×</a><strong>{$fv->title}</strong>  {$fv->message}</div>";
+				endif;
+			endforeach;
+		endif;			
+?>
