@@ -3,7 +3,8 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Admin\Model\Role;
-use module\Application\src\Model\Tool;
+use library\Helper\HCommon;
+use library\Helper\HTreeView;
 
 class AccessController extends AbstractActionController{
 	
@@ -11,7 +12,7 @@ class AccessController extends AbstractActionController{
 	private $viewData=array();
 	
 	function __construct(){
-		$this->user=Tool::getSession('auth','user');
+		$this->user=HCommon::getSession('auth','user');
 		$this->viewData['user']=$this->user;
 	}
 	
@@ -22,26 +23,12 @@ class AccessController extends AbstractActionController{
 	 */
 	function indexAction()
 	{
-		
-		if (!$this->user || $this->user->power < 2) $this->redirect()->toUrl('/home');
-		$success = Tool::getCookie('success');
-		if ($success)
-		{
-		    $this->viewData['success']=json_decode($success);
-		}
-        $error=Tool::getCookie('error');
-	    if ($error)
-	    {
-	    	$this->viewData['error']=json_decode($error);
-	    }
-		
-		$adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-		$db=new Role($adapter);
+		$db=new Role($this->BackendPlugin()->getDbAdapter());
 		
 		//分页处理数组显示
 		$doPager = $this->_doPager($db->getAccessTree(0,$this->user->roleid));
 		if($doPager){
-			$this->viewData['rows']=Tool::genAccessTreeList($doPager['show_data']);
+			$this->viewData['rows']=HTreeView::genAccessTreeList($doPager['show_data']);
 			$this->viewData['pager_link']=$doPager['pager_link'];	
 		}
 		

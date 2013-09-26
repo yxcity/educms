@@ -6,8 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Admin\Model\User;
 use Admin\Model\Role;
-use module\Application\src\Model\Tool;
-use module\Application\src\Model\Alipay\Alipay;
+use library\Helper\HCommon;
 
 class UsersController extends AbstractActionController{
 
@@ -15,7 +14,7 @@ class UsersController extends AbstractActionController{
 	private $user;
 
 	function __construct(){
-		$this->user = Tool::getSession('auth', 'user');
+		$this->user = HCommon::getSession('auth', 'user');
 		$this->viewData['user'] = $this->user;
 	}
 
@@ -25,7 +24,7 @@ class UsersController extends AbstractActionController{
 	*/
 	function clearcacheAction(){
 		if($this->user->power == 3){//仅超级管理员yjf才有权限清除缓存
-			Tool::clearAllCache();
+			HCommon::clearAllCache();
 			header("Content-type:text/html;charset=utf-8");
 			echo '<script language="javascript">alert("缓存清除成功！请重新登陆系统");window.location.href="/logout";</script>';
 			exit(0);
