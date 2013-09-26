@@ -72,6 +72,15 @@ class Module
         		}
         );
         
+        //---此处设置全局调用的布局文件数据---
+        /*$sharedManager->attach(__NAMESPACE__,'dispatch',function ($e){
+			$route = $e->getRouteMatch();
+            $viewModel = $e->getViewModel();
+            $dbUser = new User($e->getTarget()->getServiceLocator ()->get ( 'Zend\Db\Adapter\Adapter' ) );
+			$_site = $dbUser->clickDomain (str_replace(strchr($_SERVER['HTTP_HOST'],"."),"",$_SERVER['HTTP_HOST']));
+            $viewModel->setVariable('_site',$_site);
+		},100);*/
+        
         
     }
 
