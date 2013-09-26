@@ -144,7 +144,7 @@ class HUploader{
 	 * @param undefined $str
 	 * 
 	 */
-	private static function _getThumbPrefix($str)
+	public static function _getThumbPrefix($str)
 	{
 		$prefix = "";
 		if(is_int($str)){

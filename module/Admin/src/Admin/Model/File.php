@@ -1,26 +1,15 @@
 <?php
 namespace Admin\Model;
+use library\Helper\HModel;
+use library\Helper\HUploader;
 
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
-use module\Application\src\Model\Tool;
-
-class File
+class File extends HModel
 {
 
-    private $adapter;
-	public static $m_news = 60;//新闻模块
-	public static $m_goods = 50; //商品模块
-	public static $m_avatar = 40; //会员头像
-	public static $m_brand = 70;//品牌LOGO
-	public static $m_shop = 80;//门店模块
-	public static $m_blt = 90;//公司公告
-	
-	
+   
     function __construct ($adapter)
     {
-        $this->adapter = $adapter;
+        parent::__construct($adapter);
     }
 	
 	/**
@@ -91,77 +80,6 @@ class File
 		return $table->update($data,array('file_id'=>$file_id));
 	}
 	
-	
-	/**
-	 * 查找指定模块下的图片尺寸规格参数 
-	 * @param undefined $module_id
-	 * 
-	 */
-	public static function getImageSizeList($module_id = 0)
-	{
-		$config = array(
-			self::$m_goods => array(100,200,array(640,320)),
-			self::$m_news => array(200,400,array(320,480)),
-			self::$m_avatar => array(50,100,array(120,480)),
-			self::$m_brand => array(400),
-			self::$m_shop => array(200,400,array(640,320)),
-			self::$m_blt => array(200,400,array(320,480)),
-		);
-		if(isset($config[$module_id])){
-			return $config[$module_id];
-		}
-		return FALSE;
-	}
-	
-	/**
-	 * 文件上传的通用接口 
-	 * @param undefined $field
-	 * @param undefined $userId
-	 * @param undefined $valid_exts
-	 * @param undefined $module_id
-	 * @param undefined $options
-	 * 
-	 */
-	public static function doUpload($field, $userId, $valid_exts = array('gif','jpg','png'),$module_id = NULL,$options = NULL)
-	{
-		
-		$dirname = "/uploads/".substr(md5($userId),0,10)."/".date("Ymd")."/";
-		$fileInfo = Tool::uploadfile($field,$dirname,NULL,$valid_exts);
-		
-		//1.仅限生成指定大小缩略图的情况,此时缩略图会覆盖原图
-		if(isset($options['thumb_size']) && isset($fileInfo['file'])){
-            if(is_int($options['thumb_size'])){
-                self::cropPhoto(BASE_PATH.$fileInfo['file'],BASE_PATH.$fileInfo['file'],$options['thumb_size'],$options['thumb_size']);    
-            }elseif(is_array($options['thumb_size']) && count($options['thumb_size']) == 2){//宽与高两项,0-宽 1-高
-                self::cropPhoto(BASE_PATH.$fileInfo['file'],BASE_PATH.$fileInfo['file'],$options['thumb_size'][0],$options['thumb_size'][1]);
-            }
-			return $fileInfo;
-		}
-		
-		//2.生成多个缩略图的情况,保留原图
-		if(isset($fileInfo['file'])){
-			//生成缩略图
-			$config = self::getImageSizeList($module_id);
-			if($config){
-				$thisFile = explode("/",$fileInfo['file']);
-				foreach($config as $f){
-					if(is_int($f)){
-						$srcFileName = end($thisFile);
-						$targetFileName = self::_getThumbPrefix($f).$srcFileName;
-						$targetFile = BASE_PATH.str_replace($srcFileName,$targetFileName,$fileInfo['file']);
-						self::cropPhoto(BASE_PATH.$fileInfo['file'],$targetFile,$f,$f);
-					}elseif(is_array($f)){
-						$srcFileName = end($thisFile);
-						$targetFileName = self::_getThumbPrefix($f).$srcFileName;
-						$targetFile = BASE_PATH.str_replace($srcFileName,$targetFileName,$fileInfo['file']);
-						self::cropPhoto(BASE_PATH.$fileInfo['file'],$targetFile,$f[0], $f[1]);
-					}	
-				}
-			}
-		}
-		return $fileInfo;
-			
-	}
 	
 	
 	/**
@@ -287,7 +205,7 @@ class File
 	 */
 	public static function getThumbFile($srcFile,$module_id,$thumbSize = NULL)
 	{
-		$config = self::getImageSizeList($module_id);
+		$config = HUploader::getImageSizeList($module_id);
 		if(!$config){
 			return FALSE;
 		}
@@ -295,13 +213,13 @@ class File
 		$srcFileName = end($thisFile);
 		if(is_null($thumbSize)){//所有缩略图
 			foreach($config as $f){		
-				$targetFileName = self::_getThumbPrefix($f).$srcFileName;
+				$targetFileName = HUploader::_getThumbPrefix($f).$srcFileName;
 				$ftFile = str_replace($srcFileName,$targetFileName,$srcFile);
-				$thumbs[self::_getThumbPrefix($f)] = file_exists(BASE_PATH.$ftFile) ? $ftFile : $srcFile;
+				$thumbs[HUploader::_getThumbPrefix($f)] = file_exists(BASE_PATH.$ftFile) ? $ftFile : $srcFile;
 			}
 			return $thumbs;
 		}
-		$targetFileName = self::_getThumbPrefix($thumbSize).$srcFileName;
+		$targetFileName = HUploader::_getThumbPrefix($thumbSize).$srcFileName;
 		$tFile = str_replace($srcFileName,$targetFileName,$srcFile);
 		if(file_exists(BASE_PATH.$tFile)){
 			return $tFile;
@@ -309,21 +227,7 @@ class File
 		return $srcFile;
 	}
 	
-	/**
-	 * 获取缩略图文件名前缀 
-	 * @param undefined $str
-	 * 
-	 */
-	private static function _getThumbPrefix($str)
-	{
-		$prefix = "";
-		if(is_int($str)){
-			$prefix = $str."_";
-		}elseif(is_array($str)){
-			$prefix = $str[0]."_".$str[1]."_";
-		}
-		return $prefix;
-	}
+	
 	
 	
 	/**
@@ -337,132 +241,4 @@ class File
 			unlink($file);
 		}
 	}
-	
-	public static function cropPhoto($o_photo, $d_photo, $width, $height) {
-
-	    $temp_img = self::_createImageFromSth($o_photo);
-	    $o_width = imagesx($temp_img);                                //取得原图宽
-	    $o_height = imagesy($temp_img);                                //取得原图高
-		//判断处理方法
-	    if ($width > $o_width || $height > $o_height) {        //原图宽或高比规定的尺寸小,进行压缩
-	        $newwidth = $o_width;
-	        $newheight = $o_height;
-
-	        if ($o_width > $width) {
-	            $newwidth = $width;
-	            $newheight = $o_height * $width / $o_width;
-	        }
-
-	        if ($newheight > $height) {
-	            $newwidth = $newwidth * $height / $newheight;
-	            $newheight = $height;
-	        }
-
-	        //缩略图片
-	        $new_img = imagecreatetruecolor($newwidth, $newheight);
-	        imagecopyresampled($new_img, $temp_img, 0, 0, 0, 0, $newwidth, $newheight, $o_width, $o_height);
-	        self::_imageSth($new_img, $d_photo);
-	        imagedestroy($new_img);
-	    } else {                                                                                //原图宽与高都比规定尺寸大,进行压缩后裁剪
-	        if ($o_height * $width / $o_width > $height) {        //先确定width与规定相同,如果height比规定大,则ok
-	            $newwidth = $width;
-	            $newheight = $o_height * $width / $o_width;
-	            $x = 0;
-	            $y = ($newheight - $height) / 2;
-	        } else {                                                                        //否则确定height与规定相同,width自适应
-	            $newwidth = $o_width * $height / $o_height;
-	            $newheight = $height;
-	            $x = ($newwidth - $width) / 2;
-	            $y = 0;
-	        }
-
-	        //缩略图片
-	        $new_img = imagecreatetruecolor($newwidth, $newheight);
-	        imagecopyresampled($new_img, $temp_img, 0, 0, 0, 0, $newwidth, $newheight, $o_width, $o_height);
-	        self::_imageSth($new_img, $d_photo);
-	        imagedestroy($new_img);
-
-	        $temp_img = self::_createImageFromSth($d_photo);
-	        $o_width = imagesx($temp_img);                                //取得缩略图宽
-	        $o_height = imagesy($temp_img);                                //取得缩略图高
-	        //裁剪图片
-	        $new_imgx = imagecreatetruecolor($width, $height);
-	        imagecopyresampled($new_imgx, $temp_img, 0, 0, $x, $y, $width, $height, $width, $height);
-	        self::_imageSth($new_imgx, $d_photo);
-	        imagedestroy($new_imgx);
-	    }
-	}
-	
-	
-    private static function _imageSth($photo,$d_photo)
-    {
-        $ext = strtolower(strrchr($d_photo,'.'));
-		switch($ext){
-			case ".png":
-			imagepng($photo,$d_photo);
-			break;
-			case ".gif":
-			imagegif($photo,$d_photo);
-			break;
-			case ".jpg":
-			default:
-			imagejpeg($photo,$d_photo);
-		}
-    }
-    
-	private static function _createImageFromSth($photo)
-	{
-		$ext = strtolower(strrchr($photo,'.'));
-		$tmp = NULL;
-		switch($ext){
-			case ".png":
-			$tmp = imagecreatefrompng($photo);
-			break;
-			case ".gif":
-			$tmp = imagecreatefromgif($photo);
-			break;
-			case ".jpg":
-			default:
-			$tmp = imagecreatefromjpeg($photo);
-		}
-		return $tmp;
-	}
-	
-	/**
-	 * 将商品图片从商品表批量导入至wx_files表 
-	 * 
-	 */
-	public function doTransfer()
-	{
-		$table = new TableGateway('wx_files', $this->adapter);
-		$sql = "SELECT id,images,addtime FROM `shop` WHERE images IS NOT NULL";
-		$rowSet = $this->adapter->query($sql,"execute");
-		if($rowSet->count() > 0){
-			foreach($rowSet as $r){
-				$imgs = unserialize($r->images);
-				foreach($imgs as $m){
-					$flag = $table->insert(array(
-						'file_desc' => '-',
-						'path' => $m,
-						/*'filesize' => filesize(BASE_PATH.$m),*/
-						'is_img' => 1,
-						'created_time' =>$r->addtime,
-						'module_id' => self::$m_shop,
-						'target_id' => $r->id,
-						'owner_id' => 0
-					));
-					if(!$flag){
-						continue;
-					}
-					$u_sql = "UPDATE `shop` SET images = NULL WHERE id = ".$r->id;
-					$this->adapter->query($u_sql,"execute");
-					echo("<br />Updated img => ".$m);
-				}
-			}
-		}else{
-			echo "no img for Update";
-		}
-		exit(0);
-	}
-	
 }
