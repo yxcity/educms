@@ -106,11 +106,11 @@ if (isset($child->user))
 </div>
 <div class="sidebar-nav">
 	<?php
-		$sm = $this->getHelperPluginManager()->getServiceLocator();
+		/*$sm = $this->getHelperPluginManager()->getServiceLocator();
 		$_adapter = $sm->get('Zend\Db\Adapter\Adapter');
 		$db=new Role($_adapter);
-		$menu = Tool::genRoleMenu($db->getAccessTree(0,$child->user->roleid,$child->user->domain));
-		echo $menu;
+		$menu = Tool::genRoleMenu($db->getAccessTree(0,$child->user->roleid,$child->user->domain));*/
+		echo $this->layout()->_menu;
 	?>
 </div>
 <?php 
@@ -134,7 +134,7 @@ if (isset($child->asset))
 ?>
 <script type="text/javascript">
 function show_help(){
-    document.getElementById("helpcontroller").innerHTML='<div class=\"alert\" style=\"margin-top:10px;\"><?php print(Tool::getCache('acl_help'));?></div>';
+    document.getElementById("helpcontroller").innerHTML='<div class=\"alert\" style=\"margin-top:10px;\"><?php echo $this->layout()->acl_help;?></div>';
 }
 </script>
 <script type="text/javascript">

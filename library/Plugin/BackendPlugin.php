@@ -24,7 +24,7 @@ class BackendPlugin extends AbstractPlugin
 		
 		//检测是否为Admin模块,此Plugin仅需限制Admin模块
 		$ctrl = explode("\\",$e->getRouteMatch()->getParam('controller'));
-		if($ctrl[0] != "Admin" && self::getSubDomain() != "login"){
+		if($ctrl[0] != "Admin" && HCommon::getSubDomain() != "login"){
 			return FALSE;
 		}
 		
@@ -66,11 +66,13 @@ class BackendPlugin extends AbstractPlugin
 			}	
 		}
 		
-		
+		 
 		if($toRedirect){
+           
 			$router = $e->getRouter(); 
             $response = $e->getResponse();
             $response->setStatusCode(302);
+            
             $response->getHeaders()->addHeaderLine('Location', $url);
             $e->stopPropagation();
 		}
@@ -102,14 +104,6 @@ class BackendPlugin extends AbstractPlugin
 		$ctrl = strtolower($ctrl[2]);
 		$act = strtolower($e->getRouteMatch()->getParam('action'));
 		$ctrl_act = $ctrl."_".$act;
-		
-		//读取操作说明信息
-		$adapter = $this->getDbAdapter();	
-		$dbRole = new Role($adapter);
-		$actInfo = $dbRole->getAccessById($ctrl_act);
-		if($actInfo){
-			HCommon::setCache("acl_help",$actInfo['acl_help']);
-		}
 		if(!$this->_checkOptable($ctrl_act)){
 			$e->getTarget()->layout('error/forbidden');
 			$e->stopPropagation();
@@ -232,12 +226,11 @@ class BackendPlugin extends AbstractPlugin
 	public function setUserSession($user = NULL,$expire = NULL)
 	{
 		
-		if(!$user){
+        if(!$user){
 			return FALSE;
 		}
 		//1._identify作为唯一标识写入Cookie,以供login与二级域名共享登录信息
-		$domain = $_SERVER ['HTTP_HOST'];
-		$domain = substr($domain,strpos($domain,".")+1);
+		$domain = HCommon::getDomain();
 		$expire = is_null($expire) ? time()+7200 : $expire;
 		setcookie ("_identify", $user->real_domain.$user->id, $expire, '/', $domain);
 		
@@ -252,7 +245,7 @@ class BackendPlugin extends AbstractPlugin
 	public function getUserSesion()
 	{
 		$_cookieId = isset($_POST['_identify']) ? $_POST['_identify'] : NULL;
-		$_identify = self::_getIdentify(NULL,$_cookieId);
+		$_identify = HCommon::_getIdentify(NULL,$_cookieId);
 		$domain = HCommon::getSubDomain();
 		if($domain == "login" || preg_match("/".$domain."/",$_identify)){
 			$data = HCommon::getSession("auth","user",$_identify);

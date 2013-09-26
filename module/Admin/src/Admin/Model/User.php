@@ -7,7 +7,7 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Select;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
-use module\Application\src\Model\Tool;
+use library\Helper\HCommon;
 
 class User {
 	private $adapter;
@@ -129,7 +129,7 @@ class User {
 		) );
 		$row = $rowset->current ();
 		if ($row) {
-			Tool::setCache ( $this->_mapDMCacheKey ( $row ['domain'] ), $row );
+			HCommon::setCache ( $this->_mapDMCacheKey ( $row ['domain'] ), $row );
 			$config = self::getUserConfig ( $row ['id'] );
 			if (! $config) {
 				self::addUserConfig ( array (
@@ -140,7 +140,7 @@ class User {
 			}
 			$row = array_merge ( ( array ) $config, ( array ) $row );
 			if ($row) {
-				Tool::setCache ( $this->_mapDMCacheKey ( $id ), $row );
+				HCommon::setCache ( $this->_mapDMCacheKey ( $id ), $row );
 				return $row;
 			}
 		}
@@ -155,7 +155,7 @@ class User {
 	function getUser($id = null, $username = null, $email = null) {
 		$key = $this->_mapDMCacheKey ( $id );
 		if ($id) {
-			$data = Tool::getCache ( $key );
+			$data = HCommon::getCache ( $key );
 			if ($data) {
 				return $data;
 			}
@@ -192,7 +192,7 @@ class User {
 			}
 			$row = array_merge ( ( array ) $config, ( array ) $row );
 			if ($row) {
-				Tool::setCache ( $key, $row );
+				HCommon::setCache ( $key, $row );
 				return $row;
 			}
 		}
@@ -226,7 +226,7 @@ class User {
 		$row = $rowSet->current ();
 		// 从缓存提取数据
 		$key = $this->_mapDMCacheKey ( $row ['id'] );
-		$data = Tool::getCache ( $key );
+		$data = HCommon::getCache ( $key );
 		
 		if ($data) {
 			return $data;
@@ -255,7 +255,7 @@ class User {
 	private function _delDMCache($userId) {
 		$user = $this->getUser ( $userId );
 		if ($user->domain) {
-			Tool::delCache ( $this->_mapDMCacheKey ( $user->domain ) );
+			HCommon::delCache ( $this->_mapDMCacheKey ( $user->domain ) );
 		}
 	}
 	

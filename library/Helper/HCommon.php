@@ -22,6 +22,8 @@ class HCommon {
     const _AVATAR = 11;//用户头像模块
     const _PPT = 12;//教师课件模块
     
+    private static $_defConfig;
+    
     
     /**
      * 获取主机名
@@ -44,11 +46,27 @@ class HCommon {
         return str_replace(strchr(self::getHost(),"."),"",self::getHost());
     }
     
+    /**
+     * 获取域名信息(例如www.baidu.com中的baidu.com) 
+     * 
+     */
+    public static function getDomain()
+    {
+        $domain = strchr(self::getHost(),".");
+        $domain = substr($domain,1);
+        return $domain;
+    }
+    
     public static function getDefConfig($file = 'common')
     {
+        if(isset(self::$_defConfig[$file])){
+            return self::$_defConfig[$file];
+        }
         $fullPath = dirname(BASE_PATH)."/config/def/{$file}.php";
         if(file_exists($fullPath)){
-            return require_once($fullPath);
+            $dfConfig = include($fullPath);
+            self::$_defConfig[$file] = $dfConfig;
+            return $dfConfig;
         }
         return FALSE;
     }
@@ -70,7 +88,7 @@ class HCommon {
         self::setCache($name, $data, $expire);
         return true;
     }
-    
+
     
     /**
      *
@@ -130,6 +148,38 @@ class HCommon {
         return $data;
     }
     
+    public static function getIP() {
+        if (isset($_SERVER)) {
+            if (isset($_SERVER ['HTTP_X_FORWARDED_FOR'])) {
+                $aIps = explode(',', $_SERVER ['HTTP_X_FORWARDED_FOR']);
+                foreach ($aIps as $sIp) {
+                    $sIp = trim($sIp);
+                    if ($sIp != 'unknown') {
+                        $sRealIp = $sIp;
+                        break;
+                    }
+                }
+            } elseif (isset($_SERVER ['HTTP_CLIENT_IP'])) {
+                $sRealIp = $_SERVER ['HTTP_CLIENT_IP'];
+            } else {
+                if (isset($_SERVER ['REMOTE_ADDR'])) {
+                    $sRealIp = $_SERVER ['REMOTE_ADDR'];
+                } else {
+                    $sRealIp = '0.0.0.0';
+                }
+            }
+        } else {
+
+            if (getenv('HTTP_X_FORWARDED_FOR')) {
+                $sRealIp = getenv('HTTP_X_FORWARDED_FOR');
+            } elseif (getenv('HTTP_CLIENT_IP')) {
+                $sRealIp = getenv('HTTP_CLIENT_IP');
+            } else {
+                $sRealIp = getenv('REMOTE_ADDR');
+            }
+        }
+        return $sRealIp;
+    }
     
     //----------------------以下為文件與目錄處理相關函數---------------
     /**
@@ -284,7 +334,8 @@ class HCommon {
     public static function localCache() {
         $defConfig = self::getDefConfig();
         $mc = new \Memcache ();
-        $mc->connect($defConfig['memcache']['host'], $defConfig['memcache']['port']);
+        $mc->connect("localhost", 11211);
+        //$mc->connect($defConfig['memcache']['host'], $defConfig['memcache']['port']);
         return $mc;
     }
 
@@ -384,7 +435,7 @@ class HCommon {
         if(empty($key)){
             return FALSE;
         }
-        return $key .= self::getHost();
+        return $key .= self::getDomain();
     }
     
     

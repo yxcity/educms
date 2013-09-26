@@ -1,18 +1,12 @@
 <?php
-
 namespace Admin;
 
-use Zend\Db\ResultSet\ResultSet;
-use Admin\Form\ArchivesVerify;
-use Zend\Db\TableGateway\TableGateway;
-use Admin\Model\Archives;
 use Zend\ModuleManager\ModuleManager;
-use Admin\Model\Collect;
-use Admin\Form\CollectVerify;
-
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use Admin\Model\Menu;
+use library\Helper\HCommon;
+use library\Helper\HTreeView;
+use Admin\Model\Role;
 
 class Module {
 	public function init(ModuleManager $moduleManager)
@@ -37,6 +31,31 @@ class Module {
         $application   = $e->getApplication();
     	$sm            = $application->getServiceManager();
     	$sharedManager = $application->getEventManager()->getSharedManager();
+        
+        //---此处设置全局调用的布局文件数据---
+        $sharedManager->attach(__NAMESPACE__,'dispatch',function ($e){
+            
+            $user = HCommon::getSession('auth','user');
+            $dbRole = new Role($e->getTarget()->getServiceLocator ()->get ( 'Zend\Db\Adapter\Adapter' ) );
+            if($user){
+                
+                //导航菜单
+                $viewModel = $e->getViewModel();
+                $_menu = HTreeView::genRoleMenu($dbRole->getAccessTree(0,$user->roleid,$user->domain));
+                $viewModel->setVariable('_menu',$_menu); 
+                
+                //操作说明
+                $ctrl = explode("\\",$e->getRouteMatch()->getParam('controller'));
+        		$ctrl = strtolower($ctrl[2]);
+        		$act = strtolower($e->getRouteMatch()->getParam('action'));
+        		$ctrl_act = $ctrl."_".$act;
+                $actInfo = $dbRole->getAccessById($ctrl_act);
+        		if($actInfo){
+                    $viewModel->setVariable('acl_help',$actInfo['acl_help']);
+        		}   
+            }
+            
+		},100);
      
         $router = $sm->get('router');
     	$request = $sm->get('request');
@@ -65,42 +84,6 @@ class Module {
 	public function getServiceConfig() {
 		return array (
 				'factories' => array (
-						'ArchivesTableGateway' => function ($sm) {
-							$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
-							$resultSet = new ResultSet ();
-							$resultSet->setArrayObjectPrototype ( new ArchivesVerify () );
-							return new TableGateway ( 'archives', $dbAdapter );
-						},
-						'Admin\Model\Archives' => function ($sm) {
-							$tableGateway = $sm->get ( 'ArchivesTableGateway' );
-							$table = new Archives ( $tableGateway );
-							return $table;
-						},
-						'CollectTableGateway'=>function ($sm)
-						{
-							$dbAdapter=$sm->get('Zend\Db\Adapter\Adapter');
-							$resultSet = new ResultSet();
-							$resultSet->setArrayObjectPrototype(new CollectVerify());
-							return new TableGateway('collect',$dbAdapter);
-						},
-						'Admin\Model\Collect'=>function ($sm)
-						{
-							$tableGateway = $sm->get('CollectTableGateway');
-							$table = new Collect($tableGateway);
-							return $table;
-						},
-						'MenuTableGateway'=>function ($sm)
-						{
-							$dbAdapter=$sm->get('Zend\Db\Adapter\Adapter');
-							return new TableGateway('menu',$dbAdapter);
-						},
-						'Admin\Model\Menu'=>function ($sm)
-						{
-							$tableGateway = $sm->get('MenuTableGateway');
-                                                        $dbAdapter=$sm->get('Zend\Db\Adapter\Adapter');
-							$table = new Menu($tableGateway,$dbAdapter);
-							return $table;
-						}
 				) 
 		);
 	}

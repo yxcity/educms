@@ -47,7 +47,7 @@ return array(
 
 	'controller_plugins' => array(
 		'invokables' => array(
-			'BackendPlugin'=> 'module\Application\src\Model\Weixin\BackendPlugin',
+			'BackendPlugin'=> 'library\Plugin\BackendPlugin',
 		)
 	),
 

@@ -33,12 +33,13 @@ class IndexController extends AbstractActionController {
 	public function _login() {
         
         HCommon::getDefConfig();
-        exit(0);
+        //exit(0);
         
 		$viewData = array ();
-		$host = Tool::getDomain ();
+		$host = str_replace(HCommon::getSubDomain(),"",HCommon::getHost());
 		$request = $this->getRequest ();
 		if ($request->isPost ()) {
+            
 			$adapter = $this->getServiceLocator ()->get ( 'Zend\Db\Adapter\Adapter' );
 			$user = new User ( $adapter );
 			$role = new Role ( $adapter );
@@ -70,22 +71,18 @@ class IndexController extends AbstractActionController {
 					// 保存账户登录信息
 					$this->BackendPlugin ()->setUserSession ( $res );
 					$_cookieId = $res->real_domain . $res->id;
-					Tool::setSession ( 'acl', array (
+					HCommon::setSession ( 'acl', array (
 							'opts' => $role->getExistedRoleAccess ( $res->roleid ) 
 					), NULL, $_cookieId ); // 当前可操作的Controller/action
-					
-					/*
-					 * Tool::setSession ( 'auth', array ( 'user' => $res ) );
-					 */
-					Tool::setCookie ( 'auth', array (
+					HCommon::setCookie ( 'auth', array (
 							'title' => $res->realname,
 							'message' => '欢迎登陆系统' 
 					), time () + 5 );
 					$updata ['addtime'] = time ();
-					$updata ['ip'] = Tool::getIP ();
+					$updata ['ip'] = HCommon::getIP ();
 					$updata ['uid'] = $res->id;
 					$user->logining ( $updata );
-					$this->redirect ()->toUrl ( "http://{$res->real_domain}.{$host}/home" );
+					$this->redirect ()->toUrl ( "http://{$res->real_domain}{$host}/home" );
 				} else {
 					$message = '用户名或密码错误！';
 				}
@@ -98,9 +95,6 @@ class IndexController extends AbstractActionController {
 		$viewData ['host'] = $host;
 		$view = new ViewModel ( $viewData );
 		$view->setTemplate ( 'auth' );
-		if (Tool::is_mobile ()) {
-			$view->setTemplate ( 'mobileLogin' );
-		}
 		$view->setTerminal ( 200 );
 		return $view;
 	}

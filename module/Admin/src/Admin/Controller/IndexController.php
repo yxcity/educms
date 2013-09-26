@@ -5,7 +5,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Admin\Model\User;
 use Admin\Model\Role;
-use module\Application\src\Model\Tool;
+use library\Helper\HCommon;
+
 class IndexController extends AbstractActionController
 {
 	public function indexAction()
@@ -18,18 +19,18 @@ class IndexController extends AbstractActionController
 	
 	public function authAction()
 	{
-		$domain = Tool::getDomain();
+		$domain = HCommon::getDomain();
 		$url = "http://login.{$domain}";
 		$this->redirect()->toUrl($url);
 	}
 	
 	public function logoutAction()
 	{
-		Tool::delCache(Tool::_getIdentify("auth"));
-		$domain = Tool::getDomain();
+		HCommon::delCache(HCommon::_getIdentify("auth"));
+		$domain = HCommon::getDomain();
 		setcookie("_identify",NULL,time()-100,"/",$domain);
 		setcookie("_this_a",NULL,time()-100,"/");
-		setcookie("_this_item",NULL,time()-100,"/");//Çå³ýµ¼º½²Ëµ¥Cookie
+		setcookie("_this_item",NULL,time()-100,"/");//Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½Cookie
 		$url = "http://login.{$domain}";
         $this->redirect()->toUrl($url);
 	}

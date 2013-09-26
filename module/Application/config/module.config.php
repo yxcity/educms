@@ -1,5 +1,5 @@
 <?php
-use module\Application\src\Model\Tool;
+use library\Helper\HCommon;
 return array (
 		'router' => array (
 				'routes' => array (
@@ -311,7 +311,7 @@ return array (
 				'factories' => array (
 						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
 						'Logger' => function ($sm) {
-							Tool::mkdir ( './data/log/' );
+							HCommon::mkdir ( './data/log/' );
 							$logger = new \Zend\Log\Logger ();
 							$writer = new \Zend\Log\Writer\Stream ( './data/log/' . date ( 'Y-m-d' ) . '-error.log' );
 							$logger->addWriter ( $writer );

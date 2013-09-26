@@ -7,7 +7,7 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\ResultSet\AbstractResultSet;
-use module\Application\src\Model\Tool;
+use library\Helper\HCommon;
 
 
 class Role
@@ -258,7 +258,7 @@ class Role
         if(!is_null($domain)){
             $key = $domain."_".$key;
         }
-		$data = Tool::getCache($key);
+		$data = HCommon::getCache($key);
 		if($data){
 			return $data;
 		}
@@ -267,7 +267,7 @@ class Role
 		
 		//将数据写入缓存
 		if($dbRst){
-			Tool::setCache($key,$dbRst);
+			HCommon::setCache($key,$dbRst);
 		}
 		return $dbRst;
 	}
@@ -329,7 +329,7 @@ class Role
 	{
 		//从缓存提取数据
 		$key = "acl_".$role_id;
-		$data = Tool::getCache($key);
+		$data = HCommon::getCache($key);
 		if($data){
 			return $data;
 		}
@@ -348,7 +348,7 @@ class Role
 		
 		//将数据写入缓存
 		if($dbRst){
-			Tool::setCache($key,$dbRst);
+			HCommon::setCache($key,$dbRst);
 		}
 		
 		return $dbRst;
@@ -467,7 +467,7 @@ class Role
 	 */
 	private function _clearCacheRev($role_id,$cachePrefix)
 	{
-		Tool::delCache($cachePrefix.$role_id);
+		HCommon::delCache($cachePrefix.$role_id);
 		$table = new TableGateway('wx_roles',$this->adapter);
 		$rowSet = $table->select(array('owner_id'=>$role_id));
 		if($rowSet->count() > 0){
